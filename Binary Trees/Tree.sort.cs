@@ -6,15 +6,10 @@
             int[] arr = new int[12] {5, 10, 0, 8, -12, 11, 5, -8, 15, 8, 10, 14};
 
             // заполнение
-            Tree<int> tree = null;
-            for (int i = 0; i < arr.Length; i++)
-            {
-                if (i == 0) {
-                    tree = new Tree<int>(arr[i]);
-                    i++;
-                }
-                tree.Insert(arr[i]);
-            }
+            int f;
+            Tree<int> tree = new Tree<int>(arr[f = 0]);
+            for (f++; f < arr.Length; ++f)
+            { tree.Insert(arr[f]); }
 
             Console.WriteLine(tree.Result());
             // -12  -8  0  5  5  8  8  10  10  11  14  15
