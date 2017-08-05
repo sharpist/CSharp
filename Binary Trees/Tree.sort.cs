@@ -34,7 +34,7 @@
 
             if (CurrentNode.CompareTo(param) > 0) // узел > параметра true '+1', иначе false '0', '-1'
             {
-                if (this.Left == null) this.Left = new Tree<T>(param);   //        ____5____
+                if (this.Left == null) this.Left = new Tree<T>(param);   //        L _ 5 _ R
                 else this.Left.Insert(param);                            //       /         \
             }                                                            //      0          10
             else                                                         //     /         /    \
