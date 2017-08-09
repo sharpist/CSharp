@@ -2,63 +2,75 @@
     class Program
     {
         ...
-            Queue<string> myQueue = new Queue<string>(3); // создать очередь на 3 элемента
-                                                          // (with expandable on demand)
+            Queue<string> myQueue = new Queue<string>(3);
+            // 1. principle: "who came first, leaves first"
+            // 2. with expandable on demand
+
             myQueue.Add("First");
             myQueue.Add("Second");
             myQueue.Add("Third");
-            Console.WriteLine(myQueue.Get()); // First
-            Console.WriteLine(myQueue.Get()); // Second
-            Console.WriteLine(myQueue.Get()); // Third
+            Console.WriteLine(myQueue.Get());  // First
+            Console.WriteLine(myQueue.Get());  // Second
 
             myQueue.Add("Fourth");
-            Console.WriteLine(myQueue.Get()); // Fourth
+            Console.WriteLine(myQueue.Get());  // Third
+            Console.WriteLine(myQueue.Get());  // Fourth
     }
 
     class Queue<T>
     {
-        private byte a, g;                                // флаги индексов
-        private byte e;                                   // флаг кол-во элементов
-        private T[] _arr;                                 // массив
-        public T[] arr {
-            get { return this._arr; }
-            set { this._arr = value; }
+        private byte element;                  // флаг кол-во элементов
+        private T[] arr;
+
+        public Queue() {
+            this.element = 0;
+            this.arr = new T[this.element + 1];
         }
         public Queue(byte size) {
-            this.a = 0;
-            this.g = 0;
-            this.e = 0;
-            this.arr = new T[size];
+            this.element = 0;
+            this.arr = new T[this.element + size];
         }
 
-        public void Add(T item)                           // добавить в очередь
+        public void Add(T item)                // добавить элемент
         {
-            #region Check Array
-            if (this.a == this.arr.Length)                // увеличить массив если заполнен
+            if (this.element == this.arr.Length) resizeArray(true);
+            this.arr[this.element++] = item;
+        }
+        public T Get()                         // извлечь элемент
+        {
+            if (this.element == 0) throw new IndexOutOfRangeException("The queue is empty!");
+            var item = this.arr[0];
+            resizeArray(false);
+            this.element--;
+
+            return item;
+        }
+
+        private void resizeArray(bool param)   // вспомогательный метод
+        {
+            switch (param)
             {
-                T[] rec = new T[this.arr.Length];         // массив копия
+                case true:                     // увеличить массив
+                T[] buf = new T[this.arr.Length];
 
                 for (int i = 0; i < this.arr.Length; i++)
-                { rec[i] = this.arr[i]; }
+                { buf[i] = this.arr[i]; }
 
-                this.arr = new T[this.arr.Length + 1];    // увеличить массив
+                this.arr = new T[this.arr.Length + 1];
 
-                for (int i = 0; i < rec.Length; i++)
-                { this.arr[i] = rec[i]; }
+                for (int i = 0; i < buf.Length; i++)
+                { this.arr[i] = buf[i]; }
+                break;
+
+                case false:                    // уменьшить массив
+                buf = new T[this.arr.Length - 1];
+
+                for (int i = 0; i < this.arr.Length - 1; i++)
+                { buf[i] = this.arr[i + 1]; }
+
+                this.arr = new T[buf.Length];
+                this.arr = buf;
+                break;
             }
-            #endregion
-            this.arr[this.a++] = item;
-            //this.a %= (byte)this.arr.Length;            // обнулить флаг (not used)
-            this.e++;
-        }
-
-        public T Get()                                    // получить из очереди
-        {
-            if (this.e == 0)
-                throw new IndexOutOfRangeException("The queue is empty!");
-            var item = this.arr[this.g++];
-            //this.g %= (byte)this.arr.Length;            // обнулить флаг (not used)
-            this.e--;
-            return item;
         }
     }
