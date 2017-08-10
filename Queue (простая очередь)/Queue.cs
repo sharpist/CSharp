@@ -55,13 +55,16 @@
         public void Del(byte index)              // удалить элемент
         {
             if (this.element < index) throw new IndexOutOfRangeException("The queue does not carry this item!");
-            resizeArray(-1, index);
-            this.element--;
+            if (0 < index)
+            {
+                resizeArray(-1, index);
+                this.element--;
+            }
         }
         public int HowMany() => this.arr.Length; // показать список
         public void Sort()                       // сортировать элементы
         {
-            if (this.arr.Length > 0) resizeArray(2);
+            if (this.arr.Length > 1) resizeArray(2);
         }
 
         #region вспомогательный метод
@@ -111,9 +114,9 @@
                             this.arr[max] = temp;
                         }
                     }
-                }
-                break;
+                } break;
             }
         }
         #endregion
     }
+
