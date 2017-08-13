@@ -140,7 +140,7 @@
                 for (int i = 0; i < this.arr.Length; i++) {
                     if (this.arr[i] == null) {
                         for (j = i + 1; j < this.arr.Length; j++) {
-                            if (arr[j] != null) {
+                            if (this.arr[j] != null) {
                                 var temp = this.arr[i];
                                 this.arr[i] = this.arr[j];
                                 this.arr[j] = temp;
@@ -178,4 +178,3 @@
             this.arr = new T[this.element + size];
         }
     }
-
