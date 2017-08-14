@@ -35,7 +35,7 @@
         public void Add(T item)
         {
             if (this.element == this.arr.Length) arrayCheck(1);
-            for (int i = 0; i < this.arr.Length; i++)
+            for (short i = 0; i < this.arr.Length; i++)
             { if (arr[i] == null) { this.arr[i] = item; break; } }
             this.element++;
         }
@@ -72,12 +72,12 @@
         // удалить элемент
         public void Del(byte index)
         {
-            if (this.arr.Length < index - 1 || arr[index - 1] == null)
+            if (this.arr.Length < index - 1)
                 throw new IndexOutOfRangeException("The queue does not carry this item!");
             if (0 < index)
             {
+                if(this.arr[index - 1] != null) this.element--;
                 arrayCheck(-1, index);
-                this.element--;
             }
         }
 
@@ -88,37 +88,38 @@
         // ревизия
         public int Size() => this.arr.Length;
         public int Items() => this.element;
-        public int Positions()
+        public string Positions()
         {
             string positions = "";
-            for(int i = 0; i < this.arr.Length; i++)
+            for (short i = 0; i < this.arr.Length; i++)
             { positions += this.arr[i] != null ? "1" : "0"; }
-            return Int32.Parse(positions);
+            return positions;
         }
 
 
         #region вспомогательный метод
         private void arrayCheck(sbyte param, byte index = 0)
         {
-            switch (param) {
+            switch (param)
+            {
                 // увеличить массив (добавление следующего элемента)
                 case 1 :
                 T[] buf = new T[this.arr.Length];
 
-                for (int i = 0; i < this.arr.Length; i++)
+                for (short i = 0; i < this.arr.Length; i++)
                 { buf[i] = this.arr[i]; }
 
                 this.arr = new T[this.arr.Length + 1];
 
-                for (int i = 0; i < buf.Length; i++)
+                for (short i = 0; i < buf.Length; i++)
                 { this.arr[i] = buf[i]; }
                 break;
 
                 // (добавление элемента по индексу)
                 case 2 :
                 buf = new T[this.arr.Length];
-                int j = 0;
-                for (int i = 0; i < this.arr.Length; i++)
+                short j = 0;
+                for (short i = 0; i < this.arr.Length; i++)
                 { if (i != index - 1) buf[i] = this.arr[j++]; }
 
                 this.arr = buf;
@@ -128,7 +129,7 @@
                 case 0 :
                 buf = new T[this.arr.Length - 1];
 
-                for (int i = 0; i < this.arr.Length - 1; i++)
+                for (short i = 0; i < this.arr.Length - 1; i++)
                 { buf[i] = this.arr[i + 1]; }
 
                 this.arr = new T[buf.Length];
@@ -139,7 +140,7 @@
                 case -1 :
                 buf = new T[this.arr.Length - 1];
                 j = 0;
-                for (int i = 0; i < this.arr.Length; i++)
+                for (short i = 0; i < this.arr.Length; i++)
                 { if (i != index - 1) buf[j++] = this.arr[i]; }
 
                 this.arr = buf;
@@ -147,11 +148,10 @@
 
                 // сортировать элементы
                 case 3 :
-                for (int i = 0; i < this.arr.Length; i++) {
+                for (short i = 0; i < this.arr.Length; i++) {
                     if (this.arr[i] == null) {
-                        for (j = i + 1; j < this.arr.Length; j++) {
-                            if (this.arr[j] != null)
-                            {
+                        for (j = (short)(i + 1); j < this.arr.Length; j++) {
+                            if (this.arr[j] != null) {
                                 var temp = this.arr[i];
                                 this.arr[i] = this.arr[j];
                                 this.arr[j] = temp;
@@ -159,11 +159,11 @@
                             }
                         }
                     }
-                }
-                byte k = 0;
-                for (int i = 0; i < this.arr.Length; i++) { if (arr[i] == null) k++; }
-                for (int min = 0; min < this.arr.Length - 1 - k; min++) {
-                    for (int max = min + 1; max < this.arr.Length - k; max++) {
+                } byte k = 0;
+                for (short i = 0; i < this.arr.Length; i++) { if (arr[i] == null) k++; }
+                for (short min = 0; min < this.arr.Length - 1 - k; min++) {
+                    for (short max = (short)(min + 1); max < this.arr.Length - k; max++)
+                    {
                         if (this.arr[min].CompareTo(this.arr[max]) >= 0)
                         {
                             var temp = this.arr[min];
