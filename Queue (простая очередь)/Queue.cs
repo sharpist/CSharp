@@ -100,8 +100,7 @@
         #region вспомогательный метод
         private void arrayCheck(sbyte param, byte index = 0)
         {
-            switch (param)
-            {
+            switch (param) {
                 // увеличить массив (добавление следующего элемента)
                 case 1 :
                 T[] buf = new T[this.arr.Length];
