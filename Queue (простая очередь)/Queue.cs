@@ -92,7 +92,7 @@
         {
             string positions = "";
             for(int i = 0; i < this.arr.Length; i++)
-            { positions += arr[i] != null ? "1" : "0"; }
+            { positions += this.arr[i] != null ? "1" : "0"; }
             return Int32.Parse(positions);
         }
 
