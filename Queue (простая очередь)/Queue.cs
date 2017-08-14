@@ -2,7 +2,7 @@
     class Program
     {
         ...
-            Queue<string> myQueue = new Queue<string>();
+            Queue<string> myQueue = new Queue<string>(3);
             // 1. the principle of "who came first, leaves first"
             // 2. with expandable on demand
             // 3. all items are added sequentially, priority for empty positions
@@ -10,21 +10,23 @@
             // 5. the extracted item is removed from the queue
             // 6. also, you can delete items on demand
             myQueue.Add("First");
-            myQueue.Add(3, "Third");            // added to the third position
+            myQueue.Add(3, "Third");                // added to the third position
             myQueue.Add("Second");
-            Console.WriteLine(myQueue.Get(3));  // "Third"
-            Console.WriteLine(myQueue.Get());   // "First"
-            Console.WriteLine(myQueue.Get());   // "Second"
+            Console.WriteLine(myQueue.Get(3));      // "Third"
+            Console.WriteLine(myQueue.Get());       // "First"
+            Console.WriteLine(myQueue.Get());       // "Second"
 
             myQueue.Add("Sixth");
-            myQueue.Add("Fifth");
+            myQueue.Add(5, "Fifth");                // added to the fifth position
             myQueue.Add("Fourth");
-            myQueue.Del(3);                     // Fourth now removed
-            myQueue.Sort();                     // Sixth, Fifth -> Fifth, Sixth abc...
+            myQueue.Del(2);                         // Fourth now removed
+            myQueue.Sort();                         // Sixth, Fifth -> Fifth, Sixth abc...
 
-            Console.WriteLine(myQueue.Count()); // "2"
-            Console.WriteLine(myQueue.Get());   // "Fifth"
-            Console.WriteLine(myQueue.Get());   // "Sixth"
+            Console.WriteLine(myQueue.Size());      // "4"
+            Console.WriteLine(myQueue.Items());     // "2"
+            Console.WriteLine(myQueue.Positions()); // "1100"
+            Console.WriteLine(myQueue.Get());       // "Fifth"
+            Console.WriteLine(myQueue.Get());       // "Sixth"
     }
 
     class Queue<T> where T : IComparable<T>
@@ -34,7 +36,7 @@
         {
             if (this.element == this.arr.Length) arrayCheck(1);
             for (int i = 0; i < this.arr.Length; i++)
-            { if(arr[i] == null) this.arr[i] = item; }
+            { if (arr[i] == null) { this.arr[i] = item; break; } }
             this.element++;
         }
         public void Add(byte index, T item)
@@ -83,8 +85,16 @@
         public void Sort()
         { if (this.arr.Length > 1) arrayCheck(3); }
 
-        // показать список
-        public int Count() => this.arr.Length;
+        // ревизия
+        public int Size() => this.arr.Length;
+        public int Items() => this.element;
+        public int Positions()
+        {
+            string positions = "";
+            for(int i = 0; i < this.arr.Length; i++)
+            { positions += arr[i] != null ? "1" : "0"; }
+            return Int32.Parse(positions);
+        }
 
 
         #region вспомогательный метод
@@ -140,7 +150,8 @@
                 for (int i = 0; i < this.arr.Length; i++) {
                     if (this.arr[i] == null) {
                         for (j = i + 1; j < this.arr.Length; j++) {
-                            if (this.arr[j] != null) {
+                            if (this.arr[j] != null)
+                            {
                                 var temp = this.arr[i];
                                 this.arr[i] = this.arr[j];
                                 this.arr[j] = temp;
@@ -148,11 +159,11 @@
                             }
                         }
                     }
-                } byte k = 0;
+                }
+                byte k = 0;
                 for (int i = 0; i < this.arr.Length; i++) { if (arr[i] == null) k++; }
                 for (int min = 0; min < this.arr.Length - 1 - k; min++) {
-                    for (int max = min + 1; max < this.arr.Length - k; max++)
-                    {
+                    for (int max = min + 1; max < this.arr.Length - k; max++) {
                         if (this.arr[min].CompareTo(this.arr[max]) >= 0)
                         {
                             var temp = this.arr[min];
