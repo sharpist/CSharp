@@ -9,6 +9,7 @@
             // 4. you can add items by index
             // 5. the extracted item is removed from the queue
             // 6. also, you can delete items on demand
+            // 7. notation as in arrays is allowed (only read)
             myQueue.Add("First");
             myQueue.Add(3, "Third");                // added to the third position
             myQueue.Add("Second");
@@ -27,6 +28,12 @@
             Console.WriteLine(myQueue.Positions()); // "1100"
             Console.WriteLine(myQueue.Get());       // "Fifth"
             Console.WriteLine(myQueue.Get());       // "Sixth"
+
+            foreach(var v in new string[3] { "A", "B", "C" })
+            { myQueue.Add(v); }
+
+            for (byte i = 0; i < myQueue.Items(); i++)
+            { Console.Write(myQueue[i]); }          // "ABC"
     }
 
     class Queue<T> where T : IComparable<T>
@@ -76,7 +83,7 @@
                 throw new IndexOutOfRangeException("The queue does not carry this item!");
             if (0 < index)
             {
-                if(this.arr[index - 1] != null) this.element--;
+                if (this.arr[index - 1] != null) this.element--;
                 arrayCheck(-1, index);
             }
         }
@@ -85,7 +92,7 @@
         public void Sort()
         { if (this.arr.Length > 1) arrayCheck(3); }
 
-        // ревизия
+        // исследование
         public int Size() => this.arr.Length;
         public int Items() => this.element;
         public string Positions()
@@ -178,6 +185,8 @@
 
         private T[] arr;
         private byte element;
+        public T this[int i] => this.arr[i];
+
         public Queue() {
             this.element = 0;
             this.arr = new T[this.element + 1];
@@ -188,3 +197,4 @@
             this.arr = new T[this.element + size];
         }
     }
+
