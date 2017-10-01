@@ -3,7 +3,7 @@
     {
         ...
             // "control system all machines"
-            SystemManagement sys = new SystemManagement();
+            ControlSystem sys = new ControlSystem();
 
             // Machine_2
             Machine_2 machine_2 = new Machine_2();
@@ -15,18 +15,18 @@
             sys.ShutDown = (() => { machine_3.shutDownMachine3(0); }); // add *SHUTDOWN* machine_3
 
             // *START* all machines
-            Console.Write("Press any key for *START* all machines: "); Console.ReadKey();
+            Console.Write("Press any key to *START* all machines: "); Console.ReadKey();
             sys.Start();
             // *SHUTDOWN* all machines
-            Console.Write("\nPress any key for *SHUTDOWN* all machines: "); Console.ReadKey();
+            Console.Write("\nPress any key to *SHUTDOWN* all machines: "); Console.ReadKey();
             sys.ShutDown();
-
+            // exit
             Console.Write("\nPress any key for *EXIT* from the system: "); Console.ReadKey();
     }
 
-    class SystemManagement // "control system all machines" this code never change
+    class ControlSystem // "control system all machines" this code never change
     {
-        public SystemManagement() {
+        public ControlSystem() {
             this.start += startMachine1;
             this.shutDown += shutDownMachine1; }
         private void startMachine1()
