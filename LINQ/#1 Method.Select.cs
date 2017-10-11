@@ -84,10 +84,16 @@ namespace Example
 
     public static class Ext
     {
-        public static TResult Select<TSource, TResult>
-            (this TSource source, Func<TSource, TResult> op) // extension method
+        public static IEnumerable<TResult> Select<TSource, TResult> (
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult> selector ) // extension method
         {
-            return op(source);
+            List<TResult> subset = new List<TResult>();
+            foreach (var item in source)
+            {
+                subset.Add(selector(item));
+            }
+            return subset;
         }
     }
 }
