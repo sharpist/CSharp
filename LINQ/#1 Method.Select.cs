@@ -29,11 +29,21 @@ namespace Example
             // Will show all employee names
 
             // Example 2
-            IEnumerable<Worker> workers = from Worker worker in team
+            IEnumerable<NewType> workers = team.Select( (Worker w) =>
+            new NewType { Name = w.Name, ID = w.ID, City = w.City } );
+
+            foreach (NewType worker in workers)
+            {
+                Console.WriteLine(
+                $"ID {worker.ID}: {worker.Name} from {worker.City}" );
+            }
+
+            // Example 3
+            IEnumerable<Worker> workers2 = from Worker worker in team
                                           where worker.Age <= 30
                                           select worker;
 
-            foreach (Worker worker in workers)
+            foreach (Worker worker in workers2)
             {
                 Console.WriteLine($"{worker.Name} from {worker.City}");
             }
@@ -80,6 +90,13 @@ namespace Example
         public int Age;
         public string Name;
         public string City;
+    }
+
+    class NewType // for output data
+    {
+        public int ID { get; set; }
+        public string Name { get; set; }
+        public string City { get; set; }
     }
 
     public static class Ext
