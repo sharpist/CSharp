@@ -29,19 +29,26 @@ namespace Example
             // Will show all employee names
 
             // Example 2
-            IEnumerable<NewType> workers = team.Select( (Worker w) =>
-            new NewType { Name = w.Name, ID = w.ID, City = w.City } );
+            IEnumerable<NewType> workers = team.Select((Worker w) =>
+            new NewType { Name = w.Name, ID = w.ID, City = w.City });
 
             foreach (NewType worker in workers)
             {
                 Console.WriteLine(
-                $"ID {worker.ID}: {worker.Name} from {worker.City}" );
+                $"ID {worker.ID}: {worker.Name} from {worker.City}");
             }
+            /*
+            ID 1: Erik from Austin
+            ID 2: Sean from Miami
+            ID 3: Alex from Los Angeles
+            ID 4: John from Rochester
+            ID 5: Kate from San Francisco
+            */
 
             // Example 3
             IEnumerable<Worker> workers2 = from Worker worker in team
-                                          where worker.Age <= 30
-                                          select worker;
+                                           where worker.Age <= 30
+                                           select worker;
 
             foreach (Worker worker in workers2)
             {
