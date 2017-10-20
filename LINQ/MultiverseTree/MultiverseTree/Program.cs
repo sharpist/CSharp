@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MultiverseTree
 {
@@ -11,8 +9,7 @@ namespace MultiverseTree
         static void Main(string[] args)
         {
             // new multiverse
-            Tree tree = new Tree();
-            Multiverse multiverse = tree.CreateMultiverse();
+            Multiverse multiverse = Tree.CreateMultiverse();
 
             // LINQ
             List<Citizen> citizens = multiverse.Universes

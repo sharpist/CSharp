@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace MultiverseTree
 {
-    class Tree
+    struct Tree
     {
-        public Multiverse CreateMultiverse()
+        public static Multiverse CreateMultiverse()
         {
             Multiverse multiverse = new Multiverse(); // object Multiverse
             var universes = new List<Universe>();     // collection List<Universe>

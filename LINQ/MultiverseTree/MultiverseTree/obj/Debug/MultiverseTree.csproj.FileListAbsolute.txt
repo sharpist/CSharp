@@ -3,3 +3,9 @@ C:\Users\Alexander\Documents\Visual Studio 2015\Projects\MultiverseTree\Multiver
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\MultiverseTree\MultiverseTree\bin\Debug\MultiverseTree.pdb
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\MultiverseTree\MultiverseTree\obj\Debug\MultiverseTree.exe
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\MultiverseTree\MultiverseTree\obj\Debug\MultiverseTree.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\bin\Debug\MultiverseTree.exe.config
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\obj\Debug\MultiverseTree.exe
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\obj\Debug\MultiverseTree.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\bin\Debug\MultiverseTree.exe
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\bin\Debug\MultiverseTree.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\LINQ\MultiverseTree\MultiverseTree\obj\Debug\MultiverseTree.csprojResolveAssemblyReference.cache
