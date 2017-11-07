@@ -1,0 +1,8 @@
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\bin\Release\Test Bitmap.exe.config
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\bin\Release\Test Bitmap.exe
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\bin\Release\Test Bitmap.pdb
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\obj\Release\Test_Bitmap.Form.resources
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\obj\Release\Test_Bitmap.Properties.Resources.resources
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\obj\Release\Test Bitmap.csproj.GenerateResource.Cache
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\obj\Release\Test Bitmap.exe
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Test Bitmap\Test Bitmap\obj\Release\Test Bitmap.pdb
