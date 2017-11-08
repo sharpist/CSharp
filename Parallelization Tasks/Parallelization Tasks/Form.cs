@@ -112,12 +112,13 @@ namespace Parallelization_Tasks
             {
                 // присвоить указателю адрес первых пиксельных данных
                 byte* ptr = (byte*)bmpData.Scan0;
-                int index = (y * pixelWidth + x ) * bytesPerPixel;
 
-                        // назначить компонент RGB-значений к указателю
-                        ptr[index + 2] = redValue;
-                        ptr[index + 1] = greenValue;
-                        ptr[index] = blueValue;
+                // построение пиксела
+                int index = (y * pixelWidth + x ) * bytesPerPixel;
+                // назначить компонент RGB-значений к указателю
+                ptr[index + 2] = redValue;
+                ptr[index + 1] = greenValue;
+                ptr[index] = blueValue;
             }
         }
     }

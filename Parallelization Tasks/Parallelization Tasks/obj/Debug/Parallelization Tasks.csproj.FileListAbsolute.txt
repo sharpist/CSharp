@@ -7,3 +7,12 @@ C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallelization Tasks\P
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.csproj.GenerateResource.Cache
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.exe
 C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\bin\Debug\Parallelization Tasks.exe.config
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.exe
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\bin\Debug\Parallelization Tasks.exe
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\bin\Debug\Parallelization Tasks.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.csprojResolveAssemblyReference.cache
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization_Tasks.Form.resources
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization_Tasks.Properties.Resources.resources
+C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.csproj.GenerateResource.Cache
