@@ -2,7 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace Parallelization_Tasks
+namespace Test_RGB
 {
     public partial class Form : System.Windows.Forms.Form
     {
