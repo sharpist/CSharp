@@ -12,7 +12,6 @@ C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Paralleliza
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.pdb
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\bin\Debug\Parallelization Tasks.exe
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\bin\Debug\Parallelization Tasks.pdb
-C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.csprojResolveAssemblyReference.cache
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization_Tasks.Form.resources
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization_Tasks.Properties.Resources.resources
 C:\Users\Alexander\Documents\GitHub\Algorithms\Parallelization Tasks\Parallelization Tasks\obj\Debug\Parallelization Tasks.csproj.GenerateResource.Cache
