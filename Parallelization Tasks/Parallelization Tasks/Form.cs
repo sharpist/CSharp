@@ -16,67 +16,64 @@ namespace Parallelization_Tasks
 
         // горизонтальное и вертикальное разрешение для Bitmap
         private int pixelWidth = 10240, pixelHeight = 7680;
-
-        private Bitmap bmpRGB = null;
-        private Rectangle rect;
-        private BitmapData bmpData = null;
-
         private int bytesPerPixel = 3; // 1 пиксельное значение в 3 байтах
         private byte redValue,
                      greenValue,
                      blueValue;
+
+        BitmapData bmpData = null;
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
             try
             {
                 /// создать "пустой" (all-zeros) 24bpp Bitmap объект для вывода графики
-                bmpRGB = new Bitmap(pixelWidth, pixelHeight, PixelFormat.Format24bppRgb);
-                /// создать Rectangle и заблокировать растровое изображение в системной памяти
-                rect = new Rectangle(0, 0, pixelWidth, pixelHeight);
-                bmpData = bmpRGB.LockBits(rect, ImageLockMode.WriteOnly, bmpRGB.PixelFormat);
-
-
-                // генерирует случайные значения для цветности RGB графики
-                Random rand = new Random();
-                redValue = (byte)rand.Next(0xFF);
-                greenValue = (byte)rand.Next(0xFF);
-                blueValue = (byte)rand.Next(0xFF);
-
-                #region RUNNING IN FLOWS
-                // запуск таймера
-                Stopwatch watch = Stopwatch.StartNew(); // применяется для операций отсчета времени
-
-                var tb = trackBar.Value;
-                if (radioButtonMulti.Checked == true)
+                using (Bitmap bmpRGB = new Bitmap(pixelWidth, pixelHeight, PixelFormat.Format24bppRgb))
                 {
-                    // данные для всего изображения находятся между 0 и pixelWidth / 2
-                    Task first = Task.Run(() => generateGraphData(tb, 0, pixelWidth / 8)); // range is specified only for +X
-                    Task second = Task.Run(() => generateGraphData(tb, pixelWidth / 8, pixelWidth / 4));
-                    Task third = Task.Run(() => generateGraphData(tb, pixelWidth / 4, pixelWidth * 3 / 8));
-                    Task fourth = Task.Run(() => generateGraphData(tb, pixelWidth * 3 / 8, pixelWidth / 2));
-                    Task.WaitAll(first, second, third, fourth); // task synchronization
-                }
-                if(radioButtonSingle.Checked == true)
-                {
-                    generateGraphData(tb, 0, pixelWidth / 2);
-                }
+                    /// создать Rectangle и заблокировать растровое изображение в системной памяти
+                    Rectangle rect = new Rectangle(0, 0, pixelWidth, pixelHeight);
+                    bmpData = bmpRGB.LockBits(rect, ImageLockMode.WriteOnly, bmpRGB.PixelFormat);
 
-                // отображение времени, затраченного на создание данных
-                duration.Text = $"Time (ms): {watch.ElapsedMilliseconds}";
-                #endregion
+                    // генерирует случайные значения для цветности RGB графики
+                    Random rand = new Random();
+                    redValue = (byte)rand.Next(0xFF);
+                    greenValue = (byte)rand.Next(0xFF);
+                    blueValue = (byte)rand.Next(0xFF);
+
+                    #region RUNNING IN FLOWS
+                    // запуск таймера
+                    Stopwatch watch = Stopwatch.StartNew(); // применяется для операций отсчета времени
+
+                    var tb = trackBar.Value;
+                    if (radioButtonMulti.Checked == true)
+                    {
+                        // данные для всего изображения находятся между 0 и pixelWidth / 2
+                        Task first = Task.Run(() => generateGraphData(tb, 0, pixelWidth / 8)); // range is specified only for +X
+                        Task second = Task.Run(() => generateGraphData(tb, pixelWidth / 8, pixelWidth / 4));
+                        Task third = Task.Run(() => generateGraphData(tb, pixelWidth / 4, pixelWidth * 3 / 8));
+                        Task fourth = Task.Run(() => generateGraphData(tb, pixelWidth * 3 / 8, pixelWidth / 2));
+                        Task.WaitAll(first, second, third, fourth); // task synchronization
+                    }
+                    if (radioButtonSingle.Checked == true)
+                    {
+                        generateGraphData(tb, 0, pixelWidth / 2);
+                    }
+
+                    // отображение времени, затраченного на создание данных
+                    duration.Text = $"Time (ms): {watch.ElapsedMilliseconds}";
+                    #endregion
+
+                    #region displaying
+                    if (bmpData != null)
+                        // разблокировка растрового изображения из системной памяти
+                        bmpRGB.UnlockBits(bmpData);
+                    // вывести графику в pictureBox
+                    pictureBox.Image = bmpRGB;
+                    #endregion
+                }
             }
             catch (Exception ex) { labelInfo.Text = ex.Message; }
-            #region displaying
-            finally
-            {
-                if (bmpData != null)
-                    // разблокировка растрового изображения из системной памяти
-                    bmpRGB.UnlockBits(bmpData);
-                // вывести графику в pictureBox
-                pictureBox.Image = bmpRGB;
-            }
-            #endregion
+            finally { }
         }
 
         // генерирует данные для графики
@@ -123,6 +120,7 @@ namespace Parallelization_Tasks
 
         private void buttonSave_Click(object sender, EventArgs e)
         {
+            /*
             if (bmpRGB != null)
             {
                 // преобразовать в bmp, записать на диск
@@ -132,6 +130,7 @@ namespace Parallelization_Tasks
             }
             else
                 labelInfo.Text = "Necessary to build a image!";
+            */
         }
 
         private void trackBar_ValueChanged(object sender, EventArgs e)
