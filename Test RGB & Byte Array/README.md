@@ -20,7 +20,7 @@
 ¬ пор€дке: синий, зеленый и красный (8 бит на каждый образец).
 
 
-![alt text](/sharpist/Practical_works/raw/master/Parallelization%20Tasks/Parallelization%20Tasks/HexRGBAbits.png)
+![alt text](HexRGBAbits.png)
 ## 
 –азмер строки данных в†изображении BMP(8/16/24bpp) должнен быть кратен 4 байтам, иначе†строка дополн€етс€ нул€ми.
 
