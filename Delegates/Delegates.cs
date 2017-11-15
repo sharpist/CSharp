@@ -13,9 +13,9 @@
             Machine_3 machine_3 = new Machine_3();
             sys.Start = (() => { machine_3.startMachine3(0); });       // add *START* machine_3
             /*
-            () => method(param) => method() { method(param); } 
-            в лямбда выражении используется "обёртка" метода,
-            метод с параметром вызываться его оригиналом с верной сигнатурой (без параметра)
+            используется лямбда-выражение для "обёртки" метода,
+            не соответствующего сигнатуре, ожидаемой делегатом
+            (() => method(param)) equivalent method(){ method(param); }
             */
             sys.ShutDown = (() => { machine_3.shutDownMachine3(0); }); // add *SHUTDOWN* machine_3
 
