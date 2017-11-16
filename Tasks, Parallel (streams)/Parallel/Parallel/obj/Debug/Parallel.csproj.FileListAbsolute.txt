@@ -1,0 +1,9 @@
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\bin\Debug\Parallel.exe.config
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\bin\Debug\Parallel.exe
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\bin\Debug\Parallel.pdb
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.csprojResolveAssemblyReference.cache
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.Form.resources
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.Properties.Resources.resources
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.csproj.GenerateResource.Cache
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.exe
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Parallel\Parallel\obj\Debug\Parallel.pdb
