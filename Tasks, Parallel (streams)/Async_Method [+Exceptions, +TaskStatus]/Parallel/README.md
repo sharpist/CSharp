@@ -1,12 +1,11 @@
 ## Async_Method [+Exceptions, +TaskStatus]
 
 
-## 
-## Тестовое приложение Parallel:
-
 * работа асинхронного метода с оператором await
 * перехват исключения OperationCanceledException
 * запрос статуса задачи
+
+## Тестовое приложение Parallel:
 
 ![screen capture 1](example1.png)
 
