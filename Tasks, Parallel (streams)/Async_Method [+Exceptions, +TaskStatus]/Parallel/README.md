@@ -1,9 +1,9 @@
 ## Async_Method [+Exceptions, +TaskStatus]
 
 
-* работа асинхронного метода с оператором await
-* перехват исключения OperationCanceledException
-* запрос статуса задачи
+1. Работа асинхронного метода с оператором await.
+2. Перехват исключения OperationCanceledException.
+3. Запрос статуса задачи.
 
 ## Тестовое приложение Parallel:
 
