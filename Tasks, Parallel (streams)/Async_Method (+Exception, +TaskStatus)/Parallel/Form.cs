@@ -15,33 +15,6 @@ namespace Async_Method
         private CancellationTokenSource tokenSource = null;
 
 
-        private async void buttonStart_Click(object sender, EventArgs e)
-        {
-            // компонент испытательной нагрузки
-            var rand = new Random();
-            arr = new int[50000];
-            for (int i = 0; i < arr.Length; i++)
-            { arr[i] = rand.Next(1, 99); }
-
-
-            // создание признака отмены
-            tokenSource = new CancellationTokenSource();
-            CancellationToken token = tokenSource.Token;
-
-            // задача к выполнению
-            Task t = null;
-            try
-            {
-                await (t = doWorkTask(/*params*/ token));
-            }
-            catch (OperationCanceledException oce)
-            { info.Text = oce.Message; }
-
-            // запрос статуса задачи
-            infoStat.Text = $"{t.Status}";
-        }
-
-
         private void buttonStop_Click(object sender, EventArgs e)
         {
             // инициировать отмену задачи
@@ -50,24 +23,45 @@ namespace Async_Method
         }
 
 
-        private Task doWorkTask(/*params*/ CancellationToken token)
+        private async void buttonStart_Click(object sender, EventArgs e)
         {
-            Task t = Task.Run(() =>
+            #region ArrayFilling
+            info.Text = null; infoStat.Text = null;
+            // компонент испытательной нагрузки
+            var rand = new Random();
+            arr = new int[25000];
+            for (int i = 0; i < arr.Length; i++)
+            { arr[i] = rand.Next(1, 99); }
+            #endregion
+
+            // создание признака отмены
+            tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+
+            // задача к выполнению
+            Task task = null;
+            try
             {
+                await (task = doWorkTask(/*params*/ token));
+            }
+            catch (OperationCanceledException oce)
+            { info.Text = oce.Message; }
 
-                // компонент испытательной нагрузки
-                testLoad();
-
-                // создать исключение при запросе на отмену
-                token.ThrowIfCancellationRequested();
-
-            }, token);
-
-            return t;
+            // запрос статуса задачи
+            infoStat.Text = $"{task.Status}";
         }
 
 
-        private void testLoad()
+        private async Task doWorkTask(/*params*/ CancellationToken token)
+        {
+            Task task = Task.Run(() =>
+            // компонент испытательной нагрузки
+            testLoad(token));
+
+            await task;
+        }
+
+        private void testLoad(CancellationToken token)
         {
             // компонент испытательной нагрузки
             for (int i = 0; i < arr.Length - 1; i++)
@@ -75,6 +69,9 @@ namespace Async_Method
                 byte f = 0;
                 for (int j = 0; j < arr.Length - i - 1; j++)
                 {
+                    // создать исключение при запросе на отмену
+                    token.ThrowIfCancellationRequested();
+
                     if (arr[j] > arr[j + 1])
                     {
                         int buf = arr[j + 1];
