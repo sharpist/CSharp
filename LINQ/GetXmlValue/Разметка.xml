@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<site>
+  <womens>
+
+    <girl>
+      <id>1</id>
+      <name>Dasha</name>
+      <age>21</age>
+      <hair>blonde</hair>
+      <weight>42</weight>
+    </girl>
+
+    <girl>
+      <id>2</id>
+      <name>Lena</name>
+      <age>23</age>
+      <hair>brunette</hair>
+      <weight>50</weight>
+    </girl>
+
+    <girl>
+      <id>3</id>
+      <name>Olya</name>
+      <age>25</age>
+      <hair>red</hair>
+      <weight>48</weight>
+    </girl>
+
+    <girl>
+      <id>4</id>
+      <name>Natasha</name>
+      <age>22</age>
+      <hair>brown</hair>
+      <weight>44</weight>
+    </girl>
+
+  </womens>
+</site>
