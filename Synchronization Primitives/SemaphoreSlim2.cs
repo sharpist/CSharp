@@ -1,36 +1,37 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using static System.Console;
+using static System.Threading.Thread;
 
 
 class Program
 {
     public static void Main(string[] args)
     {
-        Console.WriteLine("Main() =>");
+        WriteLine("Main() =>"                        + $"\t\t\tid{CurrentThread.ManagedThreadId}");
         mainAsync(args).ConfigureAwait(false).GetAwaiter().GetResult();
-        Console.WriteLine("Main() end");
+        WriteLine("Main() end"                       + $"\t\t\tid{CurrentThread.ManagedThreadId}");
     }
     private static async Task mainAsync(string[] args)
     {
-        Console.WriteLine("mainAsync() =>");
-        await Task.Run(() => createAndRunThread());
-        Console.WriteLine("mainAsync() end");
+        WriteLine("mainAsync() =>"                   + $"\t\t\tid{CurrentThread.ManagedThreadId}");
+        await Task.Run(() => createThreads());
+        WriteLine("mainAsync() end"                  + $"\t\t\tid{CurrentThread.ManagedThreadId}");
     }
 
 
 
 
-    private static void createAndRunThread()
+    private static void createThreads()
     {
-        Console.WriteLine("createAndRunThread() =>\n");
+        WriteLine("createThreads() =>"               + $"\t\tid{CurrentThread.ManagedThreadId}\n");
         var s = new SemaphoreSlim(0, 3); // synchronizer
 
         var threads = new Thread[3];
-        for (int i = 0; i < 3; i++)
-        {
-            threads[i] = new Thread(new ThreadStart(() =>
-            {
+
+        for (int i = 0; i < 3; i++) {
+            threads[i] = new Thread(new ThreadStart(() => {
                 s.Wait(); // synchronizer
                 longOperation(s);
             }));
@@ -38,47 +39,43 @@ class Program
         }
         foreach (Thread t in threads) t.Start();
 
+        WriteLine("createThreads() end"              + $"\t\tid{CurrentThread.ManagedThreadId}");
         s.Release(1); // synchronizer
-        Console.WriteLine("createAndRunThread() end");
     }
 
 
     private static void longOperation(SemaphoreSlim s)
     {
-        Thread.Sleep(250);
-        Console.WriteLine($"\n{Thread.CurrentThread.Name} works...");
-        
-        var r = new Random();
+        WriteLine($"\n{CurrentThread.Name} works..." + $"\t\tid{CurrentThread.ManagedThreadId}");
 
-        for (int i = 1; i <= 10; i++)
-        {
-            Thread.Sleep(250 * r.Next(5));
-            Console.Write(i + (i<10?", ":"\n"));
+        var r = new Random();
+        for (int i = 1; i <= 10; i++) {
+            Sleep(250 * r.Next(5));
+            Write(i + (i<10?", ":"\n"));
         }
 
+        WriteLine($"...finished!");
         s.Release(); // synchronizer
-        Console.WriteLine($"{Thread.CurrentThread.Name} finished!");
     }
 }
 /*
-Main() =>
-mainAsync() =>
-createAndRunThread() =>
+Main() =>                       id1
+mainAsync() =>                  id1
+createThreads() =>              id3
 
-createAndRunThread() end
-mainAsync() end
-Main() end
+createThreads() end             id3
+mainAsync() end                 id3
+Main() end                      id1
 
-Thread #3 works...
+Thread #1 works...              id5
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-Thread #3 finished!
+...finished!
 
-Thread #2 works...
+Thread #2 works...              id6
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-Thread #2 finished!
+...finished!
 
-Thread #1 works...
+Thread #3 works...              id7
 1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-Thread #1 finished!
+...finished!
 */
-
