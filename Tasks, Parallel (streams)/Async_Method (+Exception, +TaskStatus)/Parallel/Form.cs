@@ -39,10 +39,10 @@ namespace Async_Method
             CancellationToken token = tokenSource.Token;
 
             // задача к выполнению
-            Task task = null;
+            Task task = Task.Run(() => doWorkTask(/*params*/ token), token);
             try
             {
-                await (task = Task.Run(() => doWorkTask(/*params*/ token), token));
+                await task;
             }
             catch (OperationCanceledException oce)
             { info.Text = oce.Message; }
