@@ -42,7 +42,7 @@ namespace Async_Method
             Task task = null;
             try
             {
-                await (task = doWorkTask(/*params*/ token));
+                await (task = Task.Run(() => doWorkTask(/*params*/ token), token));
             }
             catch (OperationCanceledException oce)
             { info.Text = oce.Message; }
@@ -51,17 +51,7 @@ namespace Async_Method
             infoStat.Text = $"{task.Status}";
         }
 
-
-        private async Task doWorkTask(/*params*/ CancellationToken token)
-        {
-            Task task = Task.Run(() =>
-            // компонент испытательной нагрузки
-            testLoad(token));
-
-            await task;
-        }
-
-        private void testLoad(CancellationToken token)
+        private void doWorkTask(/*params*/ CancellationToken token)
         {
             // компонент испытательной нагрузки
             for (int i = 0; i < arr.Length - 1; i++)
