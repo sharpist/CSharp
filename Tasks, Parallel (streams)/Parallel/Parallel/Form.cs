@@ -52,20 +52,14 @@ namespace Parallel
         private void doWorkTask(/*params*/ CancellationToken token)
         {
             // компонент испытательной нагрузки
-            testLoad();
-
-            // создать исключение при запросе на отмену
-            token.ThrowIfCancellationRequested();
-        }
-
-        private void testLoad()
-        {
-            // компонент испытательной нагрузки
             for (int i = 0; i < arr.Length - 1; i++)
             {
                 byte f = 0;
                 for (int j = 0; j < arr.Length - i - 1; j++)
                 {
+                    // создать исключение при запросе на отмену
+                    token.ThrowIfCancellationRequested();
+
                     if (arr[j] > arr[j + 1])
                     {
                         int buf = arr[j + 1];
