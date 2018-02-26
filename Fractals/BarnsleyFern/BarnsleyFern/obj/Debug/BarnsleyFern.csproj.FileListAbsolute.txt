@@ -1,0 +1,9 @@
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\bin\Debug\BarnsleyFern.exe.config
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\bin\Debug\BarnsleyFern.exe
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\bin\Debug\BarnsleyFern.pdb
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.csprojResolveAssemblyReference.cache
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.Form.resources
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.Properties.Resources.resources
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.csproj.GenerateResource.Cache
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.exe
+c:\users\alexander\documents\visual studio 2015\Projects\BarnsleyFern\BarnsleyFern\obj\Debug\BarnsleyFern.pdb
