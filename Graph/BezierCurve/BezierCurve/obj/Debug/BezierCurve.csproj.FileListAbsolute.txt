@@ -1,0 +1,8 @@
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\bin\Debug\BezierCurve.exe.config
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\bin\Debug\BezierCurve.exe
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\bin\Debug\BezierCurve.pdb
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\obj\Debug\BezierCurve.Form.resources
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\obj\Debug\BezierCurve.Properties.Resources.resources
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\obj\Debug\BezierCurve.csproj.GenerateResource.Cache
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\obj\Debug\BezierCurve.exe
+c:\users\alexander\documents\visual studio 2015\Projects\BezierCurve\BezierCurve\obj\Debug\BezierCurve.pdb
