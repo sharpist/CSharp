@@ -1,0 +1,8 @@
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\bin\Debug\Peano-GosperCurve.exe.config
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\bin\Debug\Peano-GosperCurve.exe
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\bin\Debug\Peano-GosperCurve.pdb
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\obj\Debug\Peano_GosperCurve.Form.resources
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\obj\Debug\Peano_GosperCurve.Properties.Resources.resources
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\obj\Debug\Peano-GosperCurve.csproj.GenerateResource.Cache
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\obj\Debug\Peano-GosperCurve.exe
+c:\users\alexander\documents\visual studio 2015\Projects\Peano-GosperCurve\Peano-GosperCurve\obj\Debug\Peano-GosperCurve.pdb
