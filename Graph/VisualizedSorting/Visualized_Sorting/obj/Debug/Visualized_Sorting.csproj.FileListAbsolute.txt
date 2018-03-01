@@ -1,0 +1,9 @@
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\bin\Debug\Visualized_Sorting.exe.config
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\bin\Debug\Visualized_Sorting.exe
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\bin\Debug\Visualized_Sorting.pdb
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.Form.resources
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.Properties.Resources.resources
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.csproj.GenerateResource.Cache
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.exe
+c:\users\alexander\documents\visual studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.pdb
+C:\Users\Alexander\Documents\Visual Studio 2015\Projects\Visualized_Sorting\Visualized_Sorting\obj\Debug\Visualized_Sorting.csprojResolveAssemblyReference.cache
