@@ -10,7 +10,7 @@ namespace Moving_Objects
         private Random    r;
         private Graphics  g;
         private Stopwatch watch;
-        private PointF[]  points;
+        private SynchronizedCache points;
         readonly int size = 5; // количество точек
         private byte interval; // флаг интервала отрисовки
 
@@ -21,15 +21,14 @@ namespace Moving_Objects
             bool north, south, east, west;
             while (true)
             {
-                for (int i = 0; i < points.Length; i++)
+                for (int i = 0; i < points.Count; i++)
                 {
                     checkPosition(out north, out south, out east, out west, i);
                     var vectors = setVectors(north, south, east, west) as Tuple<short, short>;
 
                     for (int j = r.Next(10, 20); j > 0; j--) // инерция векторов
                     {
-                        points[i].X += vectors.Item1;
-                        points[i].Y += vectors.Item2;
+                        points.Add(i, vectors);
 
                         checkPosition(out north, out south, out east, out west, i);
                         if (north || south || east || west)
@@ -49,9 +48,9 @@ namespace Moving_Objects
                 if (interval == 2) {
                     interval = 0; pictureBox.Refresh(); // обновить экран
                 }
-                for (int i = 0; i < points.Length; i++) {
+                for (int index = 0; index < points.Count; index++) {
                     g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
-                        225 + points[i].X, 225 + points[i].Y, 3, 3);
+                        225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
                     // вывести таймер
                     g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}", new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
                 }
@@ -61,10 +60,10 @@ namespace Moving_Objects
         // регистрировать отскок
         private void checkPosition(out bool north, out bool south, out bool east, out bool west, int index)
         {
-            if (points[index].Y ==  225) north = true; else north = false;
-            if (points[index].Y == -225) south = true; else south = false;
-            if (points[index].X ==  225) east  = true; else east  = false;
-            if (points[index].X == -225) west  = true; else west  = false;
+            if (points.Read(index).Y ==  225) north = true; else north = false;
+            if (points.Read(index).Y == -225) south = true; else south = false;
+            if (points.Read(index).X ==  225) east  = true; else east  = false;
+            if (points.Read(index).X == -225) west  = true; else west  = false;
         }
 
         // получить векторы
@@ -121,10 +120,11 @@ namespace Moving_Objects
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 
             r = new Random();
-            points = new PointF[size];
+            points = new SynchronizedCache(size);
+
             // генерировать координаты точек
             for (int i = 0; i < size; i++)
-                points[i] = new PointF(r.Next(-225, 225), r.Next(-225, 225));
+                points.Add(i, Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225)));
         }
     }
 }
