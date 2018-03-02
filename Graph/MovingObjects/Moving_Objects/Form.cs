@@ -2,100 +2,59 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Moving_Objects
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        private Random    r;
-        private Graphics  g;
-        private Stopwatch watch;
-        private SynchronizedCache points;
         readonly int size = 5; // количество точек
         private byte interval; // флаг интервала отрисовки
 
 
-        // перемещать точки
-        private void startMoving()
+        // построить координаты
+        private void Shifting(int index)
         {
             bool north, south, east, west;
-            while (true)
+            Checking(out north, out south, out east, out west, index);
+            var vectors = Vectors(north, south, east, west) as Tuple<short, short>;
+
+            for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
             {
-                for (int i = 0; i < points.Count; i++)
-                {
-                    checkPosition(out north, out south, out east, out west, i);
-                    var vectors = setVectors(north, south, east, west) as Tuple<short, short>;
+                points.Add(index, vectors);
 
-                    for (int j = r.Next(10, 20); j > 0; j--) // инерция векторов
-                    {
-                        points.Add(i, vectors);
+                Checking(out north, out south, out east, out west, index);
+                if (north || south || east || west)
+                    vectors = Vectors(north, south, east, west) as Tuple<short, short>;
 
-                        checkPosition(out north, out south, out east, out west, i);
-                        if (north || south || east || west)
-                            vectors = setVectors(north, south, east, west) as Tuple<short, short>;
-
-                        draw();
-                        Thread.Sleep(3);
-                    }
-                }
+                Thread.Sleep(1);
             }
-        }
-
-        // отрисовать графику
-        private void draw()
-        {
-            if (interval++ == 1) {
-                if (interval == 2) {
-                    interval = 0; pictureBox.Refresh(); // обновить экран
-                }
-                for (int index = 0; index < points.Count; index++) {
-                    g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
-                        225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
-                    // вывести таймер
-                    g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}", new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
-                }
-            }
-        }
-
-        // регистрировать отскок
-        private void checkPosition(out bool north, out bool south, out bool east, out bool west, int index)
-        {
-            if (points.Read(index).Y ==  225) north = true; else north = false;
-            if (points.Read(index).Y == -225) south = true; else south = false;
-            if (points.Read(index).X ==  225) east  = true; else east  = false;
-            if (points.Read(index).X == -225) west  = true; else west  = false;
         }
 
         // получить векторы
-        private Tuple<short, short> setVectors(bool north, bool south, bool east, bool west)
+        private Tuple<short, short> Vectors(bool north, bool south, bool east, bool west)
         {
             // векторы движения (coordinate + vector)
             short motionVectorX = 0, motionVectorY = 0;
 
-            do
-            { // задать вектор X
+            do { // задать вектор X
                 motionVectorX = (short)r.Next(-1, 2);
-                if (east)
-                {
+                if (east) {
                     if (motionVectorX == 1) continue;
                 }
-                if (west)
-                {
+                if (west) {
                     if (motionVectorX == -1) continue;
                 }
                 if (motionVectorX == 0) continue;
                 else break;
             } while (true);
 
-            do
-            { // задать вектор Y
+            do { // задать вектор Y
                 motionVectorY = (short)r.Next(-1, 2);
-                if (north)
-                {
+                if (north) {
                     if (motionVectorY == 1) continue;
                 }
-                if (south)
-                {
+                if (south) {
                     if (motionVectorY == -1) continue;
                 }
                 if (motionVectorY == 0) continue;
@@ -105,12 +64,44 @@ namespace Moving_Objects
             return Tuple.Create(motionVectorX, motionVectorY);
         }
 
+        // регистрировать отскок
+        private void Checking(out bool north, out bool south, out bool east, out bool west, int index)
+        {
+            if (points.Read(index).Y ==  225) north = true; else north = false;
+            if (points.Read(index).Y == -225) south = true; else south = false;
+            if (points.Read(index).X ==  225) east  = true; else east  = false;
+            if (points.Read(index).X == -225) west  = true; else west  = false;
+        }
+
+        // отрисовать графику
+        public void Displaying()
+        {
+            if (interval++ == 1)
+            {
+                if (interval == 2) {
+                    interval = 0;
+                    pictureBox.Refresh(); // обновить экран
+                }
+                for (int index = 0; index < points.Count; index++)
+                {
+                    g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
+                        225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
+                    // вывести таймер
+                    g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
+                        new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
+                }
+            }
+        }
+
 
         private void button_Click(object sender, EventArgs e)
         {
             watch = Stopwatch.StartNew();
-            startMoving();
-            watch.Stop();
+            while (true) {
+                Parallel.For(0, points.Count, Shifting);
+                Displaying();
+            }
+            //watch.Stop();
         }
         public Form() {
             InitializeComponent();
@@ -123,8 +114,12 @@ namespace Moving_Objects
             points = new SynchronizedCache(size);
 
             // генерировать координаты точек
-            for (int i = 0; i < size; i++)
-                points.Add(i, Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225)));
+            for (int index = 0; index < size; index++)
+                points.Add(index, Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225)));
         }
+        private Random    r;
+        private Graphics  g;
+        private Stopwatch watch;
+        private SynchronizedCache points;
     }
 }
