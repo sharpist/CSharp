@@ -9,3 +9,8 @@ C:\Users\Alexander\Documents\Visual Studio 2015\Projects\VisualizedSorting\Visua
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\bin\Debug\Moving_Objects.exe.config
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.exe
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\bin\Debug\Moving_Objects.exe
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\bin\Debug\Moving_Objects.pdb
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.Form.resources
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.Properties.Resources.resources
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.csproj.GenerateResource.Cache

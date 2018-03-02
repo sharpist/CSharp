@@ -13,16 +13,17 @@ namespace Moving_Objects
         private PointF[]  points;
         readonly int size = 5; // количество точек
         private byte interval; // флаг интервала отрисовки
-        private bool north, south, east, west; // флаги направлений
+
 
         // перемещать точки
         private void startMoving()
         {
+            bool north, south, east, west;
             while (true)
             {
                 for (int i = 0; i < points.Length; i++)
                 {
-                    checkPosition(i);
+                    checkPosition(out north, out south, out east, out west, i);
                     var vectors = setVectors(north, south, east, west) as Tuple<short, short>;
 
                     for (int j = r.Next(10, 20); j > 0; j--) // инерция векторов
@@ -30,7 +31,7 @@ namespace Moving_Objects
                         points[i].X += vectors.Item1;
                         points[i].Y += vectors.Item2;
 
-                        checkPosition(i);
+                        checkPosition(out north, out south, out east, out west, i);
                         if (north || south || east || west)
                             vectors = setVectors(north, south, east, west) as Tuple<short, short>;
 
@@ -58,17 +59,12 @@ namespace Moving_Objects
         }
 
         // регистрировать отскок
-        private void checkPosition(int index)
+        private void checkPosition(out bool north, out bool south, out bool east, out bool west, int index)
         {
-            north = false;
-            south = false;
-            east  = false;
-            west  = false;
-
-            if (points[index].Y ==  225) north = true;
-            if (points[index].Y == -225) south = true;
-            if (points[index].X ==  225) east  = true;
-            if (points[index].X == -225) west  = true;
+            if (points[index].Y ==  225) north = true; else north = false;
+            if (points[index].Y == -225) south = true; else south = false;
+            if (points[index].X ==  225) east  = true; else east  = false;
+            if (points[index].X == -225) west  = true; else west  = false;
         }
 
         // получить векторы
