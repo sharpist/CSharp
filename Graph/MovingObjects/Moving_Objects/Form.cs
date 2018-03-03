@@ -13,21 +13,22 @@ namespace Moving_Objects
 
 
         // построить координаты
-        private void Shifting(int index)
+        private void shifting(int index)
         {
             bool north, south, east, west;
-            Checking(out north, out south, out east, out west, index);
+            checking(out north, out south, out east, out west, index);
             var vectors = Vectors(north, south, east, west) as Tuple<short, short>;
 
             for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
             {
                 points.Add(index, vectors);
 
-                Checking(out north, out south, out east, out west, index);
+                checking(out north, out south, out east, out west, index);
                 if (north || south || east || west)
                     vectors = Vectors(north, south, east, west) as Tuple<short, short>;
 
-                Thread.Sleep(1);
+                displaying();
+                Thread.Sleep(2);
             }
         }
 
@@ -65,7 +66,7 @@ namespace Moving_Objects
         }
 
         // регистрировать отскок
-        private void Checking(out bool north, out bool south, out bool east, out bool west, int index)
+        private void checking(out bool north, out bool south, out bool east, out bool west, int index)
         {
             if (points.Read(index).Y ==  225) north = true; else north = false;
             if (points.Read(index).Y == -225) south = true; else south = false;
@@ -73,34 +74,50 @@ namespace Moving_Objects
             if (points.Read(index).X == -225) west  = true; else west  = false;
         }
 
+        // обновить экран
+        private void refreshing()
+        {
+            if (pictureBox.InvokeRequired)
+            {
+                Action action = () => { pictureBox.Refresh(); };
+                pictureBox.Invoke(action); // вызываем эту же функцию обновления состояния, но уже в UI-потоке
+            }
+            else pictureBox.Refresh(); // код обновления состояния контрола
+        }
+
         // отрисовать графику
-        public void Displaying()
+        private void displaying()
         {
             if (interval++ == 1)
             {
-                if (interval == 2) {
-                    interval = 0;
-                    pictureBox.Refresh(); // обновить экран
+                if (interval == 2)
+                {
+                    refreshing(); interval = 0;
                 }
                 for (int index = 0; index < points.Count; index++)
                 {
-                    g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
+                    lock (this.g)
+                    {
+                        // вывести графику
+                        g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
                         225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
-                    // вывести таймер
-                    g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
-                        new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
+                        // вывести таймер
+                        g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
+                            new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
+                    }
                 }
             }
         }
 
 
-        private void button_Click(object sender, EventArgs e)
+        private async void button_Click(object sender, EventArgs e)
         {
             watch = Stopwatch.StartNew();
-            while (true) {
-                Parallel.For(0, points.Count, Shifting);
-                Displaying();
-            }
+
+            Task task = Task.Run(() =>
+            Parallel.For(0, points.Count, shifting));
+            await task;
+
             //watch.Stop();
         }
         public Form() {
