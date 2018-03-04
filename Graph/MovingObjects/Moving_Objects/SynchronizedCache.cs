@@ -17,7 +17,7 @@ namespace Moving_Objects
             try { return cache[index]; }
             finally { rwls.ExitReadLock(); }
         }
-        public void Add(int index, Tuple<short, short> vectors)
+        public void Add(int index, ref Tuple<short, short> vectors)
         {
             rwls.EnterWriteLock();
             try { cache[index].X += vectors.Item1; cache[index].Y += vectors.Item2; }

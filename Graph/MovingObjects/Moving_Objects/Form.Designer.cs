@@ -70,6 +70,7 @@
             this.imageList.Images.SetKeyName(1, "down.png");
             this.imageList.Images.SetKeyName(2, "right.png");
             this.imageList.Images.SetKeyName(3, "left.png");
+            this.imageList.Images.SetKeyName(4, "apple-smile.png");
             // 
             // Form
             // 

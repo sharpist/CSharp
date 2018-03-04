@@ -9,7 +9,7 @@ namespace Moving_Objects
     public partial class Form : System.Windows.Forms.Form
     {
         readonly int size = 5; // количество точек
-        private  int interval; // флаг интервала отрисовки
+        private byte interval; // флаг интервала отрисовки
 
 
         // построить координаты
@@ -17,23 +17,23 @@ namespace Moving_Objects
         {
             bool north, south, east, west;
             Checking(out north, out south, out east, out west, index);
-            var vectors = Vectors(north, south, east, west) as Tuple<short, short>;
+            var vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
             for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
             {
-                points.Add(index, vectors);
+                points.Add(index, ref vectors);
 
                 Checking(out north, out south, out east, out west, index);
                 if (north || south || east || west)
-                    vectors = Vectors(north, south, east, west) as Tuple<short, short>;
+                    vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
-                Displaying();
+                Displaying(ref vectors);
                 Thread.Sleep(2);
             }
         }
 
         // получить векторы
-        private Tuple<short, short> Vectors(bool north, bool south, bool east, bool west)
+        private Tuple<short, short> Vectors(ref bool north, ref bool south, ref bool east, ref bool west)
         {
             // векторы движения (coordinate + vector)
             short motionVectorX = 0, motionVectorY = 0;
@@ -86,7 +86,7 @@ namespace Moving_Objects
         }
 
         // отрисовать графику
-        private void Displaying()
+        private void Displaying(ref Tuple<short, short> vectors)
         {
             if (interval++ == 1)
             {
@@ -99,7 +99,7 @@ namespace Moving_Objects
                     lock (this.g)
                     {
                         // рисовать спрайты
-                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y);
+                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, vectors);
                         // рисовать маркеры
                         //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
                             //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
@@ -112,9 +112,9 @@ namespace Moving_Objects
         }
 
         // выбрать спрайты
-        private void Sprites(float X, float Y)
+        private void Sprites(float X, float Y, Tuple<short, short> vectors)
         {
-            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 0); // x, y, #image
+            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 4); // x, y, #image
         }
 
 
@@ -145,7 +145,10 @@ namespace Moving_Objects
 
             // генерировать координаты точек
             for (int index = 0; index < size; index++)
-                points.Add(index, Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225)));
+            {
+                var vectors = Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225));
+                points.Add(index, ref vectors);
+            }
 
             //timer.Enabled = true; // активировать таймер
         }
