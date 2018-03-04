@@ -14,3 +14,4 @@ C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Object
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.Properties.Resources.resources
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.csproj.GenerateResource.Cache
 C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.Form.resources
+C:\Users\Alexander\Documents\GitHub\Algorithms\Graph\MovingObjects\Moving_Objects\obj\Debug\Moving_Objects.csprojResolveAssemblyReference.cache

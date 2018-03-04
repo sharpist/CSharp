@@ -99,7 +99,7 @@ namespace Moving_Objects
                     lock (this.g)
                     {
                         // рисовать спрайты
-                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, vectors);
+                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, ref vectors);
                         // рисовать маркеры
                         //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
                             //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
@@ -112,7 +112,7 @@ namespace Moving_Objects
         }
 
         // выбрать спрайты
-        private void Sprites(float X, float Y, Tuple<short, short> vectors)
+        private void Sprites(float X, float Y, ref Tuple<short, short> vectors)
         {
             imageList.Draw(g, new Point((int)X-16, (int)Y-16), 4); // x, y, #image
         }
