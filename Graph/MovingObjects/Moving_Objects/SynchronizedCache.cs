@@ -14,7 +14,8 @@ namespace Moving_Objects
         public PointF Read(int index)
         {
             rwls.EnterReadLock();
-            try { return cache[index]; } finally { rwls.ExitReadLock(); }
+            try { return cache[index]; }
+            finally { rwls.ExitReadLock(); }
         }
         public void Add(int index, Tuple<short, short> vectors)
         {

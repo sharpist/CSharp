@@ -9,25 +9,25 @@ namespace Moving_Objects
     public partial class Form : System.Windows.Forms.Form
     {
         readonly int size = 5; // количество точек
-        private byte interval; // флаг интервала отрисовки
+        private  int interval; // флаг интервала отрисовки
 
 
         // построить координаты
-        private void shifting(int index)
+        private void Shifting(int index)
         {
             bool north, south, east, west;
-            checking(out north, out south, out east, out west, index);
+            Checking(out north, out south, out east, out west, index);
             var vectors = Vectors(north, south, east, west) as Tuple<short, short>;
 
             for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
             {
                 points.Add(index, vectors);
 
-                checking(out north, out south, out east, out west, index);
+                Checking(out north, out south, out east, out west, index);
                 if (north || south || east || west)
                     vectors = Vectors(north, south, east, west) as Tuple<short, short>;
 
-                displaying();
+                Displaying();
                 Thread.Sleep(2);
             }
         }
@@ -66,7 +66,7 @@ namespace Moving_Objects
         }
 
         // регистрировать отскок
-        private void checking(out bool north, out bool south, out bool east, out bool west, int index)
+        private void Checking(out bool north, out bool south, out bool east, out bool west, int index)
         {
             if (points.Read(index).Y ==  225) north = true; else north = false;
             if (points.Read(index).Y == -225) south = true; else south = false;
@@ -75,7 +75,7 @@ namespace Moving_Objects
         }
 
         // обновить экран
-        private void refreshing()
+        private void Refreshing()
         {
             if (pictureBox.InvokeRequired)
             {
@@ -86,21 +86,23 @@ namespace Moving_Objects
         }
 
         // отрисовать графику
-        private void displaying()
+        private void Displaying()
         {
             if (interval++ == 1)
             {
                 if (interval == 2)
                 {
-                    refreshing(); interval = 0;
+                    Refreshing(); interval = 0;
                 }
                 for (int index = 0; index < points.Count; index++)
                 {
                     lock (this.g)
                     {
-                        // вывести графику
-                        g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
-                        225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
+                        // рисовать спрайты
+                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y);
+                        // рисовать маркеры
+                        //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
+                            //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
                         // вывести таймер
                         g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
                             new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
@@ -109,17 +111,28 @@ namespace Moving_Objects
             }
         }
 
+        // выбрать спрайты
+        private void Sprites(float X, float Y)
+        {
+            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 0); // x, y, #image
+        }
+
 
         private async void button_Click(object sender, EventArgs e)
         {
             watch = Stopwatch.StartNew();
 
             Task task = Task.Run(() =>
-            Parallel.For(0, points.Count, shifting));
+            Parallel.For(0, points.Count, Shifting));
             await task;
 
-            //watch.Stop();
+            watch.Stop();
         }
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            //TODO
+        }
+
         public Form() {
             InitializeComponent();
             pictureBox.BackColor = Color.FromArgb(25, 25, 25);
@@ -133,6 +146,8 @@ namespace Moving_Objects
             // генерировать координаты точек
             for (int index = 0; index < size; index++)
                 points.Add(index, Tuple.Create((short)r.Next(-225, 225), (short)r.Next(-225, 225)));
+
+            //timer.Enabled = true; // активировать таймер
         }
         private Random    r;
         private Graphics  g;
