@@ -12,8 +12,28 @@ namespace Moving_Objects
         private byte interval; // флаг интервала отрисовки
 
 
+        private async Task StartShifting(CancellationToken token)
+        {
+            Task task = Task.Factory.StartNew(() =>
+            Parallel.For(0, points.Count, new ParallelOptions { CancellationToken = token },
+            (x) => Shifting(x, token)), token/*, TaskCreationOptions.LongRunning*/);
+
+            try
+            {
+                await task;
+            }
+            catch (OperationCanceledException oce)
+            { label.Text = $"{oce.Message}\nStatus: '{task.Status}'"; }
+            /*
+            finally
+            { if (cts != null) cts.Dispose(); }
+            */
+
+            //label.Text = $"Status: '{task.Status}'";
+        }
+
         // построить координаты
-        private void Shifting(int index)
+        private void Shifting(int index, CancellationToken token)
         {
             bool north, south, east, west;
             Checking(out north, out south, out east, out west, index);
@@ -21,6 +41,8 @@ namespace Moving_Objects
 
             for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
             {
+                token.ThrowIfCancellationRequested(); // создать исключение при запросе на отмену
+
                 points.Add(index, ref vectors);
 
                 Checking(out north, out south, out east, out west, index);
@@ -28,7 +50,7 @@ namespace Moving_Objects
                     vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
                 Displaying(ref vectors);
-                Thread.Sleep(2);
+                Thread.Sleep(20);
             }
         }
 
@@ -94,39 +116,47 @@ namespace Moving_Objects
                 {
                     Refreshing(); interval = 0;
                 }
-                for (int index = 0; index < points.Count; index++)
-                {
-                    lock (this.g)
-                    {
-                        // рисовать спрайты
-                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, ref vectors);
-                        // рисовать маркеры
-                        //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
-                            //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
-                        // вывести таймер
-                        g.DrawString($"Time: {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
-                            new Font("Arial", 14), new SolidBrush(Color.White), new PointF(0.0F, 425.0F));
+                for (int index = 0; index < points.Count; index++) {
+                    lock (this.g) {
+                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, index);
                     }
                 }
             }
         }
 
         // выбрать спрайты
-        private void Sprites(float X, float Y, ref Tuple<short, short> vectors)
+        private void Sprites(float X, float Y, int index)
         {
-            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 4); // x, y, #image
+            // рисовать спрайты
+            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 0); // x, y, #image
+
+            // рисовать маркеры
+            //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
+                //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
+
+            // вывести таймер
+            g.DrawString($"Time {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
+                new Font("Arial", 14), new SolidBrush(Color.Black), new PointF(0.0F, 425.0F));
         }
 
 
-        private async void button_Click(object sender, EventArgs e)
+        private async void buttonStart_Click(object sender, EventArgs e)
         {
+            label.Text = "";
+
+            cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+
             watch = Stopwatch.StartNew();
-
-            Task task = Task.Run(() =>
-            Parallel.For(0, points.Count, Shifting));
-            await task;
-
+            while (!token.IsCancellationRequested)
+            {
+                await StartShifting(token);
+            }
             watch.Stop();
+        }
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            if (cts != null) cts.Cancel(); // инициировать отмену задачи
         }
         private void timer_Tick(object sender, EventArgs e)
         {
@@ -135,7 +165,7 @@ namespace Moving_Objects
 
         public Form() {
             InitializeComponent();
-            pictureBox.BackColor = Color.FromArgb(25, 25, 25);
+            pictureBox.BackColor = Color.FromArgb(200, 200, 200);
 
             g = Graphics.FromHwnd(pictureBox.Handle);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
@@ -156,5 +186,6 @@ namespace Moving_Objects
         private Graphics  g;
         private Stopwatch watch;
         private SynchronizedCache points;
+        private CancellationTokenSource cts = null;
     }
 }
