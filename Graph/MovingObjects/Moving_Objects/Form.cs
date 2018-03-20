@@ -60,35 +60,35 @@ namespace Moving_Objects
             // векторы движения (coordinate + vector)
             short motionVectorX = 0, motionVectorY = 0;
 
-            do
+            while (true)
             { // задать вектор X
                 motionVectorX = (short)r.Next(-1, 2);
 
                 if (east) {
-                    if (motionVectorX == 1)
-                        continue;
+                    if (motionVectorX < 1) break;
+                    else continue;
                 }
                 if (west) {
-                    if (motionVectorX == -1)
-                        continue;
+                    if (motionVectorX > -1) break;
+                    else continue;
                 }
                 break;
-            } while (true);
+            }
 
-            do
+            while (true)
             { // задать вектор Y
                 motionVectorY = (short)r.Next(-1, 2);
 
                 if (north) {
-                    if (motionVectorY == 1)
-                        continue;
+                    if (motionVectorY < 1) break;
+                    else continue;
                 }
                 if (south) {
-                    if (motionVectorY == -1)
-                        continue;
+                    if (motionVectorY > -1) break;
+                    else continue;
                 }
                 break;
-            } while (true);
+            }
 
             return Tuple.Create(motionVectorX, motionVectorY);
         }
