@@ -60,28 +60,34 @@ namespace Moving_Objects
             // векторы движения (coordinate + vector)
             short motionVectorX = 0, motionVectorY = 0;
 
-            do { // задать вектор X
+            do
+            { // задать вектор X
                 motionVectorX = (short)r.Next(-1, 2);
+
                 if (east) {
-                    if (motionVectorX == 1) continue;
+                    if (motionVectorX == 1)
+                        continue;
                 }
                 if (west) {
-                    if (motionVectorX == -1) continue;
+                    if (motionVectorX == -1)
+                        continue;
                 }
-                if (motionVectorX == 0) continue;
-                else break;
+                break;
             } while (true);
 
-            do { // задать вектор Y
+            do
+            { // задать вектор Y
                 motionVectorY = (short)r.Next(-1, 2);
+
                 if (north) {
-                    if (motionVectorY == 1) continue;
+                    if (motionVectorY == 1)
+                        continue;
                 }
                 if (south) {
-                    if (motionVectorY == -1) continue;
+                    if (motionVectorY == -1)
+                        continue;
                 }
-                if (motionVectorY == 0) continue;
-                else break;
+                break;
             } while (true);
 
             return Tuple.Create(motionVectorX, motionVectorY);
@@ -90,10 +96,10 @@ namespace Moving_Objects
         // регистрировать отскок
         private void Checking(out bool north, out bool south, out bool east, out bool west, int index)
         {
-            if (points.Read(index).Y ==  225) north = true; else north = false;
-            if (points.Read(index).Y == -225) south = true; else south = false;
-            if (points.Read(index).X ==  225) east  = true; else east  = false;
-            if (points.Read(index).X == -225) west  = true; else west  = false;
+            if (points.Read(index).Y >=  225) north = true; else north = false;
+            if (points.Read(index).Y <= -225) south = true; else south = false;
+            if (points.Read(index).X >=  225) east  = true; else east  = false;
+            if (points.Read(index).X <= -225) west  = true; else west  = false;
         }
 
         // обновить экран
