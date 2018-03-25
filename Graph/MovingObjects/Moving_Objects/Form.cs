@@ -36,21 +36,21 @@ namespace Moving_Objects
         private void Shifting(int index, CancellationToken token)
         {
             bool north, south, east, west;
-            Checking(out north, out south, out east, out west, index);
+            Checking(index, out north, out south, out east, out west);
             var vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
-            for (int i = r.Next(10, 20); i > 0; i--) // инерция векторов
+            for (int i = r.Next(10, 50); i > 0; i--) // инерция векторов
             {
                 token.ThrowIfCancellationRequested(); // создать исключение при запросе на отмену
 
                 points.Add(index, ref vectors);
 
-                Checking(out north, out south, out east, out west, index);
+                Checking(index, out north, out south, out east, out west);
                 if (north || south || east || west)
                     vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
-                Displaying(ref vectors);
-                Thread.Sleep(20);
+                Displaying();
+                Thread.Sleep(r.Next(0, 5));
             }
         }
 
@@ -94,7 +94,7 @@ namespace Moving_Objects
         }
 
         // регистрировать отскок
-        private void Checking(out bool north, out bool south, out bool east, out bool west, int index)
+        private void Checking(int index, out bool north, out bool south, out bool east, out bool west)
         {
             if (points.Read(index).Y >=  225) north = true; else north = false;
             if (points.Read(index).Y <= -225) south = true; else south = false;
@@ -114,24 +114,24 @@ namespace Moving_Objects
         }
 
         // отрисовать графику
-        private void Displaying(ref Tuple<short, short> vectors)
+        private void Displaying()
         {
-            if (interval++ == 1)
+            if (interval++ >= 2)
             {
-                if (interval == 2)
+                if (interval == 4)
                 {
                     Refreshing(); interval = 0;
                 }
                 for (int index = 0; index < points.Count; index++) {
                     lock (this.g) {
-                        Sprites(225 + points.Read(index).X, 225 + points.Read(index).Y, index);
+                        Sprites(index, 225 + points.Read(index).X, 225 + points.Read(index).Y);
                     }
                 }
             }
         }
 
         // выбрать спрайты
-        private void Sprites(float X, float Y, int index)
+        private void Sprites(int index, float X, float Y)
         {
             // рисовать спрайты
             imageList.Draw(g, new Point((int)X-16, (int)Y-16), 0); // x, y, #image
