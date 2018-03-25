@@ -8,8 +8,7 @@ namespace Moving_Objects
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        readonly int size = 5; // количество точек
-        private byte interval; // флаг интервала отрисовки
+        readonly int size = 4; // количество точек
 
 
         private async Task StartShifting(CancellationToken token)
@@ -39,6 +38,7 @@ namespace Moving_Objects
             Checking(index, out north, out south, out east, out west);
             var vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
+            byte freq = 0;
             for (int i = r.Next(10, 50); i > 0; i--) // инерция векторов
             {
                 token.ThrowIfCancellationRequested(); // создать исключение при запросе на отмену
@@ -49,7 +49,10 @@ namespace Moving_Objects
                 if (north || south || east || west)
                     vectors = Vectors(ref north, ref south, ref east, ref west) as Tuple<short, short>;
 
-                Displaying();
+
+                if (index % 2 == 0) // отрисовать на чётных итерациях
+                    Displaying(ref freq);
+
                 Thread.Sleep(r.Next(0, 5));
             }
         }
@@ -114,35 +117,28 @@ namespace Moving_Objects
         }
 
         // отрисовать графику
-        private void Displaying()
+        private void Displaying(ref byte freq)
         {
-            if (interval++ >= 2)
+            lock (this.g)
             {
-                if (interval == 4)
+                if (freq++ == 4)
                 {
-                    Refreshing(); interval = 0;
+                    freq = 0; Refreshing();
                 }
-                for (int index = 0; index < points.Count; index++) {
-                    lock (this.g) {
-                        Sprites(index, 225 + points.Read(index).X, 225 + points.Read(index).Y);
-                    }
+                for (int index = 0; index < points.Count; index++)
+                {
+                    // рисовать спрайты
+                    imageList.Draw(g, new Point((int)(225 + points.Read(index).X) - 16, (int)(225 + points.Read(index).Y) - 16), 0); // x, y, #image
+
+                    // рисовать маркеры
+                    //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
+                    //    225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
+
+                    // вывести таймер
+                    g.DrawString($"Time {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
+                        new Font("Arial", 14), new SolidBrush(Color.Black), new PointF(0.0F, 425.0F));
                 }
             }
-        }
-
-        // выбрать спрайты
-        private void Sprites(int index, float X, float Y)
-        {
-            // рисовать спрайты
-            imageList.Draw(g, new Point((int)X-16, (int)Y-16), 0); // x, y, #image
-
-            // рисовать маркеры
-            //g.FillEllipse(new SolidBrush(Color.FromArgb(0, 255, 0)),
-                //225 + points.Read(index).X, 225 + points.Read(index).Y, 3, 3);
-
-            // вывести таймер
-            g.DrawString($"Time {watch.Elapsed.Minutes}:{watch.Elapsed.Seconds}",
-                new Font("Arial", 14), new SolidBrush(Color.Black), new PointF(0.0F, 425.0F));
         }
 
 
@@ -171,7 +167,7 @@ namespace Moving_Objects
 
         public Form() {
             InitializeComponent();
-            pictureBox.BackColor = Color.FromArgb(200, 200, 200);
+            pictureBox.BackColor = Color.FromArgb(255, 255, 255);
 
             g = Graphics.FromHwnd(pictureBox.Handle);
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
