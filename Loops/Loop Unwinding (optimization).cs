@@ -31,7 +31,7 @@ class Program
         DuffsDevice();
         watch.Stop();
         // Duff's device a functionally equivalent version
-        WriteLine("Elapsed ms: " + watch.ElapsedMilliseconds); // Elapsed ms: ~380
+        WriteLine("Elapsed ms: " + watch.ElapsedMilliseconds); // Elapsed ms: ~380 (not used "Mod" operation)
     }
 
     static void NormalLoop()
