@@ -141,3 +141,45 @@ class Example
 ___________________________________________________________________
 ##			"Регулярные выражения"
 
+Сопоставление шаблонов позволяет отправлять метод для типов и
+элементов данных, не связанных иерархией наследования.
+Поддерживаются выражения is и switch, а также для добавления
+правил в шаблон слово when.
+
+Выражение is
+помогает найти сумму чисел когда вместо отдельных значений во
+входной последовательности содержится сразу несколько подсписков:
+```
+using System.Collections.Generic;
+
+class Example
+{
+    public static void Main()
+    {
+        var sum  = DiceSum(new List<object> { 5, 1, 3 });
+        // sum of values = 9
+
+        var sum2 = DiceSum(new List<object> {
+            new List<object> { 5, 1, 3 },
+            new List<object> { 5, 1, 3 }
+        });
+        // sum of values (in all sublists) = 18
+    }
+
+    public static int DiceSum(IEnumerable<object> list)
+    {
+        var sum = 0;
+        foreach (var item in list)
+        {
+            if (item is int val)
+                sum += val;
+
+            else if (item is IEnumerable<object> subList)
+                sum += DiceSum(subList);
+        }
+        return sum;
+    }
+}
+```
+
+Обновления оператора switch
