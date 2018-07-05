@@ -146,7 +146,7 @@ ___________________________________________________________________
 Поддерживаются выражения is и switch, а также для добавления
 правил в шаблон слово when.
 
-Выражение is
+Выражение шаблона is
 помогает найти сумму чисел когда вместо отдельных значений во
 входной последовательности содержится сразу несколько подсписков:
 ```
@@ -182,4 +182,75 @@ class Example
 }
 ```
 
-Обновления оператора switch
+Выражение сопоставления шаблонов switch расширяет сценарий
+сохряняя при этом компактность.
+Порядок выражений case имеет значение, вариант для элемента
+IEnumerable должен отображаться раньше общего случая, пустой
+входной последовательности:
+```
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+class Example
+{
+    public static void Main()
+    {
+        var sum  = DiceSum(new List<object> { 5, 1, 3 });
+        // sum of values = 9
+
+        var sum2 = DiceSum(new List<object> {
+            new PercentDigits(20, 1),
+            new List<object> { 5, 1, 3 }
+        });
+        // sum of values (in all sublists) = 30
+    }
+
+    public static int DiceSum(IEnumerable<object> list)
+    {
+        var sum = 0;
+        foreach (var item in list)
+        {
+            switch (item) {
+                case int val:
+                    sum += val; break;
+
+                case PercentDigits digits:
+                    // соответствие объекту типа PercentDigits
+                    sum += (digits.Tens + digits.Ones); break;
+
+                case IEnumerable<object> subList when
+                    subList.Any(): // если последовательность
+                                   // содержит элементы
+                    sum += DiceSum(subList); break;
+
+                case IEnumerable<object> subList:
+                    // общий случай: элементы есть/отсутствуют
+                    break;
+
+
+                case null: break;
+
+                default: // всегда вычисляется последним
+                    throw new InvalidOperationException
+                        ("unknown item type");
+            }
+        }
+        return sum;
+    }
+}
+
+struct PercentDigits
+{
+    public int Ones { get; }
+    public int Tens { get; }
+    // (0, 1...9) + (0, 10...90) = 0...99
+    public PercentDigits(int ones, int tens)
+    {
+        this.Ones = ones; this.Tens = tens;
+    }
+}
+```
+___________________________________________________________________
+##			"Локальные переменные и возвращаемые значения Ref"
+
