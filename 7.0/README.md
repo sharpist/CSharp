@@ -1,11 +1,20 @@
-#### C# 7.0 ####
-![Переменные out](https://github.com/sharpist/C_Sharp/tree/master/7.0#Переменные-out)
+#			C# 7.0
+#### Содержание: ####
+
+[Переменные out](https://github.com/sharpist/C_Sharp/tree/master/7.0#Переменные-out)
+
 [Кортежи](https://github.com/sharpist/C_Sharp/tree/master/7.0#Кортежи)
+
 [Пустые переменные](https://github.com/sharpist/C_Sharp/tree/master/7.0#Пустые-переменные)
+
 [Регулярные выражения](https://github.com/sharpist/C_Sharp/tree/master/7.0#Регулярные-выражения)
+
 [Локальные переменные и возвращаемые значения Ref](https://github.com/sharpist/C_Sharp/tree/master/7.0#Локальные-переменные-и-возвращаемые-значения-ref)
+
 [Локальные функции](https://github.com/sharpist/C_Sharp/tree/master/7.0#Локальные-функции)
+
 [Другие элементы, воплощающие выражение](https://github.com/sharpist/C_Sharp/tree/master/7.0#Другие-элементы-воплощающие-выражение)
+
 ___________________________________________________________________
 ##			"Переменные out"
 
