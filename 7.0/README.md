@@ -370,27 +370,31 @@ class Example
 }
 ```
 
-В асинхронном методе, гарантирует выдачу исключения, возникающего
+В асинхронном методе, гарантируют выдачу исключения, возникающего
 при проверке параметров, до начала асинхронной работы:
 ```
-    public Task<string> LongRunningWork(string address, int index, string name)
+public Task<string> LongRunningWork(string address, int index,
+                                    string name)
+{
+    if (string.IsNullOrWhiteSpace(address))
+        throw new ArgumentException(message:
+            "An address is required", paramName: nameof(address));
+    if (index < 0)
+        throw new ArgumentOutOfRangeException(paramName:
+            nameof(index), message: "The index must be non-negative");
+    if (string.IsNullOrWhiteSpace(name))
+        throw new ArgumentException(message:
+            "You must supply a name", paramName: nameof(name));
+
+    return longRunningWorkImplementation();
+
+    async Task<string> longRunningWorkImplementation()
     {
-        if (string.IsNullOrWhiteSpace(address))
-            throw new ArgumentException(message: "An address is required", paramName: nameof(address));
-        if (index < 0)
-            throw new ArgumentOutOfRangeException(paramName: nameof(index), message: "The index must be non-negative");
-        if (string.IsNullOrWhiteSpace(name))
-            throw new ArgumentException(message: "You must supply a name", paramName: nameof(name));
-
-        return longRunningWorkImplementation();
-
-        async Task<string> longRunningWorkImplementation()
-        {
-            var result1 = await FirstWork(address);
-            var result2 = await SecondWork(index, name);
-            return $"The results are {result1} and {result2}";
-        }
+        var result1 = await FirstWork(address);
+        var result2 = await SecondWork(index, name);
+        return $"The results are {result1} and {result2}";
     }
+}
 ```
 ___________________________________________________________________
 ##			"Другие элементы, воплощающие выражение"
