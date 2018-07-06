@@ -321,3 +321,77 @@ ref int i = sequence.Count();
 ___________________________________________________________________
 ##			"Локальные функции"
 
+Позволяют объявлять методы в контексте другого метода. Очевиднее,
+что локальный метод вызывается только из того контекста, в котором
+он был объявлен:
+```
+using System;
+using System.Collections.Generic;
+using static System.Console;
+
+class Example
+{
+    public static void Main()
+    {
+        // создание итератора
+        var resultSet = AlphabetSubset('c', 'a');
+        WriteLine("iterator created");
+        // итерация
+        foreach (var thing in resultSet)
+            Write($"{thing}, ");
+    }
+
+    // открытый метод не является методом итератора,
+    // иначе выполнение кода (проверка аргументов)
+    // было бы отложено
+    public static IEnumerable<char> AlphabetSubset(char start,
+                                                   char end)
+    {
+        if (start < 'a' || start > 'z')
+            throw new ArgumentOutOfRangeException(paramName:
+                nameof(start), message: "start must be a letter");
+        if (end < 'a' || end > 'z')
+            throw new ArgumentOutOfRangeException(paramName:
+                nameof(end), message: "end must be a letter");
+        if (end <= start)
+            throw new ArgumentException(
+                $"{nameof(end)} must be greater than {nameof(start)}");
+
+        // вызывается локальная функция
+        return alphabetSubsetImplementation();
+
+        // локальная функция создаёт перечисление
+        IEnumerable<char> alphabetSubsetImplementation()
+        {
+            for (var c = start; c < end; c++)
+                yield return c;
+        }
+    }
+}
+```
+
+В асинхронном методе, гарантирует выдачу исключения, возникающего
+при проверке параметров, до начала асинхронной работы:
+```
+    public Task<string> LongRunningWork(string address, int index, string name)
+    {
+        if (string.IsNullOrWhiteSpace(address))
+            throw new ArgumentException(message: "An address is required", paramName: nameof(address));
+        if (index < 0)
+            throw new ArgumentOutOfRangeException(paramName: nameof(index), message: "The index must be non-negative");
+        if (string.IsNullOrWhiteSpace(name))
+            throw new ArgumentException(message: "You must supply a name", paramName: nameof(name));
+
+        return longRunningWorkImplementation();
+
+        async Task<string> longRunningWorkImplementation()
+        {
+            var result1 = await FirstWork(address);
+            var result2 = await SecondWork(index, name);
+            return $"The results are {result1} and {result2}";
+        }
+    }
+```
+___________________________________________________________________
+##			"Другие элементы, воплощающие выражение"
+
