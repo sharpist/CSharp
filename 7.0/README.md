@@ -416,3 +416,66 @@ public Task<string> LongRunningWork(string address, int index,
 ___________________________________________________________________
 ##			"Другие элементы, воплощающие выражение"
 
+Изначально поддерживались функции-членов и свойства, доступные
+только для чтения:
+```
+public override string ToString() => $"{LastName}, {FirstName}";
+```
+Теперь расширен список допустимых членов, которые могут быть
+реализованы как выражения — конструкторы, методы завершения, а
+также методы доступа get и set для свойств и индексаторов.
+
+Конструктор выражение:
+```
+public ExpressionExample(string label) => this.Label = label;
+```
+
+Финализатор выражение:
+```
+~ExpressionExample() => Console.Error.WriteLine("Finalized!");
+```
+
+В свойстве методы доступа get/set формы выражение:
+```
+private string label;
+
+public string Label
+{
+    get => label;
+    set => this.label = value ?? "Default label";
+}
+```
+___________________________________________________________________
+##			"Выражения throw"
+
+Используют тот же синтаксис, что и для операторов throw. Но теперь,
+эти конструкции можно размещать в новых местах, таких как условное
+выражение:
+```
+public string Name
+{
+    get => name;
+    set => name = value ??
+        throw new ArgumentNullException(paramName:
+            nameof(value), message: "New name must not be null");
+}
+```
+Выражения throw в выражениях инициализации:
+```
+private ConfigResource loadedConfig = ConfigResourceOrDefault() ?? 
+    throw new InvalidOperationException("Could not load config");
+```
+Ранее такая инициализация должна была находиться в конструкторе:
+```
+public Example()
+{
+    loadedConfig = ConfigResourceOrDefault();
+    if (loadedConfig == null)
+        throw new InvalidOperationException("Could not load config");
+
+    ConfigResource ConfigResourceOrDefault() => new ConfigResource();
+}
+```
+___________________________________________________________________
+##			"Обобщенные асинхронные типы возвращаемых значений"
+
