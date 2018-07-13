@@ -1,6 +1,6 @@
 #### яНДЕПФЮМХЕ: ####
 
-[днонкмемхе](https://github.com/sharpist/C_Sharp/tree/master/Synchronization%20Primitives#spinwait)
+[днонкмемхе](https://github.com/sharpist/C_Sharp/tree/master/Synchronization%20Primitives#днонкмемхе)
 
 [SpinWait](https://github.com/sharpist/C_Sharp/tree/master/Synchronization%20Primitives#spinwait)
 
