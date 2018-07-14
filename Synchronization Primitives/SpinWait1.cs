@@ -46,7 +46,7 @@ class LockFreeStack<T>
             if (CompareExchange(ref m_head, node, head) == head) break;
 
             // выполняет одну прокрутку
-            if (spin.NextSpinWillYield == true) spin.SpinOnce();
+            if (!spin.NextSpinWillYield) spin.SpinOnce();
         }
     }
 
@@ -65,7 +65,7 @@ class LockFreeStack<T>
                 result = head.Value;
                 return true;
             }
-            if (spin.NextSpinWillYield == true) spin.SpinOnce();
+            if (!spin.NextSpinWillYield) spin.SpinOnce();
         }
     }
 }
