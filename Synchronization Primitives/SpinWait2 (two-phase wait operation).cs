@@ -63,7 +63,8 @@ class Latch
                 Increment(ref totalKernelWaits);
                 // учесть затраченное время
                 long realTimeout = timeout - watch.ElapsedMilliseconds;
-                // ожидание
+                                        // блокирует поток до получения сигнала, используя временной интервал
+                // ожидание             // возвращает true, если получен сигнал
                 if (realTimeout <= 0 || !m_ev.WaitOne((int)realTimeout))
                 {
                     Trace.WriteLine("wait timed out.");
