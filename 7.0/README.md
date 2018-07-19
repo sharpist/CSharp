@@ -1,4 +1,4 @@
-#			C# 7.0
+#			C# 7.0 => [C# 7.1](https://github.com/sharpist/C_Sharp/tree/master/7.1#c-71) => [C# 7.2](https://github.com/sharpist/C_Sharp/tree/master/7.2#c-72) => [C# 7.3](https://github.com/sharpist/C_Sharp/tree/master/7.3#c-73)
 #### Содержание: ####
 
 [Переменные out](https://github.com/sharpist/C_Sharp/tree/master/7.0#Переменные-out)

@@ -1,4 +1,4 @@
-#			C# 7.2
+#			[C# 7.0](https://github.com/sharpist/C_Sharp/tree/master/7.0#c-70) => [C# 7.1](https://github.com/sharpist/C_Sharp/tree/master/7.1#c-71) => C# 7.2 => [C# 7.3](https://github.com/sharpist/C_Sharp/tree/master/7.3#c-73)
 #### Содержание: ####
 
 [Семантика ссылок с типами значений](https://github.com/sharpist/C_Sharp/tree/master/7.2#Семантика-ссылок-с-типами-значений)
