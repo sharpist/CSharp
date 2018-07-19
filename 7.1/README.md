@@ -3,9 +3,13 @@
 
 [Выбор версии языка C#](https://github.com/sharpist/C_Sharp/tree/master/7.1#Выбор-версии-языка-c)
 
-[async метод Main](https://github.com/)
+[async метод Main](https://github.com/sharpist/C_Sharp/tree/master/7.1#async-метод-main)
 
-...
+[Литеральные выражения по умолчанию](https://github.com/sharpist/C_Sharp/tree/master/7.1#Литеральные-выражения-по-умолчанию)
+
+[Выводимые имена элементов кортежа](https://github.com/sharpist/C_Sharp/tree/master/7.1#Выводимые-имена-элементов-кортежа)
+
+[Создание базовой сборки](https://github.com/sharpist/C_Sharp/tree/master/7.1#Создание-базовой-сборки)
 
 ___________________________________________________________________
 ##			"Выбор версии языка C#"
