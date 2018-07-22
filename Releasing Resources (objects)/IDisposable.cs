@@ -23,13 +23,16 @@
         }
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            lock (this)
             {
-                this.disposed = true;
-                ReleaseBuffer(buffer); // высвобождение неуправляемого ресурса
-                if (disposing)
+                if (!this.disposed)
                 {
-                    if (resource != null) resource.Dispose(); // высвобождение управляемого ресурса
+                    this.disposed = true;
+                    ReleaseBuffer(buffer); // высвобождение неуправляемого ресурса
+                    if (disposing)
+                    {
+                        if (resource != null) resource.Dispose(); // высвобождение управляемого ресурса
+                    }
                 }
             }
         }
