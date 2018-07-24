@@ -5,7 +5,7 @@
 
 [»ндексирование полей ```fixed``` без закреплени€](https://github.com/sharpist/C_Sharp/tree/master/7.3#»ндексирование-полей-fixed-без-закреплени€)
 
-[Ћокальные переменные ```ref``` могут быть переназначены](https://github.com/)
+[Ћокальные переменные ```ref``` могут быть переназначены](https://github.com/sharpist/C_Sharp/tree/master/7.3#Ћокальные-переменные-ref-могут-быть-переназначены)
 
 [...](https://github.com/)
 
@@ -57,7 +57,7 @@ unsafe void AccessMyBuffer()
 ```
 class MyClass
 {
-    MyBuffer myBuffer = new MyBuffer();
+    MyBuffer myBuffer = default;
 
     unsafe void AccessMyBuffer()
     {
