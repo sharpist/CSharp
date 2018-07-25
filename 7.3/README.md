@@ -9,7 +9,7 @@
 
 [Массивы stackalloc поддерживают инициализаторы](https://github.com/sharpist/C_Sharp/tree/master/7.3#Массивы-stackalloc-поддерживают-инициализаторы)
 
-[Больше типов поддерживают инструкцию fixed](https://github.com/)
+[Больше типов поддерживают инструкцию fixed](https://github.com/sharpist/C_Sharp/tree/master/7.3#Больше-типов-поддерживают-инструкцию-fixed)
 
 [...](https://github.com/)
 
@@ -82,7 +82,7 @@ ___________________________________________________________________
 ##			"Массивы ```stackalloc``` поддерживают инициализаторы"
 
 Синтаксис инициализации массиивов с помощью инициализатора, теперь
-применим к массивам, в объявлении которых есть ```stackalloc```:
+применим к массивам, в объявлении которых есть ```stackalloc``` ([stackalloc](https://github.com/sharpist/C_Sharp/tree/master/Stackalloc#stackalloc)):
 ```
 var arr = new int[3] {1, 2, 3};
 var arr2 = new int[] {1, 2, 3};
