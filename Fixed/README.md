@@ -65,7 +65,7 @@ fixed (char* charPtr = myC.myBuffer.fixedBuffer)
 
 ![screen capture 1](01.png)
 
-*показан доступ к полям fixed, доступный после выхода C# 7.3
+*показан доступ к полям fixed, доступный после выхода C# 7.3 ([C# 7.3](https://github.com/sharpist/C_Sharp/tree/master/7.3#c-73))
 
 
 #### Небезопасные буферы отличаются от обычных массивов: ####
