@@ -31,7 +31,7 @@ ___________________________________________________________________
 Свойства => Сборка => Дополнительно
 Необходимо задать явным образом для каждой конфигурации сборки. В
 CSPROJ-файле следующий код:
-```
+```c#
 <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
  <LangVersion>latest</LangVersion>
 </PropertyGroup>
@@ -54,7 +54,7 @@ CSPROJ-файле следующий код:
 ```7.3``` принимается только синтаксис, включенный в спецификацию C# 7.3
 или более ранней версии.
 
-```
+```c#
 <PropertyGroup>
    <LangVersion>latest</LangVersion>
 </PropertyGroup>
@@ -64,7 +64,7 @@ CSPROJ-файле следующий код:
 Directory.build.props (сборки в каждом подкаталоге каталога,
 содержащего этот файл, будут использовать синтаксис C# версии 7.3)
 со следующим кодом:
-```
+```c#
 <Project>
  <PropertyGroup>
    <LangVersion>7.3</LangVersion>
@@ -77,13 +77,13 @@ ___________________________________________________________________
 ##			"async метод Main"
 
 Точка входа для приложения может иметь модификатор async:
-```
+```c#
 static async Task<int> Main()
 {
     return await DoAsyncWork();
 }
 ```
-```
+```c#
 static async Task Main()
 {   // если программа не возвращает код выхода
     await SomeAsyncMethod();
@@ -91,7 +91,7 @@ static async Task Main()
 ```
 
 Устаревший способ:
-```
+```c#
 static int Main()
 {
     return DoAsyncWork().GetAwaiter().GetResult();
@@ -104,12 +104,12 @@ ___________________________________________________________________
 инициализируют переменную до значения по умолчанию.
 
 Теперь можно опустить тип с правой стороны инициализации:
-```
+```c#
 Func<string, bool> whereClause = default;
 ```
 
 Устаревший способ:
-```
+```c#
 Func<string, bool> whereClause = default(Func<string, bool>);
 ```
 
@@ -119,7 +119,7 @@ Func<string, bool> whereClause = default(Func<string, bool>);
 
 Выражения значения по умолчанию можно использовать с управляемыми
 типами:
-```
+```c#
 var s = default(string);
 var d = default(dynamic);
 var i = default(int);
@@ -131,7 +131,7 @@ ___________________________________________________________________
 
 Часто при инициализации кортежа переменные в правой части задания
 совпадают с именами для элементов кортежа:
-```
+```c#
 int count = 5;
 string label = "Colors used in the map";
 
@@ -140,7 +140,7 @@ var pair = (count: count, label: label);
 
 В таком случае, имена элементов кортежа можно вывести (получить)
 из переменных, используемых для инициализации кортежа:
-```
+```c#
 int count = 5;
 string label = "Colors used in the map";
 

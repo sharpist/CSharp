@@ -50,7 +50,7 @@ ___________________________________________________________________
 ```in``` – метод не изменяет значение аргумента, используемого в
 качестве этого параметра (аргументы не могут быть изменены).
 
-```
+```c#
 // расстояние между двумя точками в трехмерном пространстве
 static double CalculateDistance(in Point3D point1,
                                 in Point3D point2)
@@ -87,7 +87,7 @@ static double CalculateDistance(in Point3D point1,
 отличие от параметра ```ref``` или ```out```, не нужно применять модификатор ```in```
 на точке вызова.
 Две локальные переменные, передаются по ссылке:
-```
+```c#
 var distance = CalculateDistance(pt1, pt2);
 ```
 #### пропуск модификатора ```in``` в месте вызова сообщает компилятору, что ####
@@ -106,7 +106,7 @@ var distance = CalculateDistance(pt1, pt2);
 который использует параметры передачи по значению. В этих
 экземплярах создается копия параметра ```in```.
 Допускается указать значения по умолчанию для любого параметра ```in```.
-```
+```c#
 static double CalculateDistance(in Point3D point1,
                                 in Point3D point2 = default)
 {
@@ -131,7 +131,7 @@ static double CalculateDistance(in Point3D point1,
 Чтобы защитить структуру от изменений, компилятор создает копию и с
 её помощью вызывает ссылки на включённые члены – изменения будут
 вноситься в защитную копию.
-```
+```c#
 // поле origin структуры Point3D
 private static Point3D origin = new Point3D();
 
@@ -144,7 +144,7 @@ public static ref readonly Point3D Origin
 Допускается копирование возвращаемого значения по ссылке на
 существующие данные, при назначении его переменной, не объявленной
 с модификатором ```ref readonly```.
-```
+```c#
 var originValue = Point3D.Origin;
 ref readonly var originReference = ref Point3D.Origin;
 ```
@@ -170,7 +170,7 @@ ref readonly var originReference = ref Point3D.Origin;
 Компилятор создает более эффективный код, когда вызываются члены
 ```readonly struct```, например, параметром ```in```, передаваемым по ссылке
 методу члена, всегда является ссылка ```this```, а не копия приемника.
-```
+```c#
 readonly public struct ReadonlyPoint3D
 {
     public double X { get; }
@@ -219,7 +219,7 @@ readonly public struct ReadonlyPoint3D
 #### Объявление ```readonly ref struct``` ####
 Объявление структуры как ```readonly ref``` сочетает в себе преимущества
 и недостатки объявлений ```ref struct``` и ```readonly struct```.
-```
+```c#
 readonly ref struct ReadOnlyRefPoint2D
 {
     public int X { get; }
@@ -250,7 +250,8 @@ var arraySpan = new Span<byte>(arrayMemory);
 // native memory
 var nativeMemory = Marshal.AllocHGlobal(100);
 Span<byte> nativeSpan;
-unsafe {
+unsafe
+{
     nativeSpan = new Span<byte>(nativeMemory.ToPointer(), 100);
 }
 SafeSum(nativeSpan);
@@ -294,11 +295,13 @@ Console.WriteLine(slice[0]); // 2
 стека, и не может использоваться в качестве обобщённого аргумента.
 Однако ```Span<T>``` может использоваться как тип аргументов метода или
 возвращаемых значений.
+
 ```Span<T>``` поддерживает переинтерпретацию приведения к ```Span<byte>```. Он
 также поддерживает небезопасные приведения между произвольными
 примитивными типами. Причина этого ограничения заключается в том,
 что некоторые процессоры не поддерживают эффективный невыровненный
 доступ к памяти.
+
 В отличие от ```T[]```, ```Span<T>``` не поддерживает ковариантные приведения,
 т.е. приведение ```Span<Subtype>``` к ```Span<Basetype>```, не выполняются
 проверки ковариации при хранении ссылок в экземплярах ```Span<T>```.
@@ -331,7 +334,7 @@ fixed(byte* pBuffer = buffer)
 
 * ```Memory<T>```, ```Span<T>``` и ```ReadOnlySpan<T>``` допускают синтаксис среза.
 
-4. Безопасный ```Span<T>``` stackalloc.
+4. Безопасный ```Span<T>``` stackalloc ([stackalloc](https://github.com/sharpist/C_Sharp/tree/master/Stackalloc#stackalloc)).
 ```c#
 void SafeMethod()
 {
@@ -357,11 +360,11 @@ ___________________________________________________________________
 #### Именованные аргументы при использовании с позиционными доступны: ####
 
 * если за ними не следуют позиционные аргументы.
-```
+```c#
 PrintOrderDetails("Gift Shop", 31, productName: "Red Mug");
 ```
 * или аргументы используются в правильной позиции.
-```
+```c#
 PrintOrderDetails("Gift Shop", orderNum: 31, "Red Mug");
 PrintOrderDetails(sellerName: "Gift Shop", 31, productName: "Red Mug");
 ```
@@ -375,7 +378,7 @@ ___________________________________________________________________
 
 ```0b``` в начале константы означает, что число записано в двоичном
 формате:
-```
+```c#
 public const int binaryValue = 0b_0101_0101; // 85
 public const int binaryValue2 = 0b0010_0000; // 32
 ```
