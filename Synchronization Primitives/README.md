@@ -39,7 +39,7 @@ SpinWait помогает в разработке lock-free кода, который крутится в цикле (spins),
 
 #### Как использовать SpinWait: ####
 *создать экземпляр структуры с последующим вызовом SpinOnce в цикле
-```
+```c#
 bool _proceed; // флаг
 void Test()
 {
@@ -86,7 +86,7 @@ void Test()
 #				Lock-free обновления с помощью SpinWait и Interlocked.CompareExchange
 #### Пример: ####
 *такой способ не является потокобезопасным
-```
+```c#
 x = x * 10;
 ```
 *корректный способ выполнения этой операции без блокировок
@@ -96,7 +96,7 @@ x = x * 10;
    (необходимо выполнить атомарно путем вызова Interlocked.CompareExchange).
 4. Если значение локальной переменной устарело, выполнить ожидание в цикле (spin) и
    перейти к шагу 1.
-```
+```c#
 int x;
 
 void MultiplyXBy(int factor)
@@ -117,7 +117,7 @@ void MultiplyXBy(int factor)
 ```
 
 *CompareExchange перегружен, для реализации lock-free обновления любых ссылочных типов:
-```
+```c#
 void LockFreeUpdate<T>(ref T field, Func<T, T> updateFunction) where T : class
 {
     var spinWait = new SpinWait();
