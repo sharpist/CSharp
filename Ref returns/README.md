@@ -80,7 +80,7 @@ public ref Person GetContactInformation(string fname, string lname)
 ```
 При назначении по значению (отсутствует ключевое слово ```ref```) извлекается значение
 переменной и присваивается полученное значение новой переменной ```p```:
-```
+```c#
 Person p = contacts.GetContactInformation("Brandie", "Best");
 ```
 

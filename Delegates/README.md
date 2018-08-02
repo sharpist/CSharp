@@ -1,7 +1,7 @@
 ## FuncDelegate.OrderBy
 
 
-”пор€дочить имеющиес€ данные (инфо о сотрудниках) по выбранному критерию ```Id```, ```Name``` или другое свойство.
+Sort data (employee info) by the selected criterion ```Id```, ```Name``` or other property.
 ________________________________________________________________________
 
 ## Employee info:
