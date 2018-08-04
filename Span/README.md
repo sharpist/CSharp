@@ -151,3 +151,70 @@ Assert.Equal(arr[2], bytes[2]);
 Assert.Equal(45, arr[2]);
 ```
 
+Как уже упоминалось, ```Span``` – это больше, чем просто способ доступа к массивам и их
+подмножествам. Они также могут использоваться для ссылки на данные в стеке:
+```c#
+Span<byte> bytes = stackalloc byte[2]; // C# 7.2 поддержка stackalloc для spans
+bytes[0] = 42;
+bytes[1] = 43;
+Assert.Equal(42, bytes[0]);
+Assert.Equal(43, bytes[1]);
+bytes[2] = 44; // throws IndexOutOfRangeException
+```
+В более общем плане они могут использоваться для ссылки на произвольные указатели и
+длины, например на память, выделенную из нативной кучи:
+```c#
+IntPtr ptr = Marshal.AllocHGlobal(1);
+try
+{
+  Span<byte> bytes;
+  unsafe { bytes = new Span<byte>((byte*)ptr, 1); }
+  bytes[0] = 42;
+  Assert.Equal(42, bytes[0]);
+  Assert.Equal(Marshal.ReadByte(ptr), bytes[0]);
+  bytes[1] = 43; // Throws IndexOutOfRangeException
+}
+finally { Marshal.FreeHGlobal(ptr); }
+```
+
+Индексатор ```Span<T>``` использует преимущество языка C#, представленную в C# 7.0
+функциональность, которая называется ```ref returns```.
+Индексатор объявляется с возвращаемым типом ```ref T```, который предоставляет семантику,
+подобную индексации в массивах, возвращая ссылку на фактическое актуальное расположение
+хранилища, вместо возврата копии того, что существует в этом расположении:
+```c#
+public ref T this[int index] { get { ... } }
+```
+Влияние этого возвращающего по ссылке индексатора наиболее очевидно путем сравнения его
+с индексатором ```List<T>```, который не является возвращающим по ссылке:
+```c#
+struct MutableStruct { public int Value; }
+...
+Span<MutableStruct> spanOfStructs = new MutableStruct[1];
+spanOfStructs[0].Value = 42;
+Assert.Equal(42, spanOfStructs[0].Value);
+var listOfStructs = new List<MutableStruct> { new MutableStruct() };
+listOfStructs[0].Value = 42; // Error CS1612: the return value is not a variable
+```
+Второй вариант ```Span<T>```, называемый ```System.ReadOnlySpan<T>```, обеспечивает доступ только
+для чтения.
+Этот тип похож на ```Span<T>```, за исключением того, что его индексатор поддерживает новое
+преимущество C# 7.2 функциональность для возврата ```ref readonly T``` вместо ```ref T```, что
+позволяет ему работать с неизменяемыми типами данных, такими как System.String.
+```ReadOnlySpan<T>``` делает очень эффективным срез строк без выделения или копирования:
+```c#
+string str = "hello, world";
+string worldString = str.Substring(startIndex: 7, length: 5); // Allocates
+ReadOnlySpan<char> worldSpan =
+  str.AsSpan().Slice(start: 7, length: 5); // No allocation
+Assert.Equal('w', worldSpan[0]);
+worldSpan[0] = 'a'; // Error CS0200: indexer cannot be assigned to
+```
+
+```Spans``` предоставляют множество преимуществ, помимо тех, которые уже упоминались.
+Они поддерживают понятие переинтерпретации приведения, то есть возможно использовать
+приведение ```Span<byte>``` к ```Span<int>``` (где 0-й индекс в ```Span<int>``` отображает первые четыре
+байта ```Span<byte>```).
+Таким образом, если читается буфер байтов, можно передать его методам, которые оперируют
+с сгруппированными байтами как с значениями типа ```int``` безопасно и эффективно.
+
