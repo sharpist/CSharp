@@ -167,12 +167,12 @@ bytes[2] = 44; // throws IndexOutOfRangeException
 IntPtr ptr = Marshal.AllocHGlobal(1);
 try
 {
-  Span<byte> bytes;
-  unsafe { bytes = new Span<byte>((byte*)ptr, 1); }
-  bytes[0] = 42;
-  Assert.Equal(42, bytes[0]);
-  Assert.Equal(Marshal.ReadByte(ptr), bytes[0]);
-  bytes[1] = 43; // Throws IndexOutOfRangeException
+    Span<byte> bytes;
+    unsafe { bytes = new Span<byte>((byte*)ptr, 1); }
+    bytes[0] = 42;
+    Assert.Equal(42, bytes[0]);
+    Assert.Equal(Marshal.ReadByte(ptr), bytes[0]);
+    bytes[1] = 43; // Throws IndexOutOfRangeException
 }
 finally { Marshal.FreeHGlobal(ptr); }
 ```
@@ -228,9 +228,9 @@ ________________________________________________________________________________
 ```c#
 public readonly ref struct Span<T>
 {
-  private readonly ref T _pointer;
-  private readonly int _length;
-  ...
+    private readonly ref T _pointer;
+    private readonly int _length;
+    ...
 }
 ```
 Концепция поля ```ref T``` может выглядеть странно поначалу, фактически невозможно объявить
@@ -329,10 +329,10 @@ ref-подобных структурах. Не допускается использовать span в тех местах, где они 
 ```c#
 public readonly struct Memory<T>
 {
-  private readonly object _object;
-  private readonly int _index;
-  private readonly int _length;
-  ...
+    private readonly object _object;
+    private readonly int _index;
+    private readonly int _length;
+    ...
 }
 ```
 
@@ -343,9 +343,9 @@ public readonly struct Memory<T>
 ```c#
 static async Task<int> ChecksumReadAsync(Memory<byte> buffer, Stream stream)
 {
-  int bytesRead = await stream.ReadAsync(buffer);
-  return Checksum(buffer.Span.Slice(0, bytesRead));
-  // Or buffer.Slice(0, bytesRead).Span
+    int bytesRead = await stream.ReadAsync(buffer);
+    return Checksum(buffer.Span.Slice(0, bytesRead));
+    // Or buffer.Slice(0, bytesRead).Span
 }
 static int Checksum(Span<byte> buffer) { ... }
 ```
@@ -460,7 +460,7 @@ Random rand = ...;
 var chars = new char[length];
 for (int i = 0; i < chars.Length; i++)
 {
-  chars[i] = (char)(rand.Next(0, 10) + '0');
+    chars[i] = (char)(rand.Next(0, 10) + '0');
 }
 string id = new string(chars);
 ```
@@ -474,7 +474,7 @@ Random rand = ...;
 Span<char> chars = stackalloc char[length];
 for (int i = 0; i < chars.Length; i++)
 {
-  chars[i] = (char)(rand.Next(0, 10) + '0');
+    chars[i] = (char)(rand.Next(0, 10) + '0');
 }
 string id = new string(chars);
 ```
@@ -510,10 +510,10 @@ int length = ...;
 Random rand = ...;
 string id = string.Create(length, rand, (Span<char> chars, Random r) =>
 {
-  for (int i = 0; chars.Length; i++)
-  {
-    chars[i] = (char)(r.Next(0, 10) + '0');
-  }
+    for (int i = 0; chars.Length; i++)
+    {
+        chars[i] = (char)(r.Next(0, 10) + '0');
+    }
 });
 ```
 
