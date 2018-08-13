@@ -493,7 +493,7 @@ string id = new string(chars);
 также имеется метод ```Create```:
 ```c#
 public static string Create<TState>(
-  int length, TState state, SpanAction<char, TState> action);
+  int length, TState state, SpanAction<char, TState> action) { ... }
 ...
 public delegate void SpanAction<T, in TArg>(Span<T> span, TArg arg);
 ```
@@ -510,7 +510,7 @@ int length = ...;
 Random rand = ...;
 string id = string.Create(length, rand, (Span<char> chars, Random r) =>
 {
-    for (int i = 0; chars.Length; i++)
+    for (int i = 0; i < chars.Length; i++)
     {
         chars[i] = (char)(r.Next(0, 10) + '0');
     }
