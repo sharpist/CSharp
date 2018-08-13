@@ -568,7 +568,7 @@ ________________________________________________________________________________
 с spans (и собственно в действительности компилятор C# 7.2 должен будет использовать
 ```Span<T>```). Давайте рассмотрим три таких особенности.
 
-### ```Ref structs``` ###
+### ```Ref struct``` ###
 
 Как отмечалось ранее, ```Span<T>``` является ref-подобным типом, который предоставляется в C#
 начиная с версии 7.2 как ```ref struct```.
@@ -597,6 +597,7 @@ public ref struct Enumerator
 Начиная с C# 7.2, ```stackalloc``` теперь может быть использован как часть выражения и может
 быть нацеленным на диапазон span, и при этом нет необходимости использования ключевого
 слова ```unsafe```.
+
 Таким образом, вместо того, чтобы писать:
 ```c#
 Span<byte> bytes;
@@ -653,6 +654,8 @@ static Span<char> FormatGuid(Guid guid)
 
 К счастью, компилятор C# обнаруживает такое недопустимое использование с ```ref struct``` и
 выдаёт ошибку компиляции:
-"error CS8352: Cannot use local 'chars' in this context because it may expose referenced
-variables outside of their declaration scope".
+```
+error CS8352: Cannot use local 'chars' in this context because it may expose referenced
+variables outside of their declaration scope
+```
 _________________________________________________________________________________________
