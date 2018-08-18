@@ -1,5 +1,4 @@
-﻿
-class Program
+﻿class Program
 {
     static void Main()
     {
@@ -24,26 +23,31 @@ class Program
     }
 
 
-    public void Recursion(int i = 0)
+    public void Recursion(ushort i = 0)
     {
-        if (i++ == 5000)          // exit
+        if (i++ == 8000)           // exit
             return;
 
-        fibonacci(new int[2000]); // any custom operations
+        fibonacci(new uint[1000]); // any custom operations
 
-        Recursion(i);             // recursive call
+        Recursion(i);              // recursive call
 
 
         // local Fibonacci procedure
-        void fibonacci(int[] fib, int j = 0)
+        void fibonacci(uint[] fib, ushort j = 0)
         {
-            fib[j + 2] = (j != 0) ?
-                fib[j + 1] + fib[j] : (fib[j + 1] = fib[j] = 1) + fib[j];
+        START:
 
-            if (++j == fib.Length - 2) // exit
+            fib[j + 2] = (j != 0) ?
+                (fib[j + 1] + fib[j]) % 100000
+                : (fib[j + 1] = fib[j] = 1) + fib[j];
+
+            if (j++ == fib.Length - 3) // exit
                 return;
 
-            fibonacci(fib, j);         // recursive call
+        // recursive unrolling into iterations
+        goto START;
         }
     }
 }
+
