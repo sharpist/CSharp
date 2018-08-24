@@ -38,16 +38,17 @@ namespace BST
             /* Output results found by key:
             Катерина
             */
+
         }
     }
 
     class BinarySearchTree<TKey, TValue> where TKey : IComparable<TKey>
     {
-        public TKey   Key   { get; set; }
-        public TValue Value { get; set; }
+        public TKey   Key   { get; private set; }
+        public TValue Value { get; private set; }
 
-        public BinarySearchTree<TKey, TValue> Left  { get; set; }
-        public BinarySearchTree<TKey, TValue> Right { get; set; }
+        public BinarySearchTree<TKey, TValue> Left  { get; private set; }
+        public BinarySearchTree<TKey, TValue> Right { get; private set; }
 
 
         public BinarySearchTree(TKey key, TValue value)
@@ -61,28 +62,24 @@ namespace BST
 
 
         public void Insert(TKey key, TValue value)
-        {
-            TKey CurrentNode = this.Key;
-
-            if (CurrentNode.CompareTo(key) > 0) // this.Key > key => 1
-            {                                                                    //               10 Мария
-                if (this.Left == null)                                           //              /  \
-                    this.Left = new BinarySearchTree<TKey, TValue>(key, value);  //           L /      R
-                else                                                             //            /
-                    this.Left.Insert(key, value);                                //           4 Александр
-            }                                                                    //          / \
-            else if (CurrentNode.CompareTo(key) < 0) // this.Key < key => -1     //         /   \ R
-            {                                                                    // Андрей 1     \
-                if (this.Right == null)                                          //         \     5 Катерина
-                    this.Right = new BinarySearchTree<TKey, TValue>(key, value); //          \     \
-                else                                                             //   Татьяна 3     \
-                    this.Right.Insert(key, value);                               //          /       7 Наталья
-            }                                                                    //         /       / \
-            else                                                                 //   Илья 2       /   \
-            {                                                                    //               /     9 Полина
-                this.Key   = key;                                                //      Николай 6     /
-                this.Value = value;                                              //                   /
-            }                                                                    //          Дмитрий 8
+        {                                                                        //               10 Мария
+            TKey CurrentNode = this.Key;                                         //              /  \
+                                                                                 //           L /      R
+            if (CurrentNode.CompareTo(key) > 0) // this.Key > key => 1           //            /
+            {                                                                    //           4 Александр
+                if (this.Left == null)                                           //          / \
+                    this.Left = new BinarySearchTree<TKey, TValue>(key, value);  //         /   \ R
+                else                                                             // Андрей 1     \
+                    this.Left.Insert(key, value);                                //         \     5 Катерина
+            }                                                                    //          \     \
+            else if (CurrentNode.CompareTo(key) < 0) // this.Key < key => -1     //   Татьяна 3     \
+            {                                                                    //          /       7 Наталья
+                if (this.Right == null)                                          //         /       / \
+                    this.Right = new BinarySearchTree<TKey, TValue>(key, value); //   Илья 2       /   \
+                else                                                             //               /     9 Полина
+                    this.Right.Insert(key, value);                               //      Николай 6     /
+            }                                                                    //                   /
+            else this.Value = value;                                             //          Дмитрий 8
         }
 
 
