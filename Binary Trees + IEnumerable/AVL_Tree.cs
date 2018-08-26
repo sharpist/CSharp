@@ -73,8 +73,19 @@
         }
         return p;                    // balancing isn't needed
     }
-
-
+    /// <summary>
+    ///                     [4] Александр
+    ///                     /            \
+    ///                    /              \
+    ///             Илья [2]              [7] Наталья
+    ///            /       \              /          \
+    ///           /         \            /            \
+    ///          /           \          /              \
+    /// Андрей [1]   Татьяна [3]      [6] Николай      [9] Полина
+    ///                               /                /         \
+    ///                              /                /           \
+    ///                   Катерина [5]      Дмитрий [8]          [10] Ольга
+    /// </summary>
     public void Insert(TKey key, TValue value) => this.root = insert(this.root, key, value);
     private Node insert(Node p, TKey key, TValue value)
     {
