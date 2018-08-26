@@ -83,7 +83,6 @@
             p.Right = insert(p.Right, key, value);
         return balance(p);
     }
-
     public string Traverse() => traverse(this.root);
     private string traverse(Node p)
     {
@@ -95,9 +94,26 @@
         if (p.Right != null) result += traverse(p.Right);
         return result;
     }
+    public TValue Find(TKey key) => find(this.root, key);
+    private TValue find(Node p, TKey key)
+    {
+        TValue result = default;
+
+        if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
+        if (p.Key.Equals(key)) return p.Value;
+        else
+        {
+            if (p.Left != null)
+                if (p.Key.CompareTo(key) > 0) return find(p.Left, key);
+            if (p.Right != null)
+                if (p.Key.CompareTo(key) < 0) return find(p.Right, key);
+        }
+        return result;
+    }
 
     //TODO
 
+    public bool IsEmpty() => this.root == null;
 }
 
 
@@ -113,10 +129,10 @@ class Program
             new { key = 2, value = "Илья" },      new { key = 7, value = "Наталья" },
             new { key = 6, value = "Николай" },   new { key = 8, value = "Дмитрий" }
         };
-        var bst = new AVL_Tree<int, string>();
-        foreach (var p in personnel) bst.Insert(p.key, p.value);
+        var avl = new AVL_Tree<int, string>();
+        foreach (var p in personnel) avl.Insert(p.key, p.value);
 
-        System.Console.WriteLine(bst.Traverse());
+        System.Console.WriteLine(avl.Traverse());
         /* Output results sorted by key:
         Андрей
         Илья
@@ -128,6 +144,11 @@ class Program
         Дмитрий
         Полина
         Ольга
+        */
+
+        System.Console.WriteLine(avl.Find(5));
+        /* Output results found by key:
+        Катерина
         */
     }
 }
