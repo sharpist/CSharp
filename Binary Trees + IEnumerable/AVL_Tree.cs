@@ -1,7 +1,9 @@
 ﻿class AVL_Tree<TKey, TValue> where TKey : System.IComparable<TKey>
 {
     /// <summary>
-    /// self-balancing binary search tree
+    /// AVL Tree – self-balancing binary search tree.
+    /// The implementation of C# version is made by Alexander Usov.
+    /// A copy with the link please. :)
     /// </summary>
     private class Node
     {
@@ -20,8 +22,8 @@
             this.Key   = key;
             this.Value = value;
 
-            this.Left  = default;
-            this.Right = default;
+            this.Left  = null;
+            this.Right = null;
         }
     }
 
@@ -38,8 +40,8 @@
 
     private Node rotateRight(Node p) // right rotation around p
     {
-        Node q = p.Left;
-        p.Left = q.Right;
+        Node q  = p.Left;
+        p.Left  = q.Right;
         q.Right = p;
         fixHeight(p);
         fixHeight(q);
@@ -47,9 +49,9 @@
     }
     private Node rotateLeft(Node q)  // left rotation around q
     {
-        Node p = q.Right;
+        Node p  = q.Right;
         q.Right = p.Left;
-        p.Left = q;
+        p.Left  = q;
         fixHeight(q);
         fixHeight(p);
         return p;
@@ -110,9 +112,34 @@
         }
         return result;
     }
-
-    //TODO
-
+    public void Remove(TKey key) => this.root = remove(this.root, key);
+    private Node remove(Node p, TKey key)
+    {
+        if (p == null) return default;
+        if (p.Key.CompareTo(key) > 0)
+            p.Left = remove(p.Left, key);
+        else if (p.Key.CompareTo(key) < 0)
+            p.Right = remove(p.Right, key);
+        else
+        {
+            Node q = p.Left;
+            Node r = p.Right;
+            p = null;
+            if (r == null) return q;
+            Node min  = findMin(r);
+            min.Right = removeMin(r);
+            min.Left  = q;
+            return balance(min);
+        }
+        return balance(p);
+    }
+    private Node findMin(Node p) => p.Left != null ? findMin(p.Left) : p;
+    private Node removeMin(Node p)
+    {
+        if (p.Left == null) return p.Right;
+        p.Left = removeMin(p.Left);
+        return balance(p);
+    }
     public bool IsEmpty() => this.root == null;
 }
 
@@ -149,6 +176,20 @@ class Program
         System.Console.WriteLine(avl.Find(5));
         /* Output results found by key:
         Катерина
+        */
+
+        avl.Remove(1);
+        avl.Remove(2);
+        System.Console.WriteLine(avl.Traverse());
+        /* Output results after deletion by key:
+        Татьяна
+        Александр
+        Катерина
+        Николай
+        Наталья
+        Дмитрий
+        Полина
+        Ольга
         */
     }
 }
