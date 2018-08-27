@@ -1,4 +1,4 @@
-﻿class AVL_Tree<TKey, TValue> where TKey : System.IComparable<TKey>
+﻿class AVL_Tree<TKey, TValue> where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
 {
     /// <summary>
     /// AVL Tree – self-balancing binary search tree.
