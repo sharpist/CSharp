@@ -1,0 +1,18 @@
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\bin\Debug\FractalJulia.exe.config
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\bin\Debug\FractalJulia.exe
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\bin\Debug\FractalJulia.pdb
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.Form1.resources
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.Properties.Resources.resources
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.csproj.GenerateResource.Cache
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.exe
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.pdb
+C:\Users\milera\Documents\Visual Studio 2012\Projects\2 КУРС 1 семестр\FractalJulia\FractalJulia\obj\Debug\FractalJulia.csprojResolveAssemblyReference.cache
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Debug\FractalJulia.exe.config
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Debug\FractalJulia.exe
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Debug\FractalJulia.pdb
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.Properties.Resources.resources
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.csproj.GenerateResource.cache
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.csproj.CoreCompileInputs.cache
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.exe
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.pdb
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Debug\FractalJulia.Form.resources
