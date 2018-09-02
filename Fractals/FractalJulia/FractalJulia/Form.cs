@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Drawing;
-using System.Windows.Forms;
+using System.Drawing.Imaging;
+using System.IO;
 
 namespace FractalJulia
 {
     public partial class Form : System.Windows.Forms.Form
     {
-        public void DrawFractal(int w, int h, Graphics g, Pen pen) 
+        private (byte[], byte[], byte[]) compileFractal(int w, int h, (byte[] r, byte[] g, byte[] b) arrays) 
         {
             /// на каждой итерации вычисляется znew = zold² + C
 
@@ -23,8 +24,8 @@ namespace FractalJulia
             cIm = -0.3842;
 
 
-            for (int x = 0; x < w; x++)            // проходим каждый пиксель
-                for (int y = 0; y < h; y++)
+            for (int x = 0, index = 0; x < w; x++) // проходим каждый пиксель
+                for (int y = 0; y < h; y++, index++)
                 {
                     // вычисляется реальная и мнимая части числа z
                     // на основе расположения пикселей, масштабирования и значения позиции
@@ -47,27 +48,66 @@ namespace FractalJulia
                         i++;
                     }
 
-
-                    pen.Color = Color.FromArgb(255, (i * 9) % 255, 0, (i * 9) % 255); // определить цвета
-                    g.DrawRectangle(pen, x, y, 1, 1);                                 // нарисовать пиксель
+                    // определить цвета в массивах для хранения компонентов RGB
+                    arrays.r[index] = (byte)((i * 9) % 255);
+                    arrays.g[index] = 0;
+                    arrays.b[index] = (byte)((i * 9) % 255);
                 }
+            return arrays;
         }
+
+        private void displayFractal(int w, int h, (byte[] r, byte[] g, byte[] b) arrays)
+        {
+            const byte bytesPerPixel = 4; // 1 пиксельное значение в 4 байтах
+
+            // создать "пустой" (all-zeros) 32bpp Bitmap объект для вывода графики
+            using (var bmpRGB = new Bitmap(w, h, PixelFormat.Format32bppArgb))
+            {
+                // создать Rectangle и заблокировать растровое изображение в системной памяти
+                var rect = new Rectangle(0, 0, w, h);
+                var bmpData = bmpRGB.LockBits(rect, ImageLockMode.WriteOnly, bmpRGB.PixelFormat);
+
+                unsafe
+                {
+                    // присвоить указателю адрес первых пиксельных данных
+                    byte* ptr = (byte*)bmpData.Scan0;
+
+                    for (int x = 0, index = 0; x < w; x++)
+                        for (int y = 0; y < h; y++, index++)
+                        {
+                            // построение пиксела 
+                            var p = (y * w + x) * bytesPerPixel;
+                            // назначить компонент RGB-значений к указателю
+                            ptr[p + 3] = 0xBF;
+                            ptr[p + 2] = arrays.r[index];
+                            ptr[p + 1] = arrays.g[index];
+                            ptr[p] = arrays.b[index];
+                        }
+                }
+
+                // разблокировка растрового изображения из системной памяти
+                bmpRGB.UnlockBits(bmpData);
+
+                // вывести графику в pictureBox
+                pictureBox.Image = null;
+                using (var ms = new MemoryStream())
+                {
+                    bmpRGB.Save(ms, ImageFormat.Bmp);
+                    pictureBox.Image = Image.FromStream(ms);
+                }
+            }
+        }
+
 
         private void button_Click(object sender, EventArgs e)
         {
-            var pen = new Pen(Color.Black, 1);                                        // перо myPen черного цвета, толщиной в 1 пиксель
-            var g   = Graphics.FromHwnd(pictureBox.Handle);                           // объект g с возможностью рисовать в pictureBox
+            int w = pictureBox.Width,
+                h = pictureBox.Height;
 
-            DrawFractal(845, 475, g, pen);
+            var arrays = compileFractal(w, h, (new byte[w * h], new byte[w * h], new byte[w * h]));
+                         displayFractal(w, h, arrays);
         }
-
-        public Form()
-        {
-            InitializeComponent();
-        }
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
+        private void Form1_Load(object sender, EventArgs e) { /**/ }
+        public Form() { InitializeComponent(); }
     }
 }
