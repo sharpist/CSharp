@@ -97,5 +97,5 @@ int oddNumbers = numbers.Count(n => n % 2 == 1); // 5, 1, 3, 9, 7
 ```
 
 ```c#
-var firstNumbersLessThan6 = numbers.TakeWhile(n => n < 6); // all numbers up to 6
+var firstNumbersLessThan6 = numbers.TakeWhile(n => n < 6); // 5, 4, 1, 3
 ```
