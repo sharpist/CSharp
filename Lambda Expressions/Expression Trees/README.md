@@ -3,7 +3,7 @@
 #### код в виде древовидной структуры, где каждый узел является выражением. ####
 ___________________________________________________________________________________________
 
-В результате выполнения дерева выражения может возвращаться значение или
+В результате выполнения дерева выражений может возвращаться значение или
 выполняться действие, такое как вызов метода.
 Деревья выражений, представляющие лямбда-выражения, имеют тип
 ```LambdaExpression``` (когда тип делегата неизвестен) или ```Expression<TDelegate>```.
@@ -15,14 +15,14 @@ ________________________________________________________________________________
 ```c#
 Expression<Func<int, bool>> lambda = num => num < 5;
 ```
-Нельзя использовать лямбды операторов (многострочные лямбды). 
+*нельзя использовать лямбды операторов (многострочные лямбды)
 
 
 Допускается создание деревьев выражений с помощью пространства
 имен ```System.Linq.Expressions```.
 
 При этом задействуется класс ```Expression```, который содержит статические
-методы фабрики, позволяющие строить узлы дерева выражения
+методы фабрики, позволяющие строить узлы дерева выражений
 определённого типа (производного от абстрактного Expression):
 
 1. ```ParameterExpression``` – представляет переменную или параметр.
@@ -138,4 +138,57 @@ Console.WriteLine(expr.Compile()(4)); // True
 ```
 *если лямбда-выражение имеет тип ```LambdaExpression``` (когда тип делегата неизвестен)
 вызывается метод ```DynamicInvoke``` для делегата
+___________________________________________________________________________________________
+# "Изменение деревьев выражений" – 
+#### создание копии существующего дерева выражений и внесение изменения. ####
+___________________________________________________________________________________________
 
+Так как деревья выражений являются неизменяемыми напрямую, изменения применяются к
+создаваемой копии.
+
+Класс ```ExpressionVisitor``` используется для прохода по существующему дереву выражений и
+копированию каждого пройденного узла:
+```c#
+// наследует от класса ExpressionVisitor 
+public class AndAlsoModifier : ExpressionVisitor
+{
+    public Expression Modify(Expression expression)
+    {
+        return Visit(expression);
+    }
+
+    // переопределяет метод VisitBinary,
+    // так как условная операция AND является двоичным выражением
+    protected override Expression VisitBinary(BinaryExpression b)
+    {
+        if (b.NodeType == ExpressionType.AndAlso)
+        {
+            Expression left  = this.Visit(b.Left);
+            Expression right = this.Visit(b.Right);
+
+            // сделать данное двоичное выражение операцией OrElse вместо операции AndAlso
+            return Expression.MakeBinary(ExpressionType.OrElse, left, right, b.IsLiftedToNull, b.Method);
+        }
+        // если выражение не представляет условную операцию AND
+        // выполнить реализацию базового класса
+        return base.VisitBinary(b);
+    }
+}
+```
+
+```c#
+// создается выражение, содержащее условную операцию AND
+Expression<Func<string, bool>> expr =
+    name => name.Length > 10 && name.StartsWith("G");
+
+Console.WriteLine(expr);
+// name => ((name.Length > 10) AndAlso name.StartsWith("G"))
+
+// создается экземпляр класса AndAlsoModifier
+// для передачи выражения в метод Modify
+AndAlsoModifier treeModifier = new AndAlsoModifier();
+Expression      modifiedExpr = treeModifier.Modify((Expression)expr);
+
+Console.WriteLine(modifiedExpr);
+// name => ((name.Length > 10) OrElse name.StartsWith("G"))
+```
