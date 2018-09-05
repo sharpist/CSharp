@@ -192,3 +192,90 @@ Expression      modifiedExpr = treeModifier.Modify((Expression)expr);
 Console.WriteLine(modifiedExpr);
 // name => ((name.Length > 10) OrElse name.StartsWith("G"))
 ```
+___________________________________________________________________________________________
+# "Использование деревьев выражений для построения динамических запросов" – 
+#### создание LINQ запроса во время выполнения, когда характеристики запроса неизвестны во время компиляции. ####
+___________________________________________________________________________________________
+
+В LINQ деревья выражений используются для представления структурированных
+запросов к источникам данных, реализующим интерфейс ```IQueryable<T>```:
+
+1. Методы фабрики в пространстве имен ```System.Linq.Expressions``` используются для создания
+деревьев выражений, представляющих общий запрос.
+
+2. Выражения, представляющие вызовы методов стандартных операторов запросов,
+ссылаются на реализации Queryable этих методов.
+
+3. Итоговое дерево выражений передается в реализацию ```CreateQuery<TElement>(Expression)```
+поставщика источника данных ```IQueryable``` для создания исполняемого запроса
+типа ```IQueryable```.
+
+```c#
+string[] companies =
+{
+    "Consolidated Messenger", "Alpine Ski House",     "Southridge Video",         "City Power & Light",
+    "Coho Winery",            "Wide World Importers", "Graphic Design Institute", "Adventure Works",
+    "Humongous Insurance",    "Woodgrove Bank",       "Margie's Travel",          "Northwind Traders",
+    "Blue Yonder Airlines",   "Trey Research",        "The Phone Company",        "Wingtip Toys",
+    "Lucerne Publishing",     "Fourth Coffee"
+};
+IQueryable<String> queryableData = companies.AsQueryable<string>();       // данные IQueryable для запроса
+ParameterExpression pe = Expression.Parameter(typeof(string), "company"); // создать выражение, представляющее параметр предикату
+
+
+/// ***** companies.Where(company => (company.ToLower() == "coho winery" || company.Length > 16)).OrderBy(company => company) *****
+
+
+// создать дерево выражений, представляющее выражение 'company.ToLower() == "coho winery"'
+Expression left  = Expression.Call(pe, typeof(string).GetMethod("ToLower", System.Type.EmptyTypes));
+Expression right = Expression.Constant("coho winery");
+Expression e1    = Expression.Equal(left, right);
+
+// создать дерево выражений, представляющее выражение 'company.Length > 16'
+           left  = Expression.Property(pe, typeof(string).GetProperty("Length"));
+           right = Expression.Constant(16, typeof(int));
+Expression e2    = Expression.GreaterThan(left, right);
+
+// объединить деревья выражений, создав дерево выражений, представляющее
+// выражение '(company.ToLower() == "coho winery" || company.Length > 16)'
+Expression predicateBody = Expression.OrElse(e1, e2);
+
+
+// создать дерево выражений, представляющее выражение
+// 'queryableData.Where(company => (company.ToLower() == "coho winery" || company.Length > 16))'
+MethodCallExpression whereCallExpression = Expression.Call(
+    typeof(Queryable),
+    "Where",
+    new Type[] { queryableData.ElementType },
+    queryableData.Expression,
+    Expression.Lambda<Func<string, bool>>(predicateBody, new ParameterExpression[] { pe }));
+
+
+// создать дерево выражений, представляющее выражение
+// 'whereCallExpression.OrderBy(company => company)'
+MethodCallExpression orderByCallExpression = Expression.Call(
+    typeof(Queryable),
+    "OrderBy",
+    new Type[] { queryableData.ElementType, queryableData.ElementType },
+    whereCallExpression,
+    Expression.Lambda<Func<string, string>>(pe, new ParameterExpression[] { pe }));
+
+
+
+
+// создать исполняемый запрос из дерева выражений
+IQueryable<string> results = queryableData.Provider.CreateQuery<string>(orderByCallExpression);
+results?.ToList().ForEach(company => Console.WriteLine(company)); // перечисление результатов
+/*
+    Blue Yonder Airlines  
+    City Power & Light  
+    Coho Winery  
+    Consolidated Messenger  
+    Graphic Design Institute  
+    Humongous Insurance  
+    Lucerne Publishing  
+    Northwind Traders  
+    The Phone Company  
+    Wide World Importers  
+*/
+```
