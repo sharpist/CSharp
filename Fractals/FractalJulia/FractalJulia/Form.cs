@@ -81,7 +81,7 @@ namespace FractalJulia
                             ptr[p + 3] = 0xBF;
                             ptr[p + 2] = arrays.r[index];
                             ptr[p + 1] = arrays.g[index];
-                            ptr[p] = arrays.b[index];
+                            ptr[p]     = arrays.b[index];
                         }
                 }
 

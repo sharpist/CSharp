@@ -1,12 +1,12 @@
-C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.Form.resources
-C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.Properties.Resources.resources
-C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.csproj.GenerateResource.cache
-C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.csproj.CoreCompileInputs.cache
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Release\FractalJulia.exe.config
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Release\FractalJulia.exe
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Release\FractalJulia.pdb
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Release\System.ValueTuple.dll
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\bin\Release\System.ValueTuple.xml
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.Form.resources
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.Properties.Resources.resources
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.csproj.GenerateResource.cache
+C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.csproj.CoreCompileInputs.cache
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.csproj.CopyComplete
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.exe
 C:\Users\Alexander\Desktop\FractalJulia\FractalJulia\obj\Release\FractalJulia.pdb
