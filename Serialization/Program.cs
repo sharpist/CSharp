@@ -23,9 +23,9 @@ namespace Serialization
             if (File.Exists(FileName))
             {
                 Console.WriteLine("Reading saved file!\n");
-                Stream openFileStream = File.OpenRead(FileName);
-                BinaryFormatter deserializer = new BinaryFormatter();
-                TestLoan = (Loan)deserializer.Deserialize(openFileStream);
+                Stream openFileStream = File.OpenRead(FileName); // для чтения двоичного файла
+                BinaryFormatter deserializer = new BinaryFormatter(); // для преобразования файла
+                TestLoan = (Loan)deserializer.Deserialize(openFileStream); // преобразовать тип потока в тип объекта Loan
                 TestLoan.TimeLastLoaded = DateTime.Now;
                 openFileStream.Close();
             }
@@ -53,9 +53,9 @@ namespace Serialization
             */
 
             // код для сериализации класса в файл
-            Stream SaveFileStream = File.Create(FileName); // чтение двоичного файла
-            BinaryFormatter serializer = new BinaryFormatter(); // преобразование файла
-            serializer.Serialize(SaveFileStream, TestLoan); // преобразовать тип потока в тип объекта Loan
+            Stream SaveFileStream = File.Create(FileName); // для записи двоичного файла
+            BinaryFormatter serializer = new BinaryFormatter(); // для преобразования файла
+            serializer.Serialize(SaveFileStream, TestLoan); // сохранить
             SaveFileStream.Close();
         }
     }
