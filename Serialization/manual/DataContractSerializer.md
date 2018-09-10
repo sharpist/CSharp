@@ -158,13 +158,32 @@ _______________________________________________________________________________
 _______________________________________________________________________________
 
 ```NetDataContractSerializer``` поддерживает сериализацию подклассов без отдельного
-вмешательства. Подклассы должны иметь атрибут DataContract.
+вмешательства. Подклассы должны иметь атрибут ```DataContract```:
+```c#
+[DataContract]
+public class Person
+{
+    [DataMember]
+    public string Name { get; set; }
+    [DataMember]
+    public int Age { get; set; }
+}
+
+[DataContract]
+public class Student : Person
+{ ... }
+
+[DataContract]
+public class Teacher : Person
+{ ... }
+```
 *при сериализации подтипов ```NetDataContractSerializer``` показывает низкую
 производительность
 
 ```DataContractSerializer``` необходимо информировать о всех подтипах. Таким
 образом, для обеспечения безопасности предотвращается десериализация
 непредвиденных типов.
+
 Указать все разрешённые "известные" подтипы можно при создании экземпляра
 ```DataContractSerializer```:
 ```c#
