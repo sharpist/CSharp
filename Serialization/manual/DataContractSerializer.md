@@ -99,7 +99,7 @@ public class Person { ... }
 (http://schemas.datacontract.org/2004/07/), а также пространство имён типа .NET.
 Можно переопределять в известной форме:
 ```c#
-[DataContract(Namespace = "http://.../...")]
+[DataContract(Namespace = "http://github.com/sharpist/")]
 public class Person { ... }
 ```
 *указание имени и пространства имён отменяет связь между идентичностью
@@ -108,12 +108,48 @@ public class Person { ... }
 
 Переопределяются имена данных-членов:
 ```c#
-[DataContract(Name = "Candidate", Namespace = "http://.../...")]
+[DataContract(Name = "Candidate", Namespace = "http://github.com/sharpist/")]
 public class Person
 {
     [DataMember(Name = "FirstName")]
     public string Name { get; set; }
     [DataMember(Name = "ClaimedAge")]
     public int Age { get; set; }
+}
+```
+
+Атрибут ```DataMember``` поддерживает как открытые, так и закрытые поля и свойства.
+Тип данных должен быть:
+* любой примитивный тип.
+* ```DateTime```, ```TimeSpan```, ```Guid```, ```Uri```, ```Enum```.
+* версии, допускающие ```null```, указанных выше типов.
+* ```byte[]```.
+* любой "известный" тип, отмеченный ```DataContract```.
+* любой тип, реализующий интерфейс ```IEnumerable```.
+* любой тип с атрибутом ```Serializable``` или реализующий интерфейс ```ISerializable```.
+* любой тип, реализующий интерфейс ```IXmlSerializable```.
+_______________________________________________________________________________
+# Указание двоичного форматера
+_______________________________________________________________________________
+
+Применение двоичного форматера совместно с объектом ```DataContractSerializer``` либо
+```NetDataContractSerializer```:
+```c#
+var person = new Person { Name = "Alexander", Age = 32 };
+var dcs = new DataContractSerializer(typeof(Person));
+
+using (var stream = new MemoryStream())
+{
+    using (var writer = XmlDictionaryWriter.CreateBinaryWriter(stream))
+        dcs.WriteObject(writer, person); // сериализировать
+
+    Person p;
+    using (var stream2 = new MemoryStream(stream.ToArray()))
+    {
+        using (var reader = XmlDictionaryReader.CreateBinaryReader(
+            stream2, XmlDictionaryReaderQuotas.Max))
+            p = (Person)dcs.ReadObject(reader); // десериализировать
+    }
+    WriteLine("{0} {1}", p.Name, p.Age); // Alexander 32
 }
 ```
