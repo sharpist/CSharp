@@ -195,3 +195,42 @@ var dcs = new DataContractSerializer(typeof(Person),
 [DataContract, KnownType(typeof(Student)), KnownType(typeof(Teacher))]
 public class Person { ... }
 ```
+_______________________________________________________________________________
+# Объектные ссылки
+_______________________________________________________________________________
+
+Все ссылки на другие объекты также сериализируются. При создании подклассов
+```Address``` применяются те же правила, что и при создании подклассов
+корневого типа:
+```c#
+[DataContract]
+public class Person
+{
+    [DataMember]
+    public string Name { get; set; }
+    [DataMember]
+    public int Age { get; set; }
+    [DataMember]
+    public Address HomeAddress { get; set; }
+}
+
+[DataContract, KnownType(typeof(USAddress))]
+public class Address
+{
+    [DataMember]
+    public string Street { get; set; }
+    [DataMember]
+    public string Postcode { get; set; }
+}
+
+[DataContract]
+public class USAddress : Address
+{ ... }
+```
+Можно сообщить экземпляру DataContractSerializer о классе ```USAddress```:
+```c#
+var dcs = new DataContractSerializer(typeof(Person),
+    new Type[] { typeof(USAddress) }); // подтип USAddress
+```
+*сообщать о классе ```Address``` нет необходимости, так как он является объявленным
+типом члена ```HomeAddress```
