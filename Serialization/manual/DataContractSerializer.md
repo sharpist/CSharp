@@ -64,7 +64,7 @@ _______________________________________________________________________________
 _______________________________________________________________________________
 
 Сериализаторы ```DataContractSerializer``` и ```NetDataContractSerializer``` по умолчанию
-примениют форматер XML.
+применяют форматер XML.
 
 Работая с классом ```XmlWriter``` можно добавить в вывод отступы для лучшей
 читаемости:
@@ -180,17 +180,17 @@ public class Teacher : Person
 *при сериализации подтипов ```NetDataContractSerializer``` показывает низкую
 производительность
 
-```DataContractSerializer``` необходимо информировать о всех подтипах. Таким
+```DataContractSerializer``` необходимо проинформировать о всех подклассах. Таким
 образом, для обеспечения безопасности предотвращается десериализация
 непредвиденных типов.
 
-Указать все разрешённые "известные" подтипы можно при создании экземпляра
+Указать все разрешённые "известные" подклассы можно при создании экземпляра
 ```DataContractSerializer```:
 ```c#
 var dcs = new DataContractSerializer(typeof(Person),
     new Type[] { typeof(Student), typeof(Teacher) }); // подтипы Student и Teacher
 ```
-Это можно также сделать в самом типе при помощи атрибута ```KnownType```:
+Это можно также сделать в корневом типе при помощи атрибута ```KnownType```:
 ```c#
 [DataContract, KnownType(typeof(Student)), KnownType(typeof(Teacher))]
 public class Person { ... }
@@ -227,7 +227,7 @@ public class Address
 public class USAddress : Address
 { ... }
 ```
-Можно сообщить экземпляру DataContractSerializer о классе ```USAddress```:
+Можно сообщить экземпляру ```DataContractSerializer``` о классе ```USAddress```:
 ```c#
 var dcs = new DataContractSerializer(typeof(Person),
     new Type[] { typeof(USAddress) }); // подтип USAddress
