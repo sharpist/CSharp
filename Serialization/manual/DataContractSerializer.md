@@ -234,3 +234,73 @@ var dcs = new DataContractSerializer(typeof(Person),
 ```
 *сообщать о классе ```Address``` нет необходимости, так как он является объявленным
 типом члена ```HomeAddress```
+_______________________________________________________________________________
+# Предохранение объектных ссылок
+_______________________________________________________________________________
+
+```NetDataContractSerializer``` всегда предохраняет эквивалентность ссылок.
+```DataContractSerializer``` предохраняет только по требованию. Когда на объект
+имеются ссылки из разных мест, ```DataContractSerializer``` запишет его многократно.
+
+Таким образом, изменив пример так, чтобы класс ```Person``` также хранил рабочий адрес:
+```c#
+[DataContract]
+public class Person
+{
+    ...
+    [DataMember]
+    public Address HomeAddress { get; set; }
+    [DataMember]
+    public Address WorkAddress { get; set; }
+}
+```
+Проинициализировав его экземпляр следующим образом:
+```c#
+var person = new Person { Name = "Alexander", Age = 32 };
+person.HomeAddress = new Address { Street = "Yaroslavl", Postcode = "150000" };
+person.WorkAddress = person.HomeAddress; // теперь две ссылки на объект
+```
+После сериализации получим задвоение деталей адреса:
+```c#
+<Person ... >
+    ...
+    <HomeAddress>
+        <Postcode>150000</Postcode>
+        <Street>Yaroslavl</Street>
+    </HomeAddress>
+    ...
+    <WorkAddress>
+        <Postcode>150000</Postcode>
+        <Street>Yaroslavl</Street>
+    </WorkAddress>
+</Person>
+```
+Следовательно, при последующей десериализации ```HomeAddress``` и ```WorkAddress``` это уже
+два разных объекта. Теряется ссылочная целостность и пригодность циклических
+ссылок.
+
+Получить ссылочную целостность можно, указав ```true``` для аргумента
+```preserveObjectReferences``` при конструировании ```DataContractSerializer```:
+```c#
+var dcs = new DataContractSerializer(typeof(Person),
+    null, 1000, false, true, null); // preserveObjectReferences = true
+```
+*третий аргумент (в примере = 1000) обязателен, задаёт максимум объектных
+ссылок, которые сериализатор отслеживает (при превышении выдаёт исключение,
+предотвращая атаку типа отказа в обслуживании)
+
+Результат выглядит следующим образом:
+```c#
+<Person ...
+        xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/"
+        z:Id="1">
+    ...
+    <HomeAddress z:Id="2">
+        <Postcode z:Id="3">150000</Postcode>
+        <Street z:Id="4">Yaroslavl</Street>
+    </HomeAddress>
+    ...
+    <WorkAddress i:nil="true" z:Ref="2"/>
+</Person>
+```
+*добавлено патентованное пространство имён для атрибутов ```Id``` и ```Ref```
