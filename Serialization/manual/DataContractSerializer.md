@@ -261,7 +261,7 @@ person.HomeAddress = new Address { Street = "Yaroslavl", Postcode = "150000" };
 person.WorkAddress = person.HomeAddress; // теперь две ссылки на объект
 ```
 После сериализации получим задвоение деталей адреса:
-```c#
+```xml
 <Person ... >
     ...
     <HomeAddress>
@@ -290,7 +290,7 @@ var dcs = new DataContractSerializer(typeof(Person),
 предотвращая атаку типа отказа в обслуживании)
 
 Результат выглядит следующим образом:
-```c#
+```xml
 <Person ...
         xmlns:z="http://schemas.microsoft.com/2003/10/Serialization/"
         z:Id="1">
@@ -304,3 +304,4 @@ var dcs = new DataContractSerializer(typeof(Person),
 </Person>
 ```
 *добавлено патентованное пространство имён для атрибутов ```Id``` и ```Ref```
+(```HomeAddress``` как и ```WorkAddress``` ссылаются на уникальный объект)
