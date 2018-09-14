@@ -503,4 +503,41 @@ public class Person
     }
 }
 ```
+_______________________________________________________________________________
+# Подклассы в качестве элементов коллекций
+_______________________________________________________________________________
 
+Сериализатор корректно обрабатывает элементы коллекции, являющиеся подклассами.
+Для этого объявляются допустимые "известные" типы:
+
+```c#
+[DataContract, KnownType(typeof(USAddress))]
+public class Address
+{
+    [DataMember]
+    public string Street { get; set; }
+    [DataMember]
+    public string Postcode { get; set; }
+}
+
+[DataContract]
+public class USAddress : Address
+{ ... }
+```
+Добавив ```USAddress``` наравне с ```Address``` к списку адресов получим:
+```xml
+<Person ... >
+    <Addresses>
+        ...
+        <Address>
+            <Postcode>394000</Postcode>
+            <Street>Voronezh</Street>
+        </Address>
+        <Address i:type="USAddress">
+            <Postcode>440000</Postcode>
+            <Street>Penza</Street>
+        </Address>
+    </Addresses>
+    ...
+</Person>
+```
