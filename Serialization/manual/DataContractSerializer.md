@@ -541,3 +541,63 @@ public class USAddress : Address
     ...
 </Person>
 ```
+_______________________________________________________________________________
+# Настройка имён коллекции и элементов
+_______________________________________________________________________________
+
+Для подкласса класса коллекции можно определить имя, описывающее каждый элемент:
+```c#
+[CollectionDataContract(ItemName = "Residence")]
+public class AddressList : List<Address>
+{ ... }
+
+[DataContract]
+public class Person
+{
+    ...
+    [DataMember]
+    public AddressList Addresses { get; set; }
+}
+```
+```xml
+...
+    <Addresses>
+        <Residence>
+            <Postcode>150000</Postcode>
+            <Street>Yaroslavl</Street>
+        </Residence>
+    ...
+```
+*атрибут ```CollectionDataContract``` имеет также аргументы ```Namespace``` и ```Name```, который
+применяется когда коллекция сериализируется как корневой объект, а не свойство другого объекта
+
+Управление сериализацией словарей:
+```c#
+[CollectionDataContract(ItemName  = "Entry",
+                        KeyName   = "Kind",
+                        ValueName = "Number")]
+public class PhoneNumberList : Dictionary<string, string>
+{ ... }
+
+[DataContract]
+public class Person
+{
+    ...
+    [DataMember]
+    public PhoneNumberList PhoneNumbers;
+}
+```
+```xml
+...
+    <PhoneNumbers>
+        <Entry>
+            <Kind>Mobile</Kind>
+            <Number>905 635 00 00</Number>
+        </Entry>
+        <Entry>
+            <Kind>Home</Kind>
+            <Number>4852 00 00 00</Number>
+        </Entry>
+    </PhoneNumbers>
+...
+```
