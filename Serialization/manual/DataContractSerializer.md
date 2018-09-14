@@ -427,4 +427,80 @@ public class Person
 </Person>
 ```
 *отсутствует запись ```<Age>32</Age>```
+_______________________________________________________________________________
+# Коллекции
+_______________________________________________________________________________
+
+Сериализаторы контрактов данных способны сохранять и повторно заполнять
+перечислимые коллекции.
+
+Например, дополнив класс ```Person``` списком ```List<>``` адресов:
+```c#
+[DataContract]
+public class Person
+{
+    ...
+    [DataMember]
+    public List<Address> Addresses { get; set; }
+}
+
+[DataContract]
+public class Address
+{
+    [DataMember]
+    public string Street { get; set; }
+    [DataMember]
+    public string Postcode { get; set; }
+}
+```
+И проинициализировав следующим образом:
+```c#
+var person = new Person
+{
+    Addresses = new List<Address>
+    {
+        new Address { Street = "Yaroslavl", Postcode = "150000" },
+        new Address { Street = "Voronezh",  Postcode = "394000" }
+    }
+};
+```
+Получаем результат сериализации:
+```xml
+<Person ... >
+    <Addresses>
+        <Address>
+            <Postcode>150000</Postcode>
+            <Street>Yaroslavl</Street>
+        </Address>
+        <Address>
+            <Postcode>394000</Postcode>
+            <Street>Voronezh</Street>
+        </Address>
+    </Addresses>
+    ...
+</Person>
+```
+*сериализатор не указывает тип коллекции, избегая потенциальной ошибки при
+смене типа между сериализацией и десериализацией
+
+Для конкретизации типа коллекции можно использовать интерфейс ```IList```. Однако,
+десериализатор не имеет возможности узнать, какого конкретного типа требуется
+создать объект.
+
+Решением будет замена данного участника класса закрытым полем и предоставление
+открытого свойства для доступа к нему:
+```c#
+[DataContract]
+public class Person
+{
+    ...
+    [DataMember(Name = "Addresses")]
+    private List<Address> _addresses;
+    public IList<Address> Addresses
+    {
+        get { return _addresses; }
+        set { _addresses = value as List<Address>; }
+    }
+}
+```
 
