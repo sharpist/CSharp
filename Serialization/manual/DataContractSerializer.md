@@ -601,3 +601,136 @@ public class Person
     </PhoneNumbers>
 ...
 ```
+_______________________________________________________________________________
+# Расширение контрактов данных
+_______________________________________________________________________________
+
+#### Ловушки сериализации и десериализации: ####
+
+Группа атрибутов для pre/post вызова служебных (закрытых) методов, выполняющих
+обработку, выходящих за рамки сериализации, участников класса.
+
+* ```OnSerializing``` метод перед сериализацией.
+* ```OnSerialized``` метод после сериализации.
+* ```OnDeserializing``` метод перед десериализацией.
+* ```OnDeserialized``` метод после десериализации.
+
+Пример использования атрибутов ```OnSerializing``` и ```OnDeserialized```:
+```c#
+[DataContract]
+public class Person
+{
+    // специальная коллекция не подлежащая сериализации
+    private SerializationUnfriendlyType addresses;
+
+    // коллекция подлежащая сериализации
+    [DataMember(Name = "Addresses")]
+    private SerializationFriendlyType _serializationFriendlyAddresses;
+    public SerializationFriendlyType Addresses
+    {
+        get { return _serializationFriendlyAddresses; }
+        set { _serializationFriendlyAddresses = value; }
+    }
+
+    // запускается перед сериализацией
+    [OnSerializing]
+    private void prepareForSerialization(StreamingContext sc)
+    {
+        // ***копирование addresses в _serializationFriendlyAddresses***
+        // addresses = new SerializationUnfriendlyType
+        // {
+        //     new Address { Street = "Voronezh",  Postcode = "394000" },
+        //     new Address { Street = "Penza",     Postcode = "440000" }
+        // };
+        // addresses.ForEach(a => _serializationFriendlyAddresses.Add(a));
+    }
+
+    // запускается после десериализации
+    [OnDeserialized]
+    private void completeDeserialization(StreamingContext sc)
+    {
+        // ***копирование _serializationFriendlyAddresses в addresses***
+        // addresses = new SerializationUnfriendlyType();
+        // _serializationFriendlyAddresses.ForEach(a => addresses.Add(a));
+    }
+}
+```
+Инициализация экземпляра исходными значениями:
+```c#
+var person = new Person
+{
+    Addresses = new SerializationFriendlyType
+    {
+        new Address { Street = "Yaroslavl", Postcode = "150000" }
+    }
+};
+```
+Результат после сериализации:
+```xml
+...
+    <Addresses>
+        <Address>
+            <Postcode>150000</Postcode>
+            <Street>Yaroslavl</Street>
+        </Address>
+        <Address>
+            <Postcode>394000</Postcode>
+            <Street>Voronezh</Street>
+        </Address>
+        <Address>
+            <Postcode>440000</Postcode>
+            <Street>Penza</Street>
+        </Address>
+    </Addresses>
+...
+```
+
+Метод ```OnSerializing``` может применяться для условной сериализации полей:
+```c#
+[DataContract]
+public class Test
+{
+    // не подлежит сериализации
+    public DateTime DateOfBirth;
+
+    [DataMember] public bool Confidential;
+
+    // условно сериализируется
+    [DataMember(Name = "DateOfBirth", EmitDefaultValue = false)] // исключать значение по умолчанию
+    DateTime? _tempDateOfBirth;
+
+    // запускается перед сериализацией
+    [OnSerializing]
+    void prepareForSerialization(StreamingContext sc)
+    {
+        if (Confidential)
+            _tempDateOfBirth = DateOfBirth;
+        else
+            _tempDateOfBirth = null;
+    }
+}
+```
+
+Метод ```OnDeserializing``` может применяться как псевдоконструктор для
+десериализации и инициализации полей исключённых из сериализации
+(десериализаторы контрактов данных пропускают инициализаторы полей и
+конструкторы):
+```c#
+[DataContract]
+public class Test
+{
+    bool _editable = true;
+    public Test() { _editable = true; }
+    
+    // запускается перед десериализацией
+    [OnDeserializing]
+    void init(StreamingContext sc)
+    {
+        _editable = true;
+    }
+}
+```
+*без метода ```OnDeserializing``` поле ```_editable``` в десериализированном экземпляре
+всегда будет ```false```
+
+Подтипы могут реализовывать свои версии методов ловушек сериализации и десериализации.
