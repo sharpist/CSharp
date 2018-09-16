@@ -1,4 +1,36 @@
-﻿_______________________________________________________________________________
+﻿"С е р и а л и з а т о р    к о н т р а к т о в    д а н н ы х"
+
+#### Содержание: ####
+
+[Сериализатор контрактов данных](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Сериализатор-контрактов-данных)
+
+[Работа с сериализатором](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Работа-с-сериализатором)
+
+[Указание двоичного форматера](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Указание-двоичного-форматера)
+
+[Сериализация подклассов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Сериализация-подклассов)
+
+[Объектные ссылки](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Объектные-ссылки)
+
+[Предохранение объектных ссылок](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Предохранение-объектных-ссылок)
+
+[Переносимость версий](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Переносимость-версий)
+
+[Упорядочение членов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Упорядочение-членов)
+
+[Пустые значения и null](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Пустые-значения-и-null)
+
+[Коллекции](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Коллекции)
+
+[Подклассы в качестве элементов коллекций](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Подклассы-в-качестве-элементов-коллекций)
+
+[Настройка имён коллекции и элементов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Настройка-имён-коллекции-и-элементов)
+
+[Расширение контрактов данных](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Расширение-контрактов-данных)
+
+[Взаимодействие через Serializable](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/DataContractSerializer.md#Взаимодействие-через-serializable)
+
+_______________________________________________________________________________
 # Сериализатор контрактов данных
 _______________________________________________________________________________
 
