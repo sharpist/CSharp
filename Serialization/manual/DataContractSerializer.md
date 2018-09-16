@@ -1,4 +1,4 @@
-﻿## С е р и а л и з а т о р&nbsp;&nbsp;&nbsp;к о н т р а к т о в&nbsp;&nbsp;&nbsp;д а н н ы х
+﻿## С е р и а л и з а т о р&nbsp;&nbsp;&nbsp;&nbsp;к о н т р а к т о в&nbsp;&nbsp;&nbsp;&nbsp;д а н н ы х
 
 #### Содержание: ####
 
