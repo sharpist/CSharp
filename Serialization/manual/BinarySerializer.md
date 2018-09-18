@@ -48,7 +48,7 @@ public sealed class Person
 экземпляра класса форматера (BinaryFormatter или SoapFormatter), предоставляющего
 базовую функциональность для форматеров сериализации среды CLR:
 * сериализированные данные содержат полные сведения о типе и сборке.
-* десериализатор пропускает все конструкторы.
+* десериализатор пропускает инициализаторы полей и конструкторы.
 * десериализатор полностью восстанавливает объектные ссылки. В том числе,
 распространяется на коллекции (которые в пространстве имён ```System.Collections.*```
 отмечены как сериализируемые).
@@ -87,4 +87,116 @@ using (var stream = File.OpenRead("person.bin"))
 _______________________________________________________________________________
 # Атрибуты двоичной сериализации
 _______________________________________________________________________________
+
+Атрибут ```NonSerialized``` регистрирует поле, которое не должно сериализироваться.
+Несериализированные участники при десериализации получают пустое значение или null,
+инициализаторы полей и конструкторы игнорируются:
+```c#
+[Serializable]
+public sealed class Person
+{
+    public string Name;
+    public DateTime DateOfBirth;
+
+    [NonSerialized] // поле Age вычисляется
+    // нет необходимости в его сериализации
+    public int Age;
+}
+```
+
+#### Ловушки сериализации и десериализации: ####
+
+Группа атрибутов для pre/post вызова служебных (закрытых) методов, выполняющих
+обработку, выходящих за рамки сериализации, участников класса.
+
+* ```OnDeserializing``` метод перед десериализацией.
+* ```OnDeserialized``` метод после десериализации.
+
+Метод ```OnDeserializing``` может применяться как псевдоконструктор для
+десериализации и инициализации полей исключённых из сериализации.
+
+Например, в классе Person, задействованы ```OnDeserializing``` и ```OnDeserialized``` методы для
+установки требуемого значения поля ```Valid``` и инициализации вычисляемого поля ```Age```
+соответственно, в десериализированном экземпляре:
+```c#
+[Serializable]
+public sealed class Person
+{
+    public string Name;
+    public DateTime DateOfBirth;
+
+    [NonSerialized] // поле Age вычисляется
+    // нет необходимости в его сериализации
+    public int Age;
+
+    [NonSerialized] // после десериализации
+    // поле Valid = false сбросив 2 попытки
+    public bool Valid = true;
+    public Person() { Valid = true; }
+
+
+    [OnDeserializing] // теперь поле Valid = true
+    void OnDeserializing(StreamingContext sc)
+    {
+        Valid = true;
+    }
+
+    [OnDeserialized] // вычисление поля Age
+    void OnDeserialized(StreamingContext sc)
+    {
+        TimeSpan ts = DateTime.Now - DateOfBirth;
+        Age = ts.Days / 365;
+    }
+}
+```
+
+* ```OnSerializing``` метод перед сериализацией.
+* ```OnSerialized``` метод после сериализации.
+
+Метод ```OnSerializing``` может применяться для условной сериализации полей.
+
+Например, класс ```Team```, способен сериализироваться и десериализироваться только с
+двоичным форматером, так как SOAP форматер не поддерживает сериализацию
+обобщённых типов:
+```c#
+[Serializable]
+public sealed class Team
+{
+    public string Name;
+    public List<Person> Players = new List<Person>();
+}
+```
+Можно перед сериализацией преобразовать список ```Players``` в массив,
+используя ```OnSerializing``` метод.
+После десериализации выполнить обратное преобразование, применив ```OnSerialized```
+метод:
+```c#
+[Serializable]
+public sealed class Team
+{
+    public string Name;
+    [NonSerialized] // поле Players
+    // не подлежит сериализации
+    public List<Person> Players = new List<Person>();
+
+    // поле для хранения массива
+    Person[] _playersToSerialize;
+
+
+    [OnSerializing] void OnSerializing(StreamingContext sc)
+    {
+        _playersToSerialize = Players.ToArray();
+    }
+
+    [OnSerialized] void OnSerialized(StreamingContext sc)
+    {
+        _playersToSerialize = null;
+    }
+
+    [OnDeserialized] void OnDeserialized(StreamingContext sc)
+    {
+        Players = new List<Person>(_playersToSerialize);
+    }
+}
+```
 
