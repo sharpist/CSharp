@@ -8,7 +8,7 @@
 
 [Интерфейс ISerializable двоичной сериализации](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/BinarySerializer.md#Интерфейс-iserializable-двоичной-сериализации)
 
-[Особенности сериализации подклассов](https://github.com/)
+[Особенности сериализации подклассов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/BinarySerializer.md#Особенности-сериализации-подклассов)
 _______________________________________________________________________________
 # Двоичный сериализатор
 _______________________________________________________________________________
@@ -153,8 +153,7 @@ public sealed class Person
 * ```OnSerializing``` метод перед сериализацией.
 * ```OnSerialized``` метод после сериализации.
 
-Метод ```OnSerializing``` может применяться для условной и превентивной
-сериализации полей.
+Метод ```OnSerializing``` может применяться для превентивной сериализации полей.
 
 Например, класс ```Team```, способен сериализироваться и десериализироваться только с
 двоичным форматером, так как SOAP форматер не поддерживает сериализацию
@@ -267,9 +266,6 @@ public virtual void GetObjectData(SerializationInfo si,
     si.AddValue("DateOfBirth", DateOfBirth);
 }
 ```
-*метод объявлен как ```virtual``` и подклассам не обязательно реализовывать
-интерфейс для расширения сериализации
-
 При помощи интерфейса ```ISerializable``` достигнута совместимость с SOAP форматером:
 ```c#
 [Serializable]
@@ -277,7 +273,6 @@ public class Team : ISerializable
 {
     public string Name;
     public List<Person> Players;
-
 
     public virtual void GetObjectData(SerializationInfo si,
                                        StreamingContext sc)
@@ -305,7 +300,6 @@ public class Team : ISerializable
 ```c#
 public string NewName;
 ...
-
 
 public virtual void GetObjectData(SerializationInfo si,
                                    StreamingContext sc)
