@@ -6,7 +6,7 @@
 
 [Атрибуты двоичной сериализации](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/BinarySerializer.md#Атрибуты-двоичной-сериализации)
 
-[...](https://github.com/)
+[Интерфейс ISerializable двоичной сериализации](https://github.com/)
 
 [...](https://github.com/)
 _______________________________________________________________________________
@@ -239,3 +239,87 @@ public sealed class Person
 
 Двоичный форматер предоставляет лучшую поддержку версий при двухсторонних
 коммуникациях.
+_______________________________________________________________________________
+# Интерфейс ```ISerializable``` двоичной сериализации
+_______________________________________________________________________________
+
+Интерфейс ```ISerializable``` расширяет контроль над двоичной сериализацией и
+десериализацией, при помощи определения единственного метода ```GetObjectData```,
+который, при сериализации, наполняет объект ```SerializationInfo``` данными из
+сериализируемых полей:
+```c#
+public interface ISerializable
+{
+    void GetObjectData(SerializationInfo info, StreamingContext context);
+}
+```
+#### Реализация интерфейса ```ISerializable```: ####
+
+Тип, управляющий собственной сериализацией, должен предоставить метод
+```GetObjectData``` и конструктор десериализации:
+```c#
+public virtual void GetObjectData(SerializationInfo si,
+                                   StreamingContext sc)
+{
+    // пары "имя/значение"
+    // для сериализируемых полей
+    si.AddValue("Name", Name);
+    si.AddValue("DateOfBirth", DateOfBirth);
+}
+```
+*метод объявлен как ```virtual``` и подклассам не обязательно реализовывать
+интерфейс для расширения сериализации
+
+При помощи интерфейса ```ISerializable``` достигнута совместимость с SOAP форматером:
+```c#
+[Serializable]
+public class Team : ISerializable
+{
+    public string Name;
+    public List<Person> Players;
+
+
+    public virtual void GetObjectData(SerializationInfo si,
+                                       StreamingContext sc)
+    {
+        si.AddValue("Name", Name);
+        si.AddValue("PlayerData", Players.ToArray());
+    }
+
+    public Team() { }
+    // конструктор десериализации
+    protected Team(SerializationInfo si,
+                    StreamingContext sc)
+    {
+        Name = si.GetString("Name");
+        // десериализировать Players в массив для соответствия сериализации
+        var array = (Person[])si.GetValue("PlayerData", typeof(Person[]));
+        // сконструировать новый список
+        Players = new List<Person>(array);
+    }
+}
+```
+
+В ```Get*``` методах класса ```SerializationInfo``` для предупреждения несовпадения
+версий получаемых по имени данных, можно ввести свою систему нумерации версий:
+```c#
+public string NewName;
+...
+
+
+public virtual void GetObjectData(SerializationInfo si,
+                                   StreamingContext sc)
+{
+    si.AddValue("version", 2);
+    si.AddValue("NewName", NewName);
+    ...
+}
+
+// конструктор десериализации
+protected Team(SerializationInfo si,
+                StreamingContext sc)
+{
+    int version = si.GetInt32("version");
+    if (version >= 2) NewName = si.GetString("NewName");
+}
+```
