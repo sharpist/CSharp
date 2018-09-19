@@ -6,9 +6,9 @@
 
 [Атрибуты двоичной сериализации](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/BinarySerializer.md#Атрибуты-двоичной-сериализации)
 
-[Интерфейс ISerializable двоичной сериализации](https://github.com/)
+[Интерфейс ISerializable двоичной сериализации](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/BinarySerializer.md#Интерфейс-iserializable-двоичной-сериализации)
 
-[...](https://github.com/)
+[Особенности сериализации подклассов](https://github.com/)
 _______________________________________________________________________________
 # Двоичный сериализатор
 _______________________________________________________________________________
@@ -321,5 +321,72 @@ protected Team(SerializationInfo si,
 {
     int version = si.GetInt32("version");
     if (version >= 2) NewName = si.GetString("NewName");
+    ...
+}
+```
+_______________________________________________________________________________
+# Особенности сериализации подклассов
+_______________________________________________________________________________
+
+Если сериализируемый класс, вместо реализации интерфейса ```ISerializable```
+изначально полагается на атрибуты для сериализации, не являясь при этом
+запечатанным, тогда отложенная реализация интерфейса ```ISerializable``` может
+нарушать сериализацию экземпляров его подклассов.
+
+Поскольку, реализации метода ```ISerializable.GetObjectData``` в базовом классе
+ничего не известно об участниках производного класса, в котором к тому же
+отсутствует конструктор десериализации:
+```c#
+[Serializable]
+public class Person : ISerializable
+{
+    public string Name;
+    public int Age;
+
+    public virtual void GetObjectData(SerializationInfo si,
+                                       StreamingContext sc)
+    {
+        si.AddValue("Name", Name);
+        si.AddValue("Age", Age);
+    }
+
+    protected Person(SerializationInfo si,
+                      StreamingContext sc)
+    {
+        Name = si.GetString("Name");
+        Age = si.GetInt32("Age");
+    }
+    public Person() { }
+}
+
+[Serializable]
+public sealed class Customer : Person
+{
+    // поле Group не сохраняется в потоке!
+    public string Group;
+}
+```
+Проблема решается изначальной реализацией интерфейса ```ISerializable``` в
+сериализируемых незапечатанных классах:
+```c#
+[Serializable]
+public class Customer : Person
+{
+    public string Group;
+
+    public override void GetObjectData(SerializationInfo si,
+                                        StreamingContext sc)
+    {
+        base.GetObjectData(si, sc);
+        si.AddValue("Group", Group);
+    }
+
+    protected Customer(SerializationInfo si,
+                        StreamingContext sc)
+        : base(si, sc)
+    {
+        Group = si.GetString("Group");
+    }
+    public Customer() { }
 }
 ```
