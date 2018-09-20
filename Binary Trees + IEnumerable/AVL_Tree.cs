@@ -5,25 +5,23 @@
     /// The implementation of C# version is made by Alexander Usov.
     /// A copy with the link please. :)
     /// </summary>
-    private class Node
+    private sealed class Node
     {
-        public sbyte Height;
+        public TKey   Key   { get; } = default;
+        public TValue Value { get; } = default;
 
-        public TKey   Key                 = default;
-        public TValue Value { get; set; } = default;
-
-        public Node Left  { get; set; }
-        public Node Right { get; set; }
+        public Node  Left   { get; set; }
+        public Node  Right  { get; set; }
+        public sbyte Height { get; set; }
 
         public Node(TKey key, TValue value)
         {
-            this.Height = 1;
-
             this.Key   = key;
             this.Value = value;
 
-            this.Left  = null;
-            this.Right = null;
+            this.Left   = null;
+            this.Right  = null;
+            this.Height = 1;
         }
     }
 
