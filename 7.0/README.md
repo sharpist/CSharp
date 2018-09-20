@@ -108,6 +108,22 @@ public class Point
 var p = new Point(3.14, 2.71);
 (double X, double Y) = p;
 ```
+ƒопустимы перегруженные версии методов Deconstruct с различными out
+параметрами:
+```c#
+public void Deconstruct(out double x, out double y, out double z)
+{
+    x = this.X;
+    y = this.Y;
+    z = this.Z;
+}
+```
+ѕри этом, определЄнному объ€влению кортежа всегда сопоставл€етс€
+соответствующа€ перегрузка:
+```c#
+var p = new Point(3.14, 2.71, 1.55);
+var (X, Y, Z) = p;
+```
 ___________________________________________________________________
 ##			"ѕустые переменные"
 
