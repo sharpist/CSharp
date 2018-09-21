@@ -7,25 +7,25 @@
     /// </summary>
     sealed class node
     {
-        public sbyte Height;
-        public node  Left, Right;
-
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
 
+        public sbyte Height;
+        public node  Left, Right;
+
         public node(TKey key, TValue value)
         {
-            Height = 1; Left = Right = null;
-
             Key   = key;
             Value = value;
+
+            Height = 1; Left = Right = null;
         }
     }
     node root;
 
-    int height(node p)  => p != null ? p.Height : 0;
+    int height(node p) => p != null ? p.Height : 0;
     int bfactor(node p) => height(p.Right) - height(p.Left);
-    void fheight(node p)
+    void fixheight(node p)
     {
         int hl = height(p.Left),
             hr = height(p.Right);
@@ -37,8 +37,8 @@
         node p  = q.Right;
         q.Right = p.Left;
         p.Left  = q;
-        fheight(q);
-        fheight(p);
+        fixheight(q);
+        fixheight(p);
         return p;
     }
     node rotateright(node p) // right rotation around p
@@ -46,13 +46,13 @@
         node q  = p.Left;
         p.Left  = q.Right;
         q.Right = p;
-        fheight(p);
-        fheight(q);
+        fixheight(p);
+        fixheight(q);
         return q;
     }
     node balance(node p)     // node balancing p
     {
-        fheight(p);
+        fixheight(p);
         if (bfactor(p) == -2)
         {
             if (bfactor(p.Left) > 0)
@@ -93,29 +93,29 @@
         }
         this.root = insert(this.root, key, value);
     }
-
     public string Traverse()
     {
         string traverse(node p)
         {
             var result = System.String.Empty;
-
             if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
+
             if (p.Left != null) result = traverse(p.Left);
+
             result += $"{p.Value.ToString()}\n";
+
             if (p.Right != null) result += traverse(p.Right);
             return result;
         }
         return traverse(this.root);
     }
-
     public TValue Find(TKey key)
     {
         TValue find(node p, TKey k)
         {
             TValue result = default;
-
             if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
+
             if (p.Key.Equals(k)) return p.Value;
             else
             {
@@ -128,7 +128,6 @@
         }
         return find(this.root, key);
     }
-
     public void Remove(TKey key)
     {
         node remove(node p, TKey k)
@@ -160,7 +159,6 @@
         p.Left = removemin(p.Left);
         return balance(p);
     }
-
     public bool IsEmpty() => this.root == null;
 }
 
