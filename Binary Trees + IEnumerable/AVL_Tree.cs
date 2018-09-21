@@ -5,71 +5,67 @@
     /// The implementation of C# version is made by Alexander Usov.
     /// A copy with the link please. :)
     /// </summary>
-    private sealed class Node
+    sealed class node
     {
+        public sbyte Height;
+        public node  Left, Right;
+
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
 
-        public Node  Left   { get; set; }
-        public Node  Right  { get; set; }
-        public sbyte Height { get; set; }
-
-        public Node(TKey key, TValue value)
+        public node(TKey key, TValue value)
         {
-            this.Key   = key;
-            this.Value = value;
+            Height = 1; Left = Right = null;
 
-            this.Left   = null;
-            this.Right  = null;
-            this.Height = 1;
+            Key   = key;
+            Value = value;
         }
     }
+    node root;
 
-    private Node root;
-
-    private sbyte height(Node p)        => (sbyte)(p != null ? p.Height : 0);
-    private sbyte balanceFactor(Node p) => (sbyte)(height(p.Right) - height(p.Left));
-    private void  fixHeight(Node p)
+    int height(node p)  => p != null ? p.Height : 0;
+    int bfactor(node p) => height(p.Right) - height(p.Left);
+    void fheight(node p)
     {
-        var hl = height(p.Left);
-        var hr = height(p.Right);
+        int hl = height(p.Left),
+            hr = height(p.Right);
         p.Height = (sbyte)((hl > hr ? hl : hr) + 1);
     }
 
-    private Node rotateRight(Node p) // right rotation around p
+    node rotateleft(node q)  // left rotation around q
     {
-        Node q  = p.Left;
-        p.Left  = q.Right;
-        q.Right = p;
-        fixHeight(p);
-        fixHeight(q);
-        return q;
-    }
-    private Node rotateLeft(Node q)  // left rotation around q
-    {
-        Node p  = q.Right;
+        node p  = q.Right;
         q.Right = p.Left;
         p.Left  = q;
-        fixHeight(q);
-        fixHeight(p);
+        fheight(q);
+        fheight(p);
         return p;
     }
-    private Node balance(Node p)     // node balancing p
+    node rotateright(node p) // right rotation around p
     {
-        fixHeight(p);
-        if (balanceFactor(p) == 2)
+        node q  = p.Left;
+        p.Left  = q.Right;
+        q.Right = p;
+        fheight(p);
+        fheight(q);
+        return q;
+    }
+    node balance(node p)     // node balancing p
+    {
+        fheight(p);
+        if (bfactor(p) == -2)
         {
-            if (balanceFactor(p.Right) < 0)
-                p.Right = rotateRight(p.Right);
-            return rotateLeft(p);
+            if (bfactor(p.Left) > 0)
+                p.Left = rotateleft(p.Left);
+            return rotateright(p);
         }
-        if (balanceFactor(p) == -2)
+        if (bfactor(p) == 2)
         {
-            if (balanceFactor(p.Left) > 0)
-                p.Left = rotateLeft(p.Left);
-            return rotateRight(p);
+            if (bfactor(p.Right) < 0)
+                p.Right = rotateright(p.Right);
+            return rotateleft(p);
         }
-        return p;                    // balancing isn't needed
+        return p;            // balancing isn't needed
     }
     /// <summary>
     ///                     [4] Александр
@@ -84,71 +80,87 @@
     ///                              /                /           \
     ///                   Катерина [5]      Дмитрий [8]          [10] Ольга
     /// </summary>
-    public void Insert(TKey key, TValue value) => this.root = insert(this.root, key, value);
-    private Node insert(Node p, TKey key, TValue value)
+    public void Insert(TKey key, TValue value)
     {
-        if (p == null) return new Node(key, value);
-        if (p.Key.CompareTo(key) > 0)
-            p.Left = insert(p.Left, key, value);
-        else
-            p.Right = insert(p.Right, key, value);
-        return balance(p);
-    }
-    public string Traverse() => traverse(this.root);
-    private string traverse(Node p)
-    {
-        var result = System.String.Empty;
-
-        if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
-        if (p.Left != null) result = traverse(p.Left);
-        result += $"{p.Value.ToString()}\n";
-        if (p.Right != null) result += traverse(p.Right);
-        return result;
-    }
-    public TValue Find(TKey key) => find(this.root, key);
-    private TValue find(Node p, TKey key)
-    {
-        TValue result = default;
-
-        if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
-        if (p.Key.Equals(key)) return p.Value;
-        else
+        node insert(node p, TKey k, TValue v)
         {
-            if (p.Left != null)
-                if (p.Key.CompareTo(key) > 0) return find(p.Left, key);
-            if (p.Right != null)
-                if (p.Key.CompareTo(key) < 0) return find(p.Right, key);
+            if (p == null) return new node(k, v);
+            if (p.Key.CompareTo(k) > 0)
+                p.Left = insert(p.Left, k, v);
+            else
+                p.Right = insert(p.Right, k, v);
+            return balance(p);
         }
-        return result;
+        this.root = insert(this.root, key, value);
     }
-    public void Remove(TKey key) => this.root = remove(this.root, key);
-    private Node remove(Node p, TKey key)
+
+    public string Traverse()
     {
-        if (p == null) return default;
-        if (p.Key.CompareTo(key) > 0)
-            p.Left = remove(p.Left, key);
-        else if (p.Key.CompareTo(key) < 0)
-            p.Right = remove(p.Right, key);
-        else
+        string traverse(node p)
         {
-            Node q = p.Left;
-            Node r = p.Right;
-            p = null;
-            if (r == null) return q;
-            Node min  = findMin(r);
-            min.Right = removeMin(r);
-            min.Left  = q;
-            return balance(min);
+            var result = System.String.Empty;
+
+            if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
+            if (p.Left != null) result = traverse(p.Left);
+            result += $"{p.Value.ToString()}\n";
+            if (p.Right != null) result += traverse(p.Right);
+            return result;
         }
-        return balance(p);
+        return traverse(this.root);
     }
-    private Node findMin(Node p) => p.Left != null ? findMin(p.Left) : p;
-    private Node removeMin(Node p)
+
+    public TValue Find(TKey key)
+    {
+        TValue find(node p, TKey k)
+        {
+            TValue result = default;
+
+            if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
+            if (p.Key.Equals(k)) return p.Value;
+            else
+            {
+                if (p.Left != null)
+                    if (p.Key.CompareTo(k) > 0) return find(p.Left, k);
+                if (p.Right != null)
+                    if (p.Key.CompareTo(k) < 0) return find(p.Right, k);
+            }
+            return result;
+        }
+        return find(this.root, key);
+    }
+
+    public void Remove(TKey key)
+    {
+        node remove(node p, TKey k)
+        {
+            if (p == null) return default;
+            if (p.Key.CompareTo(k) > 0)
+                p.Left = remove(p.Left, k);
+            else if (p.Key.CompareTo(k) < 0)
+                p.Right = remove(p.Right, k);
+            else // p.Key == k
+            {
+                node q = p.Left;
+                node r = p.Right;
+                p = null;
+                if (r == null) return q;
+                node min  = findmin(r);
+                min.Right = removemin(r);
+                min.Left  = q;
+                return balance(min);
+            }
+            return balance(p);
+        }
+        this.root = remove(this.root, key);
+    }
+    node findmin(node p) => p.Left != null ? findmin(p.Left) : p;
+    node removemin(node p)
     {
         if (p.Left == null) return p.Right;
-        p.Left = removeMin(p.Left);
+        p.Left = removemin(p.Left);
         return balance(p);
     }
+
     public bool IsEmpty() => this.root == null;
 }
 
@@ -181,12 +193,10 @@ class Program
         Полина
         Ольга
         */
-
-        System.Console.WriteLine(avl.Find(5));
+        System.Console.WriteLine(avl.Find(5) + "\n");
         /* Output results found by key:
         Катерина
         */
-
         avl.Remove(1);
         avl.Remove(2);
         System.Console.WriteLine(avl.Traverse());
