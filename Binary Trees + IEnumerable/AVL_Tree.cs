@@ -98,35 +98,30 @@
         string traverse(node p)
         {
             var result = System.String.Empty;
-            if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
 
             if (p.Left != null) result = traverse(p.Left);
-
             result += $"{p.Value.ToString()}\n";
-
             if (p.Right != null) result += traverse(p.Right);
+
             return result;
         }
-        return traverse(this.root);
+        return this.root != null ?
+            traverse(this.root) : throw new System.Exception("Binary tree doesn't contain elements!");
     }
     public TValue Find(TKey key)
     {
         TValue find(node p, TKey k)
         {
-            TValue result = default;
-            if (p == null) throw new System.Exception("Binary tree doesn't contain elements!");
-
             if (p.Key.Equals(k)) return p.Value;
-            else
-            {
-                if (p.Left != null)
-                    if (p.Key.CompareTo(k) > 0) return find(p.Left, k);
-                if (p.Right != null)
-                    if (p.Key.CompareTo(k) < 0) return find(p.Right, k);
-            }
-            return result;
+
+            if (p.Left != null)
+                if (p.Key.CompareTo(k) > 0) return find(p.Left, k);
+            if (p.Right != null)
+                if (p.Key.CompareTo(k) < 0) return find(p.Right, k);
+            return default;
         }
-        return find(this.root, key);
+        return this.root != null ?
+            find(this.root, key) : throw new System.Exception("Binary tree doesn't contain elements!");
     }
     public void Remove(TKey key)
     {
