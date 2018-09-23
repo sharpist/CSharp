@@ -2,7 +2,7 @@
 
 #### Содержание: ####
 
-[XML сериализатор](https://github.com/)
+[XML сериализатор](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#xml-сериализатор)
 
 [...]()
 
