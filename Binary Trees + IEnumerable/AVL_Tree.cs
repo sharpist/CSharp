@@ -102,7 +102,6 @@
             if (p.Left != null) result = traverse(p.Left);
             result += $"{p.Value.ToString()}\n";
             if (p.Right != null) result += traverse(p.Right);
-
             return result;
         }
         return this.root != null ?
@@ -113,12 +112,10 @@
         TValue find(node p, TKey k)
         {
             if (p.Key.Equals(k)) return p.Value;
-
-            if (p.Left != null)
-                if (p.Key.CompareTo(k) > 0) return find(p.Left, k);
-            if (p.Right != null)
-                if (p.Key.CompareTo(k) < 0) return find(p.Right, k);
-            return default;
+            if (p.Key.CompareTo(k) > 0)
+                return (p.Left != null) ? find(p.Left, k) : default;
+            else
+                return (p.Right != null) ? find(p.Right, k) : default;
         }
         return this.root != null ?
             find(this.root, key) : throw new System.Exception("Binary tree doesn't contain elements!");
