@@ -67,7 +67,7 @@ _______________________________________________________________________________
 передачи через сетевые сокеты.
 * слабая переносимость версий.
 
-#### [Сериализация XML](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#xml-сериализатор): ####
+#### [XML сериализация](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#xml-сериализатор): ####
 Необходимые классы определены в пространстве имён ```System.Xml.Serialization```.
 Управлять сериализацией и десериализацией экземпляров класса, выполняемой
 ```XmlSerializer```, можно через применение к классам и их членам специальных
