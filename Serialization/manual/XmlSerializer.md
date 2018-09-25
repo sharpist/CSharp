@@ -4,9 +4,9 @@
 
 [XML сериализатор](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#xml-сериализатор)
 
-[Атрибуты XML сериализации]()
+[Атрибуты XML сериализации](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Атрибуты-xml-сериализации)
 
-[...]()
+[Упорядочение XML-элементов]()
 
 [...]()
 _______________________________________________________________________________
@@ -89,5 +89,69 @@ XML сериализатор может работать с большинств
 * любой тип коллекции.
 _______________________________________________________________________________
 # Атрибуты XML сериализации
+_______________________________________________________________________________
+
+Изначально участники класса сериализируются стандартно в XML-элементы:
+```xml
+<Person ... >
+    <Name>Alexander</Name>
+    <Age>32</Age>
+</Person>
+```
+Предусматривается возможность принудительного включения в XML-атрибут с помощью
+атрибута ```XmlAttribute```:
+```c#
+public class Person
+{
+    [XmlAttribute] public string Name;
+    [XmlAttribute] public int Age;
+
+    [XmlElement] // по умолчанию
+    public System.DateTime DateOfBirth;
+}
+```
+Результат:
+```xml
+<Person Age="32"
+        Name="Alexander"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <DateOfBirth>0001-01-01T00:00:00</DateOfBirth>
+</Person>
+```
+
+Дополнительно можно назначить имя для элемента/атрибута:
+```c#
+public class Person
+{
+    [XmlAttribute("FirstName")] public string Name;
+    [XmlAttribute("RoughAge")] public int Age;
+
+    [XmlElement("DOB")]
+    public System.DateTime DateOfBirth;
+}
+```
+Заданы специальные имена:
+```xml
+<Person RoughAge="32"
+        FirstName="Alexander"
+        ... >
+    <DOB>0001-01-01T00:00:00</DOB>
+</Person>
+```
+
+Так как, по умолчанию XML сериализатор не заполняет стандартное пространство
+имён, для его указания атрибутам ```XmlElement``` и ```XmlAttribute``` назначается
+соответствующий аргумент ```Namespace```.
+
+Также, с применением атрибута ```XmlRoot```, можно выбрать имя и пространство имён
+типу:
+```c#
+[XmlRoot("Candidate", Namespace = "http://mynamespace/test/")]
+public class Person
+{ ... }
+```
+_______________________________________________________________________________
+# Упорядочение XML-элементов
 _______________________________________________________________________________
 
