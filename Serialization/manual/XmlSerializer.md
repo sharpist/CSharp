@@ -8,7 +8,7 @@
 
 [Упорядочение XML-элементов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Упорядочение-xml-элементов)
 
-[Подклассы]()
+[Подклассы](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Подклассы)
 
 [...]()
 
@@ -180,8 +180,120 @@ public class Person
 </Person>
 ```
 Порядок следования элементов не оказывает влияния на десериализацию, при любой
-установленной последовательности тип будет гарантировано десериализирован.
+установленной последовательности тип будет гарантированно десериализирован.
 _______________________________________________________________________________
 # Подклассы
 _______________________________________________________________________________
+
+#### Создание подкласcов из корневого типа: ####
+
+Корневой тип имеет два подкласса ```Student``` и ```Teacher```:
+```c#
+public class Person { public string Name; }
+public class Student : Person { }
+public class Teacher : Person { }
+```
+
+Класс ```Person``` включает реализацию метода сериализации корневого типа:
+```c#
+public class Person
+{
+    public string Name;
+
+    public void SerializePerson(Person p, string path)
+    {
+        var xs = new XmlSerializer(typeof(Person));
+        using (var s = File.Create(path))
+            xs.Serialize(s, p);
+    }
+}
+...
+```
+
+Но для того, чтобы включённый метод работал также с объектом типа ```Student``` или
+```Teacher```, требуется задекларировать существующие подклассы для экземпляра типа
+```XmlSerializer```.
+
+Установить атрибут ```XmlInclude``` указывающий на подклассы:
+```c#
+[XmlInclude(typeof(Student))]
+[XmlInclude(typeof(Teacher))]
+public class Person
+{ ... }
+```
+Или регистрировать подтипы при конструировании экземпляра ```XmlSerializer```:
+```c#
+var xs = new XmlSerializer(typeof(Person),
+    new System.Type[] { typeof(Student), typeof(Teacher) });
+```
+
+Демонстрация:
+```c#
+var p = new Person();
+var s = new Student { Name = "Alexander" };
+...
+s.SerializePerson(s, "person.xml");
+```
+И результат:
+```xml
+<Person xsi:type="Student"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <Name>Alexander</Name>
+</Person>
+```
+*подтип помещён в атрибут ```type```
+
+Исследуя атрибут десериализатор создаст объект соответствующего типа ```Student```
+вместо ```Person```.
+
+Имя типа в XML-атрибуте ```type``` можно переназначать применяя к подклассу атрибут
+```XmlType```:
+```c#
+...
+[XmlType("Candidate")]
+public class Student : Person { }
+```
+
+#### Сериализация дочерних объектов: ####
+
+XML сериализатор автоматически рекурсивно обрабатывает все объектные ссылки:
+```c#
+public class Person
+{
+    public string Name;
+    // поле HomeAddress – объектная ссылка
+    public Address HomeAddress = new Address();
+    ...
+}
+
+public class Address { public string Street, PostCode; }
+```
+
+Выполнив инициализацию следующим образом:
+```c#
+var p = new Person { Name = "Alexander" };
+p.HomeAddress.Street = "prospect Dzerzhinsky";
+p.HomeAddress.PostCode = "150044";
+```
+Получаем вывод:
+```xml
+<Person ... >
+    <Name>Alexander</Name>
+    <HomeAddress>
+        <Street>prospect Dzerzhinsky</Street>
+        <PostCode>150044</PostCode>
+    </HomeAddress>
+</Person>
+```
+
+В ситуациях, когда два и более поля или свойства ссылаются на один идентичный
+объект, данный объект сериализируется многократно.
+
+Следовательно, если предохранение объектных ссылок критично важно, нужен другой
+механизм сериализации.
+
+XML сериализация не обеспечивает предохранение объектных ссылок.
+
+#### Создание подклассов из дочерних объектов: ####
 
