@@ -297,3 +297,61 @@ XML сериализация не обеспечивает предохране�
 
 #### Создание подклассов из дочерних объектов: ####
 
+Класс ```Person``` ссылается на подклассы ```Address```:
+```c#
+public class Person
+{
+    public string Name;
+    public Address HomeAddress = new USAddress();
+}
+
+public class Address { public string Street, PostCode; }
+public class USAddress : Address { }
+public class AUAddress : Address { }
+```
+Выполнить сериализацию класса ```Person```, в зависимости от требуемой формы
+взаимодействия и структуры XML, можно различными способами. 
+
+Чтобы имя XML-элемента соответствовало имени поля или свойства с подтипом,
+записанным в атрибуте ```type```:
+```xml
+<Person ... >
+    ...
+    <HomeAddress xsi:type="USAddress">
+        ...
+    </HomeAddress>
+</Person>
+```
+Необходимо добавить атрибут ```XmlInclude``` для декларирования подклассов с классом
+```Address```:
+```c#
+[XmlInclude(typeof(USAddress))]
+[XmlInclude(typeof(AUAddress))]
+public class Address { public string Street, PostCode; }
+...
+```
+
+Чтобы имя XML-элемента соотносилось с именем подтипа:
+```xml
+<Person ... >
+    ...
+    <USAddress>
+        ...
+    </USAddress>
+</Person>
+```
+Следует добавить атрибут ```XmlElement``` полю или свойству базового класса:
+```c#
+public class Person
+{
+    public string Name;
+    [XmlElement("Address", typeof(Address))]
+    [XmlElement("USAddress", typeof(USAddress))]
+    [XmlElement("AUAddress", typeof(AUAddress))]
+    public Address HomeAddress = new USAddress();
+}
+```
+*если в атрибуте ```XmlElement``` не указано имя, берётся стандартное имя типа
+
+#### Сериализация коллекций: ####
+
