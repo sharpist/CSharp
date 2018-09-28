@@ -355,3 +355,80 @@ public class Person
 
 #### Сериализация коллекций: ####
 
+XML сериализатор поддерживает автономную сериализацию конкретных типов
+коллекций.
+Класс ```Person``` определяет в качестве участника класса список ```Addresses```:
+```c#
+public class Person
+{
+    public string Name;
+    public List<Address> Addresses = new List<Address>();
+}
+
+public class Address { public string Street, PostCode; }
+```
+Следующий вывод получен без вспомогательных действий:
+```xml
+<Person ... >
+    <Name>...</Name>
+    <Addresses>
+        <Address>
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </Address>
+        ...
+    </Addresses>
+</Person>
+```
+
+Внешний XML-элемент (Addresses) можно переименовать, применив к полю или
+свойству коллекции атрибут ```XmlArray```. Атрибут ```XmlArrayItem``` переназначает имена
+для внутренних XML-элементов:
+```c#
+public class Person
+{
+    public string Name;
+    [XmlArray("AddressDirectory")]
+    [XmlArrayItem("Location")]
+    public List<Address> Addresses = new List<Address>();
+}
+```
+*показанные атрибуты позволяют указать пространства имён XML
+
+Результат после переназначения:
+```xml
+<Person ... >
+    <Name>...</Name>
+    <AddressDirectory>
+        <Location>
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </Location>
+        ...
+    </AddressDirectory>
+</Person>
+```
+
+Чтобы исключить внешний XML-элемент из сериализации, нужно добавить к полю или
+свойству коллекции атрибут ```XmlElement```:
+```c#
+public class Person
+{
+    public string Name;
+    [XmlElement("Address")]
+    public List<Address> Addresses = new List<Address>();
+}
+```
+```xml
+<Person ... >
+    <Name>...</Name>
+    <Address>
+        <Street>...</Street>
+        <PostCode>...</PostCode>
+    </Address>
+    ...
+</Person>
+```
+
+#### Подклассы в качестве элементов коллекции: ####
+
