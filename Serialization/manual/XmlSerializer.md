@@ -10,9 +10,15 @@
 
 [Подклассы](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Подклассы)
 
-[...]()
+* [Создание подкласcов из корневого типа](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Создание-подкласcов-из-корневого-типа)
 
-[...]()
+* [Сериализация дочерних объектов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Сериализация-дочерних-объектов)
+
+* [Создание подклассов из дочерних объектов](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Создание-подклассов-из-дочерних-объектов)
+
+* [Сериализация коллекций](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Сериализация-коллекций)
+
+* [Подклассы в качестве элементов коллекции](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/XmlSerializer.md#Подклассы-в-качестве-элементов-коллекции)
 _______________________________________________________________________________
 # XML сериализатор
 _______________________________________________________________________________
