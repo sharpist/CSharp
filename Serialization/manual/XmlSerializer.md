@@ -432,3 +432,88 @@ public class Person
 
 #### Подклассы в качестве элементов коллекции: ####
 
+Когда элементы коллекции представляют подклассы, используются правила,
+распространяемые на подклассы.
+
+Например, ```Addresses``` участник класса ```Person```, являющийся списком типа
+```List<Address>``` – работает с типом ```Address``` и его производным ```USAddress``` подтипом.
+
+Поэтому, чтобы закодировать все элементы-подклассы, базовому классу
+устанавливаются атрибуты ```XmlInclude```, декларирующие все существующие подтипы:
+```c#
+public class Person
+{
+    public string Name;
+    public List<Address> Addresses = new List<Address>();
+}
+
+[XmlInclude(typeof(USAddress))]
+[XmlInclude(typeof(AUAddress))]
+...
+public class Address { public string Street, PostCode; }
+public class USAddress : Address { }
+public class AUAddress : Address { }
+...
+```
+Теперь список ```Addresses``` может быть инициализирован следующим образом:
+```c#
+var p = new Person { Name = "Alexander" };
+p.Addresses.Add(new USAddress
+{
+    Street   = "prospect Dzerzhinsky",
+    PostCode = "150044"
+});
+p.Addresses.Add(new AUAddress
+{
+    Street   = "street Deputatskaya",
+    PostCode = "150000"
+});
+...
+```
+Полученный вывод:
+```xml
+<Person ... >
+    <Name>...</Name>
+    <Addresses>
+        <Address xsi:type="USAddress">
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </Address>
+        <Address xsi:type="AUAddress">
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </Address>
+        ...
+    </Addresses>
+</Person>
+```
+
+Чтобы наименования XML-элементов, являющихся подклассами, соответствовали
+пренадлежащим типам:
+```xml
+<Person ... >
+    <Name>...</Name>
+    <!--необязательный внешний элемент-->
+    <Addresses>
+        <USAddress>
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </USAddress>
+        <AUAddress>
+            <Street>...</Street>
+            <PostCode>...</PostCode>
+        </AUAddress>
+        ...
+    <!--необязательный внешний элемент-->
+    </Addresses>
+</Person>
+```
+Необходимо полю или свойству коллекции задать атрибуты ```XmlArrayItem```, если нужно
+включить внешний элемент коллекции или ```XmlElement```, чтобы исключить:
+```c#
+[XmlArrayItem("Address", typeof(Address))]
+[XmlArrayItem("USAddress", typeof(USAddress))]
+[XmlArrayItem("AUAddress", typeof(AUAddress))]
+public List<Address> Addresses = new List<Address>();
+```
+*включить внешний элемент коллекции
