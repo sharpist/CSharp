@@ -2,11 +2,11 @@
 
 #### Содержание: ####
 
-[Интерфейс IXmlSerializable]()
+[Интерфейс IXmlSerializable](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/IXmlSerializable.md#Интерфейс-ixmlserializable)
 
-[...]()
+* [Реализация интерфейса IXmlSerializable](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/IXmlSerializable.md#Реализация-интерфейса-ixmlserializable)
 
-[...]()
+* [Использование интерфейса IXmlSerializable](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/IXmlSerializable.md#Использование-интерфейса-ixmlserializable)
 _______________________________________________________________________________
 # Интерфейс IXmlSerializable
 _______________________________________________________________________________
