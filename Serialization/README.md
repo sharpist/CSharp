@@ -85,7 +85,7 @@ _______________________________________________________________________________
 * создаёт удобочитаемый код.
 * переносимость версий высокая.
 
-#### Интерфейс IXmlSerializable: ####
+#### [Интерфейс IXmlSerializable](https://github.com/sharpist/C_Sharp/blob/master/Serialization/manual/IXmlSerializable.md#Интерфейс-ixmlserializable): ####
 Выполнение сериализации с классами ```XmlReader``` и ```XmlWriter```.
 * низкий уровень автоматизации.
 * предохранение объектных ссылок по выбору.
