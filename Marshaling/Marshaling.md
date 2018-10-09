@@ -6,7 +6,9 @@
 
 [Маршализация типов](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Маршализация-типов)
 
-[Маршализация классов/структур](https://github.com/)
+[Маршализация классов/структур](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Маршализация-классовструктур)
+
+[Маршализация параметров in и out](https://github.com/)
 
 [...](https://github.com/)
 _______________________________________________________________________________
@@ -117,5 +119,80 @@ class Program
 ```
 _______________________________________________________________________________
 ## Маршализация классов/структур
+_______________________________________________________________________________
+
+Когда в неуправляемый метод требуется передавать в качестве параметра класс или
+структуру, например, как тип ```LPSYSTEMTIME``` в методе ```GetSystemTime```:
+```c
+typedef struct _SYSTEMTIME {
+    WORD wYear;
+    WORD wMonth;
+    WORD wDayOfWeek;
+    WORD wDay;
+    WORD wHour;
+    WORD wMinute;
+    WORD wSecond;
+    WORD wMilliseconds;
+} SYSTEMTIME, *PSYSTEMTIME;
+```
+*эквивалентно структуре в C
+
+Необходимо определить соответствующий класс или структуру .NET прямо в
+управляемом коде, установив атрибут ```StructLayout```, который укажет маршализатору
+способ отображения каждого поля на его неуправляемый эквивалент при помощи
+перечисления ```LayoutKind```, определяющего предустановленное поведение размещения
+для управляемых классов и структур:
+```c#
+[StructLayout(LayoutKind.Sequential)]
+class SystemTime
+{
+    public ushort Year;
+    public ushort Month;
+    public ushort DayOfWeek;
+    public ushort Day;
+    public ushort Hour;
+    public ushort Minute;
+    public ushort Second;
+    public ushort Milliseconds;
+}
+```
+*поля выравниваются последовательно по границам размеров пакета
+
+Пример:
+```c#
+using System;
+using System.Runtime.InteropServices;
+
+[StructLayout(LayoutKind.Sequential)]
+class SystemTime
+{
+    public ushort Year;
+    public ushort Month;
+    public ushort DayOfWeek;
+    public ushort Day;
+    public ushort Hour;
+    public ushort Minute;
+    public ushort Second;
+    public ushort Milliseconds;
+}
+
+class Program
+{
+    public static void Main()
+    {
+        var t = new SystemTime();
+        GetSystemTime(t);
+        Console.WriteLine(t.Year); // 2018
+    }
+
+
+    [DllImport("kernel32.dll")]
+    public static extern void GetSystemTime(
+        SystemTime t
+    );
+}
+```
+_______________________________________________________________________________
+## Маршализация параметров ```in``` и ```out```
 _______________________________________________________________________________
 
