@@ -246,7 +246,7 @@ struct Struct
     public int I3;
 }
 ```
-Если используется размер пакета по умолчанию, тогда размер структуры составляет
+Если используется размер пакета по умолчанию, тогда величина структуры вмещает
 8 байтов. Пара байтовых полей займёт первые два байта памяти, потому что байты
 должны выравниваться по однобайтовым границам.
 
@@ -261,7 +261,7 @@ using System.Runtime.InteropServices;
 struct Struct
 {
     public byte B1, B2;
-    public int I3;
+    public int  I3;
 }
 
 class Program
@@ -284,6 +284,28 @@ class Program
 // B1     offset 0 bytes
 // B2     offset 1 bytes
 // I3     offset 4 bytes
+```
+Если выбран 2-байтовый пакет, тогда размер структуры составляет 6 байтов. Пара
+байтовых полей займёт первые два байта памяти.
+
+Поскольку поля теперь выравниваются по 2-байтовым границам, нет заполнения
+между вторым байтом и целым числом:
+```c#
+...
+
+[StructLayout(LayoutKind.Sequential, Pack = 2)]
+struct Struct
+{
+    public byte B1, B2;
+    public int  I3;
+}
+
+...
+// Output:
+// Struct size   6 bytes
+// B1     offset 0 bytes
+// B2     offset 1 bytes
+// I3     offset 2 bytes
 ```
 
 
