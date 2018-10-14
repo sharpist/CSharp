@@ -14,9 +14,9 @@
 
 [Маршализация параметров in и out](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Маршализация-параметров-in-и-out)
 
-[Обратные вызовы (callback) из неуправляемого кода](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Обратные-вызовы-Callback-из-неуправляемого-кода)
+[Обратные вызовы (Callback) из неуправляемого кода](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Обратные-вызовы-callback-из-неуправляемого-кода)
 
-[Эмуляция объединения C](https://github.com/)
+[Эмуляция объединения C](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Эмуляция-объединения-c)
 
 [...](https://github.com/)
 _______________________________________________________________________________
