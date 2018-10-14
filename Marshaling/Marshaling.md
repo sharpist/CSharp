@@ -14,7 +14,9 @@
 
 [Маршализация параметров in и out](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Маршализация-параметров-in-и-out)
 
-[Обратные вызовы (callback) из неуправляемого кода](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Обратные-вызовы-callback-из-неуправляемого-кода)
+[Обратные вызовы (callback) из неуправляемого кода](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Обратные-вызовы-Callback-из-неуправляемого-кода)
+
+[Эмуляция объединения C](https://github.com/)
 
 [...](https://github.com/)
 _______________________________________________________________________________
@@ -51,7 +53,7 @@ class Program
         MessageBox(IntPtr.Zero, "Текст", "Заголовок", 0);
 
 
-    // используется метод MessageBox из библиотеки User32.dll
+    // используется метод MessageBox из библиотеки user32.dll
     [DllImport("user32.dll")]
     public static extern int MessageBox(
         IntPtr hWnd,
@@ -397,6 +399,61 @@ public static extern void Foo(
 );
 ```
 _______________________________________________________________________________
-## Обратные вызовы (callback) из неуправляемого кода
+## Обратные вызовы (Callback) из неуправляемого кода
+_______________________________________________________________________________
+
+В C# дополнительно к вызовам методов C реализованы обратные вызовы из функций C,
+через неуправляемые указатели на функции отображаемые на аналог – делегаты C#. 
+Уровень ```P/Invoke``` предоставляет отображение между сопряженными конструкциями на
+обеих сторонах.
+
+Например, библиотека ```user32.dll``` включает функцию ```EnumWindows```, перечисляющую
+значения дескриптора для каждого окна на локальном компьютере (просматривает
+список окон).
+Конкретная функция ```EnumWindows``` задействует обратный вызов – ```WNDENUMPROC``` и имеет
+следующую сигнатуру:
+```c
+BOOL EnumWindows(WNDENUMPROC lpEnumFunc, LPARAM lParam);
+```
+Признак обратного вызова – префикс ```lp``` (long pointer) и суффикс ```Func``` в имени
+параметра ```lpEnumFunc```, который принимает указатель на функцию обратного вызова.
+
+Обратный вызов определён следующим образом:
+```c
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
+```
+*должен возвращать ```true```, чтобы продолжать перечисление или ```false``` для остановки
+
+Пример:
+```c#
+using System;
+using System.Runtime.InteropServices;
+
+public delegate bool EnumWindowsCallback(IntPtr hWnd, IntPtr lParam);
+
+class Program
+{
+    public static void Main() =>
+        EnumWindows(PrintWindow, IntPtr.Zero);
+    // функция обратного вызова
+    // запускается пока не вернёт false
+    static bool PrintWindow(IntPtr hWnd, IntPtr lParam)
+    {
+        Console.WriteLine(hWnd.ToInt64());
+        return true;
+    }
+
+    
+    [DllImport("user32.dll")]
+    // использовать внешнюю реализацию
+    public static extern int EnumWindows(
+        // псевдоним PrintWindow
+        EnumWindowsCallback hWnd, IntPtr lParam
+    );
+}
+```
+*делегат совпадает по сигнатуре с обратным вызовом
+_______________________________________________________________________________
+## Эмуляция объединения C
 _______________________________________________________________________________
 
