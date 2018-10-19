@@ -684,16 +684,25 @@ namespace SharedMemLib
 разделяемую память. Структура данных определена в библиотеке классов dll:
 ```c#
 using System;
+using System.Text;
 
 namespace SharedTypeLib
 {
-    [Serializable] public struct Sms { public string Message; }
+    [Serializable] public struct Sms
+    {
+        public String Message
+        {
+            get { return UnicodeEncoding.Unicode.GetString(message); }
+            set { message = UnicodeEncoding.Unicode.GetBytes(value); }
+        }
+        private byte[] message;
+    }
 }
 ```
 Первое приложение выделяет разделяемую память – создаёт объект типа ```SharedMem```,
 передавая в качестве аргументов имя и значение ```false```:
 ```c#
-using (var sm = new SharedMem("MyShare", false, 2048))
+using (var sm = new SharedMem("MyShare", false, 1280))
 {
     // открыть доступ к разделяемой памяти
     IntPtr root = sm.Root;
@@ -732,7 +741,7 @@ using (var sm = new SharedMem("MyShare", false, 2048))
 ```
 Второе приложение подписывается на разделяемую память:
 ```c#
-using (var sm = new SharedMem("MyShare", true, 2048))
+using (var sm = new SharedMem("MyShare", true, 1280))
 {
     // открыть доступ к разделяемой памяти
     IntPtr root = sm.Root;
@@ -742,7 +751,7 @@ using (var sm = new SharedMem("MyShare", true, 2048))
     // читать из неуправляемого блока памяти
     var ums = new UnmanagedMemoryStream(
         BytePtr,
-        2048
+        1280
     );
     ums.Seek(0, SeekOrigin.Begin);
     // десериализировать
