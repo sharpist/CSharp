@@ -737,6 +737,12 @@ using (var sm = new SharedMem("MyShare", false, 1280))
     }
     // ждать приложение-компаньон
     Console.ReadLine();
+    /// <summary> здесь не применяется
+    /// выделить блок неуправляемой памяти и вернуть объект IntPtr
+    /// IntPtr root = Marshal.AllocHGlobal(message.Length);
+    /// освободить блок неуправляемой памяти
+    /// Marshal.FreeHGlobal(root);
+    /// </summary>
 }
 ```
 Второе приложение подписывается на разделяемую память:
@@ -761,8 +767,6 @@ using (var sm = new SharedMem("MyShare", true, 1280))
 
     // вывести данные в консоль
     Console.WriteLine(msg.Message);
-    // освободить блок неуправляемой памяти
-    //Marshal.FreeHGlobal(root);
 
     // ждать приложение-компаньон
     Console.ReadLine();
