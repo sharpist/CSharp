@@ -677,7 +677,78 @@ namespace SharedMemLib
     }
 }
 ```
+*методам с внешней реализацией выставлен ```SetLastError``` для выдачи кодов ошибок и
+заполнения сведениями исключения ```Win32Exception```
+
+Демонстрация работы двух приложений, взаимодействующих с данными через
+разделяемую память. Структура данных определена в библиотеке классов dll:
 ```c#
+using System;
+
+namespace SharedTypeLib
+{
+    [Serializable] public struct Sms { public string Message; }
+}
 ```
+Первое приложение выделяет разделяемую память – создаёт объект типа ```SharedMem```,
+передавая в качестве аргументов имя и значение ```false```:
 ```c#
+using (var sm = new SharedMem("MyShare", false, 1048576))
+{
+    // открыть доступ к разделяемой памяти
+    IntPtr root = sm.Root;
+    byte* BytePtr = (byte*)root.ToPointer();
+
+
+    // получить данные
+    var msg = new Sms { Message = Console.ReadLine() };
+    // сериализировать
+    using (var ms = new MemoryStream())
+    {
+        IFormatter formatter = new BinaryFormatter();
+        formatter.Serialize(ms, msg);
+
+        // записать в неуправляемый блок памяти
+        var ums = new UnmanagedMemoryStream(
+            BytePtr,
+            ms.Length,
+            ms.Length,
+            FileAccess.Write
+        );
+        ums.Write(ms.ToArray(), 0, (int)ms.Length);
+        ums.Close();
+    }
+    // ждать приложение-компаньон
+    Console.ReadLine();
+}
 ```
+Второе приложение подписывается на разделяемую память:
+```c#
+using (var sm = new SharedMem("MyShare", true, 1048576))
+{
+    // открыть доступ к разделяемой памяти
+    IntPtr root = sm.Root;
+    byte* BytePtr = (byte*)root.ToPointer();
+
+
+    // читать из неуправляемого блока памяти
+    var ums = new UnmanagedMemoryStream(
+        BytePtr,
+        1048576
+    );
+    ums.Seek(0, SeekOrigin.Begin);
+    // десериализировать
+    IFormatter formatter = new BinaryFormatter();
+    var msg = (Sms)formatter.Deserialize(ums);
+    ums.Close();
+
+    // вывести данные в консоль
+    Console.WriteLine(msg.Message);
+    // освободить блок неуправляемой памяти
+    //Marshal.FreeHGlobal(root);
+
+    // ждать приложение-компаньон
+    Console.ReadLine();
+}
+```
+Каждая из программ получает ```IntPtr``` указатель на общую неуправляемую память.
