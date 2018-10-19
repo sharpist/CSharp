@@ -693,7 +693,7 @@ namespace SharedTypeLib
 Первое приложение выделяет разделяемую память – создаёт объект типа ```SharedMem```,
 передавая в качестве аргументов имя и значение ```false```:
 ```c#
-using (var sm = new SharedMem("MyShare", false, 1048576))
+using (var sm = new SharedMem("MyShare", false, 2048))
 {
     // открыть доступ к разделяемой памяти
     IntPtr root = sm.Root;
@@ -701,6 +701,14 @@ using (var sm = new SharedMem("MyShare", false, 1048576))
 
 
     // получить данные
+    // разрешить ReadLine более 254 символов (256 байт буфер - 2 байта CRLF)
+    var bufsize = 500;
+    Stream stream = Console.OpenStandardInput(bufsize);
+    TextReader inReader = (stream == Stream.Null) ?
+                StreamReader.Null :
+                TextReader.Synchronized(
+                    new StreamReader(stream, Console.InputEncoding, false, bufsize, true));
+    Console.SetIn(inReader);
     var msg = new Sms { Message = Console.ReadLine() };
     // сериализировать
     using (var ms = new MemoryStream())
@@ -724,7 +732,7 @@ using (var sm = new SharedMem("MyShare", false, 1048576))
 ```
 Второе приложение подписывается на разделяемую память:
 ```c#
-using (var sm = new SharedMem("MyShare", true, 1048576))
+using (var sm = new SharedMem("MyShare", true, 2048))
 {
     // открыть доступ к разделяемой памяти
     IntPtr root = sm.Root;
@@ -734,7 +742,7 @@ using (var sm = new SharedMem("MyShare", true, 1048576))
     // читать из неуправляемого блока памяти
     var ums = new UnmanagedMemoryStream(
         BytePtr,
-        1048576
+        2048
     );
     ums.Seek(0, SeekOrigin.Begin);
     // десериализировать
