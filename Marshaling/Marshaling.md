@@ -20,7 +20,7 @@
 
 [Разделяемая память](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Разделяемая-память)
 
-[Отображение структуры на неуправляемую память](https://github.com/)
+[Отображение структуры на неуправляемую память](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#Отображение-структуры-на-неуправляемую-память)
 
 [...](https://github.com/)
 _______________________________________________________________________________
