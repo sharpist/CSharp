@@ -697,7 +697,7 @@ namespace SharedTypeLib
             get { return UnicodeEncoding.Unicode.GetString(message); }
             set { message = UnicodeEncoding.Unicode.GetBytes(value); }
         }
-        private byte[] message;
+        byte[] message;
     }
 }
 ```
@@ -712,14 +712,19 @@ using (var sm = new SharedMem("MyShare", false, 1280))
 
 
     // получить данные
-    // разрешить ReadLine более 254 символов (256 байт буфер - 2 байта CRLF)
-    var bufsize = 500;
-    Stream stream = Console.OpenStandardInput(bufsize);
-    TextReader inReader = (stream == Stream.Null) ?
-                StreamReader.Null :
-                TextReader.Synchronized(
-                    new StreamReader(stream, Console.InputEncoding, false, bufsize, true));
-    Console.SetIn(inReader);
+    // разрешить ReadLine более 254 символов (256 байт буфер - 2 байта CR и LF)
+    var bufSize = 500;
+    var s  = Console.OpenStandardInput(bufSize);
+    var tr = TextReader.Synchronized(
+                 new StreamReader(
+                     s,
+                     Console.InputEncoding,
+                     false,
+                     bufSize,
+                     true
+                 )
+             );
+    Console.SetIn(tr);
     var msg = new Sms { Message = Console.ReadLine() };
     // сериализировать
     using (var ms = new MemoryStream())
