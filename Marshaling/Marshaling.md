@@ -711,20 +711,16 @@ using (var sm = new SharedMem("MyShare", false, 1280))
     byte* BytePtr = (byte*)root.ToPointer();
 
 
+    // поднять лимит ReadLine
+    // 254 символа 256 байт буфер - 2 байта CR/LF
+    var bufferSize = 500;
+    Console.SetIn(TextReader.Synchronized(
+        new StreamReader(
+            Console.OpenStandardInput(bufferSize),
+            Console.InputEncoding,
+            false, bufferSize, true
+        )));
     // получить данные
-    // разрешить ReadLine более 254 символов (256 байт буфер - 2 байта CR и LF)
-    var bufSize = 500;
-    var s  = Console.OpenStandardInput(bufSize);
-    var tr = TextReader.Synchronized(
-                 new StreamReader(
-                     s,
-                     Console.InputEncoding,
-                     false,
-                     bufSize,
-                     true
-                 )
-             );
-    Console.SetIn(tr);
     var msg = new Sms { Message = Console.ReadLine() };
     // сериализировать
     using (var ms = new MemoryStream())
