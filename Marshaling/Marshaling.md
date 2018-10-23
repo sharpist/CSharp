@@ -688,9 +688,9 @@ namespace SharedMemLib
 using System;
 using System.Text;
 
-namespace SharedTypeLib
+namespace SharedDataLib
 {
-    [Serializable] public struct Sms
+    [Serializable] public struct SharedData
     {
         public String Message
         {
@@ -704,75 +704,81 @@ namespace SharedTypeLib
 Первое приложение выделяет разделяемую память – создаёт объект типа ```SharedMem```,
 передавая в качестве аргументов имя и значение ```false```:
 ```c#
-using (var sm = new SharedMem("MyShare", false, 1280))
+unsafe
 {
-    // открыть доступ к разделяемой памяти
-    IntPtr root = sm.Root;
-    byte* BytePtr = (byte*)root.ToPointer();
-
-
-    // поднять лимит ReadLine
-    // 254 символа 256 байт буфер - 2 байта CR/LF
-    var bufferSize = 500;
-    Console.SetIn(TextReader.Synchronized(
-        new StreamReader(
-            Console.OpenStandardInput(bufferSize),
-            Console.InputEncoding,
-            false, bufferSize, true
-        )));
-    // получить данные
-    var msg = new Sms { Message = Console.ReadLine() };
-    // сериализировать
-    using (var ms = new MemoryStream())
+    using (var sm = new SharedMem("MyShare", false, 1280))
     {
-        IFormatter formatter = new BinaryFormatter();
-        formatter.Serialize(ms, msg);
+        // открыть доступ к разделяемой памяти
+        IntPtr root = sm.Root;
+        byte* BytePtr = (byte*)root.ToPointer();
 
-        // записать в неуправляемый блок памяти
-        var ums = new UnmanagedMemoryStream(
-            BytePtr,
-            ms.Length,
-            ms.Length,
-            FileAccess.Write
-        );
-        ums.Write(ms.ToArray(), 0, (int)ms.Length);
-        ums.Close();
+
+        // поднять лимит ReadLine
+        // 254 символа 256 байт буфер - 2 байта CR/LF
+        var bufferSize = 500;
+        Console.SetIn(TextReader.Synchronized(
+            new StreamReader(
+                Console.OpenStandardInput(bufferSize),
+                Console.InputEncoding,
+                false, bufferSize, true
+            )));
+        // получить данные
+        var d = new SharedData { Message = Console.ReadLine() };
+        // сериализировать
+        using (var ms = new MemoryStream())
+        {
+            IFormatter formatter = new BinaryFormatter();
+            formatter.Serialize(ms, d);
+
+            // записать в неуправляемый блок памяти
+            var ums = new UnmanagedMemoryStream(
+                BytePtr,
+                ms.Length,
+                ms.Length,
+                FileAccess.Write
+            );
+            ums.Write(ms.ToArray(), 0, (int)ms.Length);
+            ums.Close();
+        }
+        // ждать приложение-компаньон
+        Console.ReadLine();
+        /// <summary> не применяется
+        /// выделение блока неуправляемой памяти и возврат объекта IntPtr
+        /// IntPtr root = Marshal.AllocHGlobal(message.Length);
+        /// освобождение блока неуправляемой памяти
+        /// Marshal.FreeHGlobal(root);
+        /// </summary>
     }
-    // ждать приложение-компаньон
-    Console.ReadLine();
-    /// <summary> не применяется
-    /// выделение блока неуправляемой памяти и возврат объекта IntPtr
-    /// IntPtr root = Marshal.AllocHGlobal(message.Length);
-    /// освобождение блока неуправляемой памяти
-    /// Marshal.FreeHGlobal(root);
-    /// </summary>
 }
 ```
 Второе приложение подписывается на разделяемую память:
 ```c#
-using (var sm = new SharedMem("MyShare", true, 1280))
+unsafe
 {
-    // открыть доступ к разделяемой памяти
-    IntPtr root = sm.Root;
-    byte* BytePtr = (byte*)root.ToPointer();
+    using (var sm = new SharedMem("MyShare", true, 1280))
+    {
+        // открыть доступ к разделяемой памяти
+        IntPtr root = sm.Root;
+        byte* BytePtr = (byte*)root.ToPointer();
 
 
-    // читать из неуправляемого блока памяти
-    var ums = new UnmanagedMemoryStream(
-        BytePtr,
-        1280
-    );
-    ums.Seek(0, SeekOrigin.Begin);
-    // десериализировать
-    IFormatter formatter = new BinaryFormatter();
-    var msg = (Sms)formatter.Deserialize(ums);
-    ums.Close();
+        // читать из неуправляемого блока памяти
+        var ums = new UnmanagedMemoryStream(
+            BytePtr,
+            1280
+        );
+        ums.Seek(0, SeekOrigin.Begin);
+        // десериализировать
+        IFormatter formatter = new BinaryFormatter();
+        var d = (SharedData)formatter.Deserialize(ums);
+        ums.Close();
 
-    // вывести данные в консоль
-    Console.WriteLine(msg.Message);
+        // вывести данные в консоль
+        Console.WriteLine(d.Message);
 
-    // ждать приложение-компаньон
-    Console.ReadLine();
+        // ждать приложение-компаньон
+        Console.ReadLine();
+    }
 }
 ```
 Каждая из программ получает ```IntPtr``` указатель на общую неуправляемую память.
@@ -809,10 +815,10 @@ unsafe struct SharedData
 размещаемый непосредственно – пространство в структуре для 50 значений типа
 ```float``` выделяется встроенным образом.
 
-Таким образом, размер структуры 208 байтов:
-4 байта для поля ```Value``` типа ```int```, 2 байта для поля ```Letter``` типа ```char```, 200 байтов
-для поля ```Numbers``` типа ```float``` (50 значений по 4 байта) и 2 байта добавлено
-заполнение, поскольку выравнивание по умолчанию этого типа входит в 4 байта.
+Размер структуры ```SharedData``` 208 байтов:
+4 байта поле ```Value``` типа ```int```, 2 байта поле ```Letter``` типа ```char```, 200 байтов поле
+```Numbers``` типа ```float``` (50 значений по 4 байта) и 2 байта добавлено заполнение,
+поскольку выравнивание по умолчанию этого типа входит в 4 байта.
 
 Использование структуры ```SharedData``` в контексте небезопасного кода на примере
 памяти, выделенной в стеке:
@@ -827,7 +833,7 @@ unsafe
     data->Numbers[10] = 1.45F;
 }
 ```
-Эквивалентно выделению в стеке блока памяти, размер которого позволяет
+Эквивалентное выделение в стеке блока памяти, размер которого позволяет
 сохранить 1 элемент типа ```SharedData```:
 ```c#
 unsafe
