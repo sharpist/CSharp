@@ -741,7 +741,7 @@ unsafe
             ums.Close();
         }
         // ждать приложение-компаньон
-        Console.ReadLine();
+        Console.ReadKey(true);
         /// <summary> не применяется
         /// выделение блока неуправляемой памяти и возврат объекта IntPtr
         /// IntPtr root = Marshal.AllocHGlobal(message.Length);
@@ -777,7 +777,7 @@ unsafe
         Console.WriteLine(d.Message);
 
         // ждать приложение-компаньон
-        Console.ReadLine();
+        Console.ReadKey(true);
     }
 }
 ```
@@ -862,5 +862,75 @@ unsafe
     data->Numbers[10] = 1.45F;
     // освободить память
     Marshal.FreeHGlobal(new IntPtr(data));
+}
+```
+
+Демонстрация работы двух приложений, взаимодействующих с данными через
+разделяемую память, посредством определения разделяемых данных в виде структуры
+и её отображения на неуправляемую память.
+Первое приложение выделяет разделяемую память – создаёт объект типа SharedMem,
+передавая в качестве аргументов имя и значение ```false```:
+```c#
+unsafe
+{
+    using (var sm = new SharedMem("MyShare", false, 1280))
+    {
+        void* root = sm.Root.ToPointer();
+        // отображение структуры
+        SharedData* data = (SharedData*)root;
+
+        data->Value  = 123;
+        data->Letter = 'X';
+        data->Numbers[10] = 1.45F;
+        Console.WriteLine("Записано в разделяемую память.");
+        Console.ReadKey(true);
+
+        Console.WriteLine("Value:       " + data->Value);
+        Console.WriteLine("Letter:      " + data->Letter);
+        Console.WriteLine("Numbers[10]: " + data->Numbers[10]);
+        Console.ReadKey(true);
+        // после выхода из оператора using объект
+        // разделяемой памяти высвобождается
+    }
+}
+```
+Разрешается вывести из использования класс ```SharedMem``` задействовав – 
+```MemoryMappedFile```:
+```c#
+unsafe
+{
+    using (var mmFile =
+        MemoryMappedFile.CreateNew("MyShare", 1280))
+    using (var accessor = mmFile.CreateViewAccessor())
+    {
+        byte* pointer = null;
+        accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref pointer);
+        void* root = pointer;
+        ...
+    }
+}
+```
+Второе приложение подписывается на разделяемую память:
+```c#
+unsafe
+{
+    using (var sm = new SharedMem("MyShare", true, 1280))
+    {
+        void* root = sm.Root.ToPointer();
+        // отображение структуры
+        SharedData* data = (SharedData*)root;
+
+        Console.WriteLine("Value:       " + data->Value);
+        Console.WriteLine("Letter:      " + data->Letter);
+        Console.WriteLine("Numbers[10]: " + data->Numbers[10]);
+        Console.ReadKey(true);
+
+        // обновить данные в разделяемой памяти
+        data->Value++;
+        data->Letter = '!';
+        data->Numbers[10] = 987.5F;
+        Console.WriteLine("Обновленна разделяемая память.");
+        Console.ReadKey(true);
+    }
 }
 ```
