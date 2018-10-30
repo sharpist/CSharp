@@ -1109,6 +1109,29 @@ COM.
 сборку мусора для оболочки RCW.
 
 Чтобы создать сборку взаимодействия COM необходимо в Visual Studio открыть
-менеджер ссылок действием Добавить ссылку (Add Reference) и на вкладке COM
+менеджер ссылок действием добавить ссылку (add reference) и на вкладке COM
 выбрать библиотеку.
 
+Например, добавив ссылку на библиотеку ```Microsoft Excel 12.0 Object Library```
+можно взаимодействовать с классами COM для Excel. Ниже показан код, который
+создаёт и отображает рабочую книгу, заполняя в ней ячейку:
+```c#
+using System;
+using Excel = Microsoft.Office.Interop.Excel;
+
+class Program
+{
+    static void Main()
+    {
+        var excel = new Excel.Application();
+        excel.Visible = true;
+        Excel.Workbook workBook = excel.Workbooks.Add();
+        excel.Cells[1, 1].Font.FontStyle = "Bold";
+        excel.Cells[1, 1].Value2 = "Hello World!";
+        workBook.SaveAs(@"d:\temp.xlsx");
+    }
+}
+```
+Класс ```Excel.Application``` – тип взаимодействия COM, чьим типом времени выполнения
+является RCW. При обращении к свойствам ```Workbooks``` и ```Cells``` имеем ещё больше
+типов взаимодействия.
