@@ -24,13 +24,13 @@
 
 [Взаимодействие с COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#взаимодействие-с-com)
 
-* [Основы системы типов COM](https://github.com/)
+* [Основы системы типов COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#основы-системы-типов-com)
 
-* [Обращение к компоненту COM из C#](https://github.com/)
+* [Обращение к компоненту COM из C#](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#обращение-к-компоненту-com-из-c)
 
-[Языковые улучшения COM](https://github.com/)
+[Языковые улучшения COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#языковые-улучшения-com)
 
-* [Необязательные параметры и именованные аргументы](https://github.com/)
+* [Необязательные параметры и именованные аргументы](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#необязательные-параметры-и-именованные-аргументы)
 
 [...](https://github.com/)
 _______________________________________________________________________________
