@@ -1121,8 +1121,9 @@ COM.
 выбрать библиотеку.
 
 Например, добавив ссылку на библиотеку ```Microsoft Excel 12.0 Object Library```
-можно взаимодействовать с классами COM для Excel. Ниже показан код, который
-создаёт и отображает рабочую книгу, заполняя в ней ячейку:
+можно взаимодействовать с классами COM для Excel. Так выглядит, на основе
+языковых улучшений C# 4.0, свёрнутый код, который создаёт и отображает рабочую
+книгу, заполняя в ней ячейку:
 ```c#
 using System;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -1143,6 +1144,24 @@ class Program
 Класс ```Excel.Application``` – тип взаимодействия COM, чьим типом времени выполнения
 является RCW. При обращении к свойствам ```Workbooks``` и ```Cells``` имеем ещё больше
 типов взаимодействия.
+
+Показанный выше код, в его исходной реализации:
+```c#
+var missing = System.Reflection.Missing.Value;
+
+var excel = new Excel.Application();
+excel.Visible = true;
+Excel.Workbook workBook = excel.Workbooks.Add(missing);
+var range = (Excel.Range)excel.Cells[1, 1];
+range.Font.FontStyle = "Bold";
+range.Value2 = "Hello World!";
+
+workBook.SaveAs(@"d:\temp.xlsx",
+    missing, missing, missing, missing, missing,
+    Excel.XlSaveAsAccessMode.xlNoChange,
+    missing, missing, missing, missing, missing
+);
+```
 _______________________________________________________________________________
 ## Языковые улучшения COM
 _______________________________________________________________________________
