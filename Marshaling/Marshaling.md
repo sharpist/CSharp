@@ -36,7 +36,7 @@
 
 * [Индексаторы](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#индексаторы)
 
-* [Динамическое связывание](https://github.com/)
+* [Динамическое связывание](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#динамическое-связывание)
 
 [...](https://github.com/)
 _______________________________________________________________________________
@@ -1246,7 +1246,7 @@ class Program
     static void Main()
     {
         var myNetObject = new NetObject();
-
+        // свойство Foo использует аргумент
         myNetObject.Foo[123] = "Hello";
     }
 
