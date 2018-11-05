@@ -38,7 +38,7 @@
 
 * [Динамическое связывание](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#динамическое-связывание)
 
-* [Внедрение типов взаимодействия](https://github.com/)
+* [Внедрение типов взаимодействия](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#внедрение-типов-взаимодействия)
 
 [...](https://github.com/)
 _______________________________________________________________________________
@@ -1257,7 +1257,7 @@ Type excelAppType = Type.GetTypeFromProgID("Excel.Application", true);
 dynamic excel = Activator.CreateInstance(excelAppType);
 excel.Visible = true;
 dynamic wb = excel.Workbooks.Add();
-excel.Cells[1, 1].Value2 = "foo";
+excel.Cells[1, 1].Value2 = "Hello World!";
 ```
 Если компонент COM поддерживает только интерфейс ```IDispatch``` для обращения нужно
 применять менее очевидный подход, основанный на рефлексии.
