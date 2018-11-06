@@ -42,7 +42,7 @@
 
 * [Эквивалентность типов](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#эквивалентность-типов)
 
-* [Основные сборки взаимодействия](https://github.com/)
+* [Основные сборки взаимодействия](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#основные-сборки-взаимодействия)
 
 [...](https://github.com/)
 _______________________________________________________________________________
