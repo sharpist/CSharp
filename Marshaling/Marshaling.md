@@ -26,6 +26,8 @@
 
 * [Основы системы типов COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#основы-системы-типов-com)
 
+* [Оболочки COM](https://github.com/)
+
 * [Обращение к компоненту COM из C#](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#обращение-к-компоненту-com-из-c)
 
 [Языковые улучшения COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#языковые-улучшения-com)
@@ -44,7 +46,7 @@
 
 * [Основные сборки взаимодействия](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#основные-сборки-взаимодействия)
 
-* [Открытие объектов C# для COM](https://github.com/)
+* [Открытие объектов C# для COM](https://github.com/sharpist/C_Sharp/blob/master/Marshaling/Marshaling.md#открытие-объектов-c-для-com)
 _______________________________________________________________________________
 ## Обращение к низкоуровневым dll-библиотекам
 _______________________________________________________________________________
@@ -1068,6 +1070,13 @@ public class Foo
 
 COM-объект также может реализовывать интерфейс ```IDispatch``` для поддержки
 динамического программирования.
+
+### Оболочки COM: ###
+
+Модель COM имеет ряд отличительных признаков от объектной модели .NET.
+
+![discrepancy](05.png)
+
 
 ### Обращение к компоненту COM из C#: ###
 
