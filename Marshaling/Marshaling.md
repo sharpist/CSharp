@@ -1457,6 +1457,26 @@ public class MammalSuperclass
 предоставляет описание интерфейса класса в экспортированной библиотеке типов
 COM, давая возможность для клиентов с поздним связыванием кэшировать
 идентификаторы ```DispId``` во время выполнения.
+
+Типичный макет использования рекомендуемых правил:
+```c#
+using System.Runtime.InteropServices;
+
+[assembly: ComVisible(true)]
+namespace InteroperabilityLibrary
+{
+    public interface IExplicitInterface
+    {
+        void SomeMethod();
+    }
+
+    [ClassInterface(ClassInterfaceType.None)]
+    public class ExplicitInterface : IExplicitInterface
+    {
+        void IExplicitInterface.SomeMethod() { }
+    }
+}
+```
 _______________________________________________________________________________
 ## Языковые улучшения COM
 _______________________________________________________________________________
