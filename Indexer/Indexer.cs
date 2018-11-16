@@ -31,23 +31,23 @@ namespace IndexersSamples.SampleOne
 
         private Page updateCachedPagesForAccess(int index) // обновить кэшированные страницы
         {
-            foreach (var p in pagesInMemory)
+            foreach (var p in pagesInMemory)               // вернуть из кэша страницу с входящим индексом
                 if (p.HasItem(index)) return p;
-
-            var startingIndex = (index / 1000) * 1000;     // index    0 -  999 startingIndex    0
-            var newPage = new Page(startingIndex, 1000);   // index 1000 - 1999 startingIndex 1000
+            // index 0-999|1000-1999 startingIndex 0|1000  // ИЛИ
+            var startingIndex = (index / 1000) * 1000;
+            var newPage = new Page(startingIndex, 1000);   // построить и добавить в кэш новую страницу
 
             if (pagesInMemory.Count > 4)
             {
-                var oldest = pagesInMemory // удалить самую старую чистую (холодную) страницу
-                    .Where(page => !page.Dirty)
+                var oldest = pagesInMemory      // удалить самую старую чистую страницу
+                    .Where(page => !page.Dirty) // грязные (удерживаемые) страницы оставлять
                     .OrderBy(page => page.LastAccess)
                     .FirstOrDefault();
 
                 if (oldest != null) pagesInMemory.Remove(oldest); // может содержаться более 5 страниц в памяти
-            }
-            pagesInMemory.Add(newPage);    // добавить страницу в кэш
-            return newPage;
+            }                                                     // в зависимости от количества грязных (удерживаемых)
+            pagesInMemory.Add(newPage);         // добавить страницу в кэш
+            return newPage;                     // вернуть страницу в работу
         }
 
         private sealed class Page
@@ -71,7 +71,7 @@ namespace IndexersSamples.SampleOne
                         Pressure = 28.0 + r.NextDouble() * 4
                     });
             }
-            public bool HasItem(int index) =>          // доступность элемента
+            public bool HasItem(int index) =>          // проверить вхождение индекса
                 ((index >= startingIndex) && (index < startingIndex + length));
 
             public Sample this[int index]              // индексатор Page
