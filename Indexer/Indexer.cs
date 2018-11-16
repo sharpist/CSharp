@@ -1,85 +1,95 @@
-﻿...
-    class Program
+﻿using IndexersSamples.Common;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace IndexersSamples.SampleOne
+{
+    public class DataSamples
     {
-        ...
-            var example = new Example<string>(5);
+        private readonly int totalSize;
+        private readonly List<Page> pagesInMemory = new List<Page>();
 
-            example[0] = "Hello";
-            example[1] = "World!";
-            example[2] = "How";
-            example[3] = "Are";
-            example[4] = "You?";
+        public DataSamples(int totalSize) => // конструктор DataSamples
+            this.totalSize = totalSize;
 
-
-            Console.Write($"{example[0]} {example[1]} {example[2]} {example[3]} {example[4]}");
-            // Hello World! How Are You?
-    }
-
-    struct Example<T>
-    {
-        private T[] arr;
-        public Example(int param)
-        { arr = new T[param]; }
-
-        public T this[int i] // индексатор
-        {
-            get { return this.arr[i]; }
-            set { this.arr[i] = value; }
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-...
-    class Program
-    {
-        ...
-            IntBits bits = new IntBits(126); // (126) 0111 1110
-
-
-            bool peek = bits[6]; // 0[1]11 1110   извлечение булева значения с индексом 6 = true
-
-            bits[0] = true;      // 0111 111[1]   установка бита с индексом 0 в true
-
-            bits[3] = false;     // 0111 [0]111   установка бита с индексом 3 в false
-
-            bits[6] ^= true;     // 0[0]11 0111   инвертирует значение бита с индексом 6 = false
-
-            // теперь в bits содержится значение (55) 0011 0111
-    }
-
-    struct IntBits
-    {
-        private int bits;
-        public IntBits(int param)
-        { this.bits = param; }
-        
-
-        public bool this [int index] // индексатор
+        public Sample this[int index]        // индексатор DataSamples
         {
             get
             {
-                return (bits & (1 << index)) != 0;
+                if (index > 0 && index < totalSize)
+                    return updateCachedPagesForAccess(index)[index];  // вызов индексатора Page
+                else throw new IndexOutOfRangeException();
             }
-
             set
             {
-                if (value)
-                    bits |= (1 << index);
-                else
-                    bits &= ~(1 << index);
+                if (index > 0 && index < totalSize)
+                    updateCachedPagesForAccess(index)[index] = value; // вызов индексатора Page
+                else throw new IndexOutOfRangeException();
+            }
+        }
+
+        private Page updateCachedPagesForAccess(int index) // обновить кэшированные страницы
+        {
+            foreach (var p in pagesInMemory)
+                if (p.HasItem(index)) return p;
+
+            var startingIndex = (index / 1000) * 1000;     // index    0 -  999 startingIndex    0
+            var newPage = new Page(startingIndex, 1000);   // index 1000 - 1999 startingIndex 1000
+
+            if (pagesInMemory.Count > 4)
+            {
+                var oldest = pagesInMemory // удалить самую старую чистую (холодную) страницу
+                    .Where(page => !page.Dirty)
+                    .OrderBy(page => page.LastAccess)
+                    .FirstOrDefault();
+
+                if (oldest != null) pagesInMemory.Remove(oldest); // может содержаться более 5 страниц в памяти
+            }
+            pagesInMemory.Add(newPage);    // добавить страницу в кэш
+            return newPage;
+        }
+
+        private sealed class Page
+        {
+            public bool     Dirty      { get; private set; }
+            public DateTime LastAccess { get; private set; }
+
+            private readonly int startingIndex, length;
+            private readonly List<Sample> pageData = new List<Sample>();
+
+            public Page(int startingIndex, int length) // конструктор Page
+            {
+                LastAccess = DateTime.Now;
+                this.startingIndex = startingIndex; this.length = length;
+
+                var r = new Random();                  // сгенерировать 1000 элементов на страницу
+                for (int i = 0; i < length; i++)
+                    pageData.Add(new Sample
+                    {
+                        Temp = r.Next(50, 95),
+                        Pressure = 28.0 + r.NextDouble() * 4
+                    });
+            }
+            public bool HasItem(int index) =>          // доступность элемента
+                ((index >= startingIndex) && (index < startingIndex + length));
+
+            public Sample this[int index]              // индексатор Page
+            {
+                get
+                {
+                    LastAccess = DateTime.Now;
+                    return pageData[index - startingIndex];
+                }
+                set
+                {
+                    Dirty      = true;
+                    LastAccess = DateTime.Now;
+                    // из индекса 3547 отнимается стартовая позиция 3000
+                    // получается 547, входящее в размер pageData = 1000
+                    pageData[index - startingIndex] = value;
+                }
             }
         }
     }
-
+}
