@@ -4,7 +4,7 @@ using static System.Console;
 
 namespace IndexersSamples
 {
-    public class Program
+    class Program
     {
         static void SampleOne()
         {
