@@ -7,6 +7,11 @@ namespace IndexersSamples.SampleOne
 {
     public class DataSamples
     {
+        /// <summary>
+        /// Моделирование типа коллекции,
+        /// для загрузки большого набора данных в память покадрово (страницами), например,
+        /// исторических данных, которые слишком велики для загрузки в память за один раз.
+        /// </summary>
         private readonly int totalSize;
         private readonly List<Page> pagesInMemory = new List<Page>();
 
