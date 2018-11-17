@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace IndexersSamples.SampleOne
 {
-    public class DataSamples
+    class DataSamples
     {
         /// <summary>
         /// Моделирование типа коллекции,

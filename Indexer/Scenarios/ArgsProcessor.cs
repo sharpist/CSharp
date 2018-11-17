@@ -5,6 +5,10 @@ namespace IndexersSamples.SampleTwo
 {
     struct ArgsActions
     {
+        /// <summary>
+        /// Моделирование типа словаря,
+        /// для сопоставления аргументов командной строки с лямбда-выражениями.
+        /// </summary>
         public Action this[string key] // индексатор
         {
             get
