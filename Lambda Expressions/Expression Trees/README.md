@@ -62,7 +62,7 @@ ParameterExpression result = Expression.Parameter(typeof(int), "result");
 LabelTarget label = Expression.Label(typeof(int));
 
 
-// создание тела метода
+// создание тела выражения
 BlockExpression block = Expression.Block
     (
         new[] { result }, // добавление локальной переменной
