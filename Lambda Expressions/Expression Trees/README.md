@@ -149,12 +149,13 @@ ________________________________________________________________________________
 Класс ```ExpressionVisitor``` используется для прохода по существующему дереву выражений и
 копированию каждого пройденного узла:
 ```c#
-// наследует от класса ExpressionVisitor 
+// производный от класса ExpressionVisitor 
 public class AndAlsoModifier : ExpressionVisitor
 {
     public Expression Modify(Expression expression)
     {
-        return Visit(expression);
+        // наследуется от базового класса
+        return this.Visit(expression);
     }
 
     // переопределяет метод VisitBinary,
