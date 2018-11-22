@@ -2,15 +2,17 @@
 
 #### Содержание: ####
 
-[Операции над множествами]()
+[Операции над множествами](https://github.com/sharpist/C_Sharp/tree/master/LINQ#операции-над-множествами)
 
-[Операции запросов]()
+[Операции запросов](https://github.com/sharpist/C_Sharp/tree/master/LINQ#операции-запросов)
 
-[Выражения запросов]()
+[Выражения запросов](https://github.com/sharpist/C_Sharp/tree/master/LINQ#выражения-запросов)
 
-[Продолжение запросов]()
+[Продолжение запросов](https://github.com/sharpist/C_Sharp/tree/master/LINQ#продолжение-запросов)
 
-[Множество генераторов]()
+[Множество генераторов](https://github.com/sharpist/C_Sharp/tree/master/LINQ#множество-генераторов)
+
+[Соединение]()
 _______________________________________________________________________________
 ## Операции над множествами
 _______________________________________________________________________________
@@ -155,3 +157,48 @@ var query =
 query.ForEach(n => Console.Write(n + " "));
 // 1a 1b 1c 2a 2b 2c 3a 3b 3c
 ```
+Векторное произведение фильтруется ```where```:
+```c#
+var sequence = new[] { "олеся", "аня",  "саша", "алёна" };
+
+var query =
+    (from n1 in sequence
+     from n2 in sequence
+     where n1.CompareTo(n2) < 0                 // n1 before n2 true
+     orderby n1, n2                             // bca->abc
+     select n1.ToUpper() + "\t" + n2.ToUpper()) // abc->ABC
+     .ToList();
+
+query.ForEach(n => Console.WriteLine(n));
+/* Output:
+    АЛЁНА   АНЯ
+    АЛЁНА   ОЛЕСЯ
+    АЛЁНА   САША
+    АНЯ     ОЛЕСЯ
+    АНЯ     САША
+    ОЛЕСЯ   САША
+*/
+```
+Второй генератор ```from``` допускает использование первой переменной диапазона:
+```c#
+var sequence = new[] {
+    "Анна Каренина", "Признания Мегрэ" };
+
+var query =
+    (from fullName in sequence
+     from name in fullName.Split(' ', '.') // fullName
+     select name.ToUpper() + " из " + fullName.ToUpper()) // abc->ABC
+     .ToList();
+
+query.ForEach(n => Console.WriteLine(n));
+/* Output:
+    АННА из АННА КАРЕНИНА
+    КАРЕНИНА из АННА КАРЕНИНА
+    ПРИЗНАНИЯ из ПРИЗНАНИЯ МЕГРЭ
+    МЕГРЭ из ПРИЗНАНИЯ МЕГРЭ
+*/
+```
+_______________________________________________________________________________
+## Соединение
+_______________________________________________________________________________
+
