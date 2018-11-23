@@ -12,7 +12,9 @@
 
 [Множество генераторов](https://github.com/sharpist/C_Sharp/tree/master/LINQ#множество-генераторов)
 
-[Соединение]()
+[Соединение](https://github.com/sharpist/C_Sharp/tree/master/LINQ#соединение)
+
+[Упорядочение]()
 _______________________________________________________________________________
 ## Операции над множествами
 _______________________________________________________________________________
@@ -186,7 +188,7 @@ var sequence = new[] {
 
 var query =
     (from fullName in sequence
-     from name in fullName.Split(' ', '.') // fullName
+     from name in fullName.Split(' ', '.')                // fullName
      select name.ToUpper() + " из " + fullName.ToUpper()) // abc->ABC
      .ToList();
 
@@ -200,5 +202,72 @@ query.ForEach(n => Console.WriteLine(n));
 ```
 _______________________________________________________________________________
 ## Соединение
+_______________________________________________________________________________
+
+Доступно три операции слияния, основные ```Join``` и ```GroupJoin``` выполняются на основе
+ключей поиска и обладают высокой производительностью, так как поиск использует
+хеш-таблицы. Условие соединения должно использовать операцию эквивалентности.
+```Join``` – плоский результирующий набор.
+```GroupJoin``` – иерархический результирующий набор.
+```c#
+var customers = new[] {
+    new { ID = 1, Name = "олеся" }, new { ID = 2, Name = "аня" },
+    new { ID = 3, Name = "саша" } };
+
+var purchases = new[] {
+    new { CustomerID = 1, Product = "яхта" },    new { CustomerID = 2, Product = "дом" },
+    new { CustomerID = 2, Product = "самолёт" }, new { CustomerID = 3, Product = "машина" } };
+
+var query =
+    (from c in customers
+     join p in purchases
+     on c.ID equals p.CustomerID
+     select c.Name.ToUpper() + "\t" + p.Product.ToUpper()) // abc->ABC
+     .ToList();
+
+query.ForEach(n => Console.WriteLine(n));
+/* Output:
+    ОЛЕСЯ   ЯХТА
+    АНЯ     ДОМ
+    АНЯ     САМОЛЁТ
+    САША    МАШИНА
+*/
+```
+Аналогичное объединение с применением генераторов ```from```:
+```c#
+var query =
+    (from c in customers
+     from p in purchases
+     where c.ID == p.CustomerID
+     select c.Name.ToUpper() + "\t" + p.Product.ToUpper()) // abc->ABC
+     .ToList();
+
+query.ForEach(n => Console.WriteLine(n));
+/* Output:
+    ОЛЕСЯ   ЯХТА
+    АНЯ     ДОМ
+    АНЯ     САМОЛЁТ
+    САША    МАШИНА
+*/
+```
+Выражение запросов ```GroupJoin``` сходно с ```Join```, но требует добавления после
+join-конструкции ```into``` для ввода новой переменной диапазона.
+
+Простейшую операцию слияния представляет ```Zip```, которая возвращает
+последовательность в следствии применения функции к каждой паре элементов:
+```c#
+var sequence1 = new[] { 1, 2, 3 };
+var sequence2 = new[] { "один", "два", "три", "пропущен" };
+
+sequence1.Zip(sequence2, (n, w) => n + " " + w)
+    .ToList().ForEach(n => Console.WriteLine(n));
+/* Output:
+    1 один
+    2 два
+    3 три
+*/
+```
+_______________________________________________________________________________
+## Упорядочение
 _______________________________________________________________________________
 
