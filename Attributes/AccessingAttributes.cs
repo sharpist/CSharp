@@ -1,4 +1,6 @@
-﻿using static System.Console;
+﻿using System.Collections.Generic;
+using System.Reflection;
+using static System.Console;
 
 // многократно используемый настраиваемый атрибут
 [System.AttributeUsage(System.AttributeTargets.Class |
@@ -56,11 +58,18 @@ class TestAuthorAttribute
         // найти атрибуты на уровне методов
         WriteLine($"\nИнформация об авторах методов класса {t}:");
         var meths = t.GetMethods();
+        #region доступ к закрытым членам
+            // вместо открытия доступа к методам, класс TypeInfo
+            // реализует свойства, возвращающие IEnumerable<T>,
+            // унаследованные члены исключаются из результата
+            // IEnumerable<MemberInfo> meths = t.GetTypeInfo().DeclaredMethods; // или DeclaredMembers от контекста
+        #endregion
         foreach (var meth in meths) {
             var a = (Author)System.Attribute.GetCustomAttribute(meth, typeof(Author));
             if (a != null)
                 WriteLine($"\t{a.GetName()},\tверсия {a.version:f}");
-            WriteLine($"Нет атрибута в функции члена {meth.ToString()}");
+            else
+                WriteLine($"Нет атрибута в функции члена {meth.ToString()}");
         }
     }
     // Информация об авторах класса SampleClass:
