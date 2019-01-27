@@ -10,20 +10,20 @@ delegate int del(int i);
 static void Main()
 {
     del myDelegate = x => x * x;
+
     int j = myDelegate(5); // j = 25
 }
 ```
 
 Создать тип дерева выражений:
 ```c#
-using System.Linq.Expressions;
-
-class Program
+delegate int del(int i);
+static void Main()
 {
-    static void Main()
-    {
-        Expression<del> myET = x => x * x;
-    }
+    System.Linq.Expressions
+        .Expression<del> myET = x => x * x;
+
+    int j = myET.Compile()(5); // j = 25
 }
 ```
 ___________________________________________________________________________________________
@@ -44,14 +44,14 @@ public partial class Form1 : Form
 
     private async void button_Click(object sender, EventArgs e)
     {
-        // methodAsync returns a Task
+        // ожидает перед продолжением
         await methodAsync();
-        textBox.Text += "\r\nControl returned to Click event handler.\n";
+        textBox.Text += "управление в обработчике событий\r\n";
     }
 
     private async Task methodAsync()
     {
-        // the following line simulates a task-returning asynchronous process
+        // передаёт управление вызывавшей стороне
         await Task.Delay(1000);
     }
 }
@@ -66,15 +66,15 @@ public partial class Form1 : Form
         InitializeComponent();
         button.Click += async (sender, e) =>
         {
-            // methodAsync returns a Task
+            // ожидает перед продолжением
             await methodAsync();
-            textBox.Text += "\nControl returned to Click event handler.\n";
+            textBox.Text += "управление в обработчике событий\r\n";
         };
     }
 
     private async Task methodAsync()
     {
-        // The following line simulates a task-returning asynchronous process
+        // передаёт управление вызывавшей стороне
         await Task.Delay(1000);
     }
 }
