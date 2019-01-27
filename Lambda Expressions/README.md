@@ -10,7 +10,6 @@ delegate int del(int i);
 static void Main()
 {
     del myDelegate = x => x * x;
-
     int j = myDelegate(5); // j = 25
 }
 ```
@@ -88,7 +87,7 @@ ________________________________________________________________________________
 Делегаты ```Func``` полезны для инкапсуляции пользовательских выражений:
 ```c#
 Func<int, bool> myFunc = x => x == 5;
-bool result = myFunc(4); // returns false of course
+bool result = myFunc(4); // возвращает false
 ```
 Выражения могут применяться к каждому элементу в наборе исходных данных:
 ```c#
