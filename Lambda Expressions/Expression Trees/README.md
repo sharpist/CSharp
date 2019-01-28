@@ -225,7 +225,7 @@ IQueryable<String> queryableData = companies.AsQueryable<string>();       // д�
 ParameterExpression pe = Expression.Parameter(typeof(string), "company"); // создать выражение, представляющее параметр предикату
 
 
-/// ***** companies.Where(company => (company.ToLower() == "coho winery" || company.Length > 16)).OrderBy(company => company) *****
+/// *** companies.Where(company => (company.ToLower() == "coho winery" || company.Length > 16)).OrderBy(company => company) ***
 
 
 // создать дерево выражений, представляющее выражение 'company.ToLower() == "coho winery"'
@@ -246,9 +246,13 @@ Expression predicateBody = Expression.OrElse(e1, e2);
 // создать дерево выражений, представляющее выражение
 // 'queryableData.Where(company => (company.ToLower() == "coho winery" || company.Length > 16))'
 MethodCallExpression whereCallExpression = Expression.Call(
+    /*Type type*/
     typeof(Queryable),
+    /*string methodName*/
     "Where",
+    /*Type[] typeArguments*/
     new Type[] { queryableData.ElementType },
+    /*params Expression[] arguments*/
     queryableData.Expression,
     Expression.Lambda<Func<string, bool>>(predicateBody, new ParameterExpression[] { pe }));
 
