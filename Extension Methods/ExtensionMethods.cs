@@ -13,7 +13,7 @@ public class Program
             new Worker { Name = "Анастасия", Rank = 3, Salary = 9.000M },
             new Worker { Name = "Дмитрий",   Rank = 5, Salary = 11.000M },
             new Worker { Name = "Татьяна",   Rank = 2, Salary = 8.000M },
-            new Worker { Name = "Юрий",      Rank = 4, Salary = 1.0000M },
+            new Worker { Name = "Юрий",      Rank = 4, Salary = 10.000M },
             new Worker { Name = "Катерина" }};
 
         var filterByRank = workers.FilterByRank(r => r.Rank <= 3);
