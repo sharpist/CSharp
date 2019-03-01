@@ -46,6 +46,7 @@ public class Test1
 public class Test2
 {
     [TestMethod]
+    //[ExpectedException(typeof(AssertFailedException))] // ожидать исключение
     public void NameOf_ExtractName()
     {
         // создать исключение, если значения не равны
