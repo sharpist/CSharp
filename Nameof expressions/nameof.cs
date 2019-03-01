@@ -1,66 +1,59 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Example
+class Program
 {
-    class Program
+    static void Main()
     {
-        static void Main(string[] args)
+        new Test1().NameOf_ArgumentNullException();
+        new Test2().NameOf_ExtractName();
+    }
+}
+/// <summary>
+/// Иногда в коде приходится использовать "магические строки" (обычные строки в C#),
+/// которые сопоставляются с программными элементами в коде.
+/// 
+/// Когда применяется строка для имени соответствующего параметра, который оказался
+/// недопустимым, возникает исключение ArgumentNullException.
+/// Так как "магические строки" не проверяются при компиляции и не происходит их
+/// автоматического обновления, чтобы обойти ограничения C# предоставляет доступ к
+/// имени программного элемента (класса, метода, параметра, атрибута) в коде с
+/// помощью выражения nameof.
+/// </summary>
+[TestClass]
+public class Test1
+{
+    [TestMethod]
+    public void NameOf_ArgumentNullException()
+    {
+        try
         {
-            var test1 = new Test1();
-                test1.NameOf_UsingNameofExpressionInArgumentNullException();
-
-            var test2 = new Test2();
-                test2.Nameof_ExtractsName();
+            ArgumentNullException("data");
+            Assert.Fail("недостижимый код");
+        }
+        catch (System.ArgumentNullException ex)
+        {
+            // создать исключение, если значения не равны
+            Assert.AreEqual<string>("param", ex.ParamName);
         }
     }
 
-/*
-Иногда в коде нужно использовать «магические строки»
-- обычные строки в C#, которые сопоставляются с программными элементами в коде.
+    void ArgumentNullException(string param)
+        // создать исключение и извлечь имя параметра
+        => throw new System.ArgumentNullException(nameof(param));
+}
 
-Например, когда возникает исключение ArgumentNullException,
-и необходимо использовать строку для имени соответствующего
-параметра, который оказался недопустимым.
-
-Чтобы обойти ограничения (магические строки не проверяются при компиляции и не происходит автоматического обновления строки)
-C# предоставляет доступ к имени программного элемента
-(класса, метода, параметра, атрибута) в коде с помощью выражения nameof (извлекает имя).
-*/
-
-    class Test1
+[TestClass]
+public class Test2
+{
+    [TestMethod]
+    public void NameOf_ExtractName()
     {
-        void ThrowArgumentNullExceptionUsingNameOf(string param1)
-        {
-            throw new ArgumentNullException(nameof(param1)); // выбросить исключение
-        }            // извлечь имя параметра 'param1' передать в свойство ParamName
+        // создать исключение, если значения не равны
+        Assert.AreEqual<string>("Test2", nameof(Test2)); // OK
 
-        [TestMethod]
-        public void NameOf_UsingNameofExpressionInArgumentNullException()
-        {
-            try
-            {   // вызов метода
-                ThrowArgumentNullExceptionUsingNameOf("data");
-                Assert.Fail("недостижимый код");
-            }
-            catch (ArgumentNullException exception)
-            {
-                Assert.AreEqual<string>("param1", exception.ParamName); // обработать исключение с параметром 'param1'
-            }               // утверждение не выполняется если не равны
-        }
-    }
+        Assert.AreEqual<string>("TestMethodAttribute", nameof(TestMethodAttribute)); // OK
 
-
-    class Test2
-    {
-        [TestMethod]
-        public void Nameof_ExtractsName() // определение различных элементов
-        {
-            Assert.AreEqual<string>("Test2", nameof(Test2)); // класс Test2
-
-            Assert.AreEqual<string>("TestMethodAttribute", nameof(TestMethodAttribute)); // атрибут TestMethod
-
-            Assert.AreEqual<string>("Nameof_ExtractsName", string.Format("{0}", nameof(Nameof_ExtractsName))); // метод Nameof_ExtractsName
-        }
+        Assert.AreEqual<string>(
+            "NameOf_ExtractName", string.Format("{0}", nameof(NameOf_ExtractName))); // OK
     }
 }
