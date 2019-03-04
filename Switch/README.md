@@ -1,6 +1,6 @@
-﻿# ```Switch Statements & Switch Expressions```
+﻿## ```Switch Statements & Switch Expressions```
 
-C# 8.0 вводит ```switch expressions```, предоставляющие:
+#### C# 8.0 вводит ```switch expressions```, предоставляющие:
 * более лаконичный синтаксис
 * возвращаемое значение (так как это выражение)
 * полную интеграцию с шаблоном сопоставления
@@ -28,7 +28,7 @@ public static State ChangeState(State current, Transition transition, bool hasKe
         _ => throw new InvalidOperationException($"Invalid transition")
     };
 ```
-Не требуется определять переменную или явный тип для каждого из случаев
- – тестируемый кортеж сопоставляется с кортежами, определенными для
+Не требуется определять переменную или явный тип для каждого из случаев,
+тестируемый кортеж сопоставляется с кортежами, определёнными для
 каждого из случаев.
 
