@@ -8,11 +8,8 @@ ________________________________________________________________________________
 class Base { public string Name; }
 class Child : Base { }
 
-static void Main()
-{
-    Child child = new Child { Name = "child" };
-    Display(child);
-}
+static void Main() =>
+    Display(new Child { Name = "child" });
 
 static void Display(Base param) => // Child является Base
     Console.WriteLine(param.Name); // child
