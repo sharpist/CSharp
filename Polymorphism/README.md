@@ -1,14 +1,18 @@
 ﻿## Полиморфизм
 _____________________________________________________________________________________
 
-Полиморфизм – обработка во время выполнения объектов производого класса подобно
-объектам базового класса:
+#### Полиморфизм
+– обработка во время выполнения объектов производого класса подобно объектам базового
+класса:
 ```c#
 class Base { public string Name; }
 class Child : Base { }
 
-static void Main() =>
-    Display(new Child { Name = "child" });
+static void Main()
+{
+    Child child = new Child { Name = "child" };
+    Display(child);
+}
 
 static void Display(Base param) => // Child является Base
     Console.WriteLine(param.Name); // child
@@ -36,4 +40,28 @@ switch (new Random().Next(2, 6)) // 2.3...5
 }
 // полиморфизм
 form.ShowDialog(); // отобразить форму как окно
+```
+_____________________________________________________________________________________
+
+#### Приведение и преобразования
+```c#
+// приведение вверх
+Child c = new Child();
+Base b = c;
+// приведение вниз
+Child child = (Child)b;
+```
+
+Операция ```as```:
+```c#
+b = new Base();
+child = b as Child;
+Console.WriteLine(child == null); // True
+```
+
+Операция ```is```:
+```c#
+// является ли объект производным от конкретного типа
+if (b is Child)
+    Console.WriteLine(((Child)b).Name);
 ```
