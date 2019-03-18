@@ -23,7 +23,7 @@
     }
     node root;
 
-    int height(node p) => p != null ? p.Height : 0;
+    int height(node p) => p?.Height ?? 0;
     int bfactor(node p) => height(p.Right) - height(p.Left);
     void fixheight(node p)
     {
