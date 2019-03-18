@@ -1,9 +1,9 @@
 ﻿class AVL_Tree<TKey, TValue> where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
 {
     /// <summary>
-    /// AVL Tree – self-balancing binary search tree.
-    /// The implementation of C# version is made by Alexander Usov.
-    /// A copy with the link please. :)
+    /// "AVL Tree" (self-balancing binary search tree)
+    /// C# implementation prepared by Alexander Usov.
+    /// Free copy with source link please.
     /// </summary>
     sealed class node
     {
@@ -74,62 +74,35 @@
     ///             Илья [2]              [7] Наталья
     ///            /       \              /          \
     ///           /         \            /            \
-    ///          /           \          /              \
-    /// Андрей [1]   Татьяна [3]      [6] Николай      [9] Полина
-    ///                               /                /         \
-    ///                              /                /           \
-    ///                   Катерина [5]      Дмитрий [8]          [10] Ольга
+    ///  Андрей [1] Татьяна [3]        [6] Николай    [9] Полина
+    ///                                /              /         \
+    ///                               /              /           \
+    ///                    Катерина [5]    Дмитрий [8]           [10] Ольга
     /// </summary>
     public void Insert(TKey key, TValue value)
     {
-        node insert(node p, TKey k, TValue v)
+        this.root = insert(this.root);
+        node insert(node p)
         {
-            if (p == null) return new node(k, v);
-            if (p.Key.CompareTo(k) > 0)
-                p.Left = insert(p.Left, k, v);
+            if (p == null) return new node(key, value);
+            if (p.Key.CompareTo(key) > 0)
+                p.Left = insert(p.Left);
             else
-                p.Right = insert(p.Right, k, v);
+                p.Right = insert(p.Right);
             return balance(p);
         }
-        this.root = insert(this.root, key, value);
-    }
-    public string Traverse()
-    {
-        string traverse(node p)
-        {
-            var result = System.String.Empty;
-
-            if (p.Left != null) result = traverse(p.Left);
-            result += $"{p.Value.ToString()}\n";
-            if (p.Right != null) result += traverse(p.Right);
-            return result;
-        }
-        return this.root != null ?
-            traverse(this.root) : throw new System.Exception("Binary tree doesn't contain elements!");
-    }
-    public TValue Find(TKey key)
-    {
-        TValue find(node p, TKey k)
-        {
-            if (p.Key.Equals(k)) return p.Value;
-            if (p.Key.CompareTo(k) > 0)
-                return (p.Left != null) ? find(p.Left, k) : default;
-            else
-                return (p.Right != null) ? find(p.Right, k) : default;
-        }
-        return this.root != null ?
-            find(this.root, key) : throw new System.Exception("Binary tree doesn't contain elements!");
     }
     public void Remove(TKey key)
     {
-        node remove(node p, TKey k)
+        this.root = remove(this.root);
+        node remove(node p)
         {
             if (p == null) return default;
-            if (p.Key.CompareTo(k) > 0)
-                p.Left = remove(p.Left, k);
-            else if (p.Key.CompareTo(k) < 0)
-                p.Right = remove(p.Right, k);
-            else // p.Key == k
+            if (p.Key.CompareTo(key) > 0)
+                p.Left = remove(p.Left);
+            else if (p.Key.CompareTo(key) < 0)
+                p.Right = remove(p.Right);
+            else // p.Key == key
             {
                 node q = p.Left;
                 node r = p.Right;
@@ -142,7 +115,6 @@
             }
             return balance(p);
         }
-        this.root = remove(this.root, key);
     }
     node findmin(node p) => p.Left != null ? findmin(p.Left) : p;
     node removemin(node p)
@@ -151,9 +123,37 @@
         p.Left = removemin(p.Left);
         return balance(p);
     }
-    public bool IsEmpty() => this.root == null;
-}
+    public TValue Find(TKey key)
+    {
+        return (this.root != null) ?
+            find(this.root) :
+            throw new System.Exception("Binary tree doesn't contain elements!");
+        TValue find(node p)
+        {
+            if (p.Key.Equals(key)) return p.Value;
+            if (p.Key.CompareTo(key) > 0)
+                return (p.Left != null) ? find(p.Left) : default;
+            else
+                return (p.Right != null) ? find(p.Right) : default;
+        }
+    }
+    public string Traverse()
+    {
+        return (this.root != null) ?
+            traverse(this.root) :
+            throw new System.Exception("Binary tree doesn't contain elements!");
+        string traverse(node p)
+        {
+            var result = System.String.Empty;
 
+            if (p.Left != null) result = traverse(p.Left);
+            result += $"{p.Value.ToString()}\n";
+            if (p.Right != null) result += traverse(p.Right);
+            return result;
+        }
+    }
+    public bool IsEmpty => this.root == null;
+}
 
 class Program
 {
@@ -172,33 +172,33 @@ class Program
 
         System.Console.WriteLine(avl.Traverse());
         /* Output results sorted by key:
-        Андрей
-        Илья
-        Татьяна
-        Александр
-        Катерина
-        Николай
-        Наталья
-        Дмитрий
-        Полина
-        Ольга
+            Андрей
+            Илья
+            Татьяна
+            Александр
+            Катерина
+            Николай
+            Наталья
+            Дмитрий
+            Полина
+            Ольга
         */
         System.Console.WriteLine(avl.Find(5) + "\n");
         /* Output results found by key:
-        Катерина
+            Катерина
         */
         avl.Remove(1);
         avl.Remove(2);
         System.Console.WriteLine(avl.Traverse());
         /* Output results after deletion by key:
-        Татьяна
-        Александр
-        Катерина
-        Николай
-        Наталья
-        Дмитрий
-        Полина
-        Ольга
+            Татьяна
+            Александр
+            Катерина
+            Николай
+            Наталья
+            Дмитрий
+            Полина
+            Ольга
         */
     }
 }
