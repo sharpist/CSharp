@@ -99,11 +99,11 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     ///                    Катерина [5]    Дмитрий [8]           [10] Ольга
     /// </summary>
 
-    public bool IsEmpty => this.root == null;
+    public bool IsEmpty => root == null;
 
     public void Insert(TKey key, TValue value)
     {
-        this.root = insert(this.root);
+        root = insert(root);
         node insert(node p)
         {
             if (p == null) return new node(key, value);
@@ -117,7 +117,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
 
     public void Remove(TKey key)
     {
-        this.root = remove(this.root);
+        root = remove(root);
         node remove(node p)
         {
             if (p == null) return default;
@@ -139,7 +139,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
             return balance(p);
         }
     }
-    node findmin(node p) => p.Left != null ? findmin(p.Left) : p;
+    node findmin(node p) => (p.Left != null) ? findmin(p.Left) : p;
     node removemin(node p)
     {
         if (p.Left == null) return p.Right;
@@ -149,9 +149,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
 
     public TValue Find(TKey key)
     {
-        return (this.root != null) ?
-            find(this.root) :
-            throw new System.Exception("Binary tree doesn't contain elements!");
+        return (!IsEmpty) ? find(root) : default;
         TValue find(node p)
         {
             if (p.Key.Equals(key)) return p.Value;
