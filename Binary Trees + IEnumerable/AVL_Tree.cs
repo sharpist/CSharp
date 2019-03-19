@@ -1,11 +1,12 @@
-﻿class AVL_Tree<TKey, TValue> where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
+﻿/// <summary>
+/// "AVL Tree" self-balancing binary search tree
+/// C# implementation provided by Alexander Usov
+/// free copy with source link please
+/// </summary>
+class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
+    where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
 {
-    /// <summary>
-    /// "AVL Tree" (self-balancing binary search tree)
-    /// C# implementation prepared by Alexander Usov.
-    /// Free copy with source link please.
-    /// </summary>
-    sealed class node
+    sealed class node : System.Collections.Generic.IEnumerable<TValue>
     {
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
@@ -20,7 +21,23 @@
 
             Height = 1; Left = Right = null;
         }
+
+        System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
+        {
+            if (Left != null)
+                foreach (TValue value in Left)
+                    yield return value;
+
+            yield return Value;
+
+            if (Right != null)
+                foreach (TValue value in Right)
+                    yield return value;
+        }
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+            => throw new System.NotImplementedException();
     }
+
     node root;
 
     int height(node p) => p?.Height ?? 0;
@@ -50,6 +67,7 @@
         fixheight(q);
         return q;
     }
+
     node balance(node p)     // node balancing p
     {
         fixheight(p);
@@ -67,6 +85,7 @@
         }
         return p;            // balancing isn't needed
     }
+
     /// <summary>
     ///                     [4] Александр
     ///                     /            \
@@ -79,6 +98,9 @@
     ///                               /              /           \
     ///                    Катерина [5]    Дмитрий [8]           [10] Ольга
     /// </summary>
+
+    public bool IsEmpty => this.root == null;
+
     public void Insert(TKey key, TValue value)
     {
         this.root = insert(this.root);
@@ -92,6 +114,7 @@
             return balance(p);
         }
     }
+
     public void Remove(TKey key)
     {
         this.root = remove(this.root);
@@ -123,6 +146,7 @@
         p.Left = removemin(p.Left);
         return balance(p);
     }
+
     public TValue Find(TKey key)
     {
         return (this.root != null) ?
@@ -137,40 +161,42 @@
                 return (p.Right != null) ? find(p.Right) : default;
         }
     }
-    public string Traverse()
-    {
-        return (this.root != null) ?
-            traverse(this.root) :
-            throw new System.Exception("Binary tree doesn't contain elements!");
-        string traverse(node p)
-        {
-            var result = System.String.Empty;
 
-            if (p.Left != null) result = traverse(p.Left);
-            result += $"{p.Value.ToString()}\n";
-            if (p.Right != null) result += traverse(p.Right);
-            return result;
-        }
+    System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
+    {
+        if (root.Left != null)
+            foreach (TValue value in root.Left)
+                yield return value;
+
+        yield return root.Value;
+
+        if (root.Right != null)
+            foreach (TValue value in root.Right)
+                yield return value;
     }
-    public bool IsEmpty => this.root == null;
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        => throw new System.NotImplementedException();
 }
+
 
 class Program
 {
     static void Main()
     {
-        var personnel = new[]
-        {
+        var avl = new AVL_Tree<int, string>();
+
+        // filling tree structure
+        foreach (var p in new[] {
             new { key = 4, value = "Александр" }, new { key = 1, value = "Андрей" },
             new { key = 9, value = "Полина" },    new { key = 3, value = "Татьяна" },
             new { key = 5, value = "Катерина" },  new { key = 10, value = "Ольга" },
             new { key = 2, value = "Илья" },      new { key = 7, value = "Наталья" },
             new { key = 6, value = "Николай" },   new { key = 8, value = "Дмитрий" }
-        };
-        var avl = new AVL_Tree<int, string>();
-        foreach (var p in personnel) avl.Insert(p.key, p.value);
+        }) avl.Insert(p.key, p.value);
 
-        System.Console.WriteLine(avl.Traverse());
+        // tree enumeration
+        foreach (var value in avl)
+            System.Console.WriteLine(value);
         /* Output results sorted by key:
             Андрей
             Илья
@@ -183,13 +209,18 @@ class Program
             Полина
             Ольга
         */
-        System.Console.WriteLine(avl.Find(5) + "\n");
+
+        // tree research
+        System.Console.WriteLine("\n" + avl.Find(5) + "\n");
         /* Output results found by key:
             Катерина
         */
+
+        // removal
         avl.Remove(1);
         avl.Remove(2);
-        System.Console.WriteLine(avl.Traverse());
+        foreach (var value in avl)
+            System.Console.WriteLine(value);
         /* Output results after deletion by key:
             Татьяна
             Александр
