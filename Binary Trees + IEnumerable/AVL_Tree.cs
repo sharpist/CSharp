@@ -161,17 +161,8 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     }
 
     System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
-    {
-        if (root.Left != null)
-            foreach (TValue value in root.Left)
-                yield return value;
+        => (root as System.Collections.Generic.IEnumerable<TValue>).GetEnumerator();
 
-        yield return root.Value;
-
-        if (root.Right != null)
-            foreach (TValue value in root.Right)
-                yield return value;
-    }
     System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         => throw new System.NotImplementedException();
 }
