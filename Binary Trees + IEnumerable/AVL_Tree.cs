@@ -38,8 +38,6 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
             => throw new System.NotImplementedException();
     }
 
-    node root;
-
     int height(node p) => p?.Height ?? 0;
     int bfactor(node p) => height(p.Right) - height(p.Left);
     void fixheight(node p)
@@ -85,7 +83,6 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
         }
         return p;            // balancing isn't needed
     }
-
     /// <summary>
     ///                     [4] Александр
     ///                     /            \
@@ -98,8 +95,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     ///                               /              /           \
     ///                    Катерина [5]    Дмитрий [8]           [10] Ольга
     /// </summary>
-
-    public bool IsEmpty => root == null;
+    node root;
 
     public void Insert(TKey key, TValue value)
     {
@@ -159,6 +155,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
                 return (p.Right != null) ? find(p.Right) : default;
         }
     }
+    public bool IsEmpty => root == null;
 
     System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
         => (root as System.Collections.Generic.IEnumerable<TValue>).GetEnumerator();
