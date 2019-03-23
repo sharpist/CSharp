@@ -1,11 +1,14 @@
-﻿/// <summary>
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+/// <summary>
 /// "AVL Tree" self-balancing binary search tree
 /// C# implementation provided by Alexander Usov
 /// free copy with source link please
 /// </summary>
-class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue> where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
+class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>, IComparable<TKey>
 {
-    sealed class Node : System.Collections.Generic.IEnumerable<TValue>
+    sealed class Node : IEnumerable<TValue>
     {
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
@@ -17,8 +20,8 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue> wh
             Value  = value;
             Height = 1; Left = Right = null;
         }
-        System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator() => new Enumerator(this);
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => throw new System.NotImplementedException();
+        IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(this);
+        IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
     }
 
     int height(Node p) => p?.Height ?? 0;
@@ -140,22 +143,15 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue> wh
     }
     public bool IsEmpty => root == null;
 
-    System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator() => new Enumerator(root);
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => throw new System.NotImplementedException();
-
-    sealed class Enumerator : System.Collections.Generic.IEnumerator<TValue>
+    sealed class Enumerator : IEnumerator<TValue>
     {
-        Node data;
-        System.Collections.Generic.Queue<TValue> enumData;
-        public Enumerator(Node data)
-        {
-            this.data = data;
-            enumData  = new System.Collections.Generic.Queue<TValue>(iterator());
-        }
-        TValue System.Collections.Generic.IEnumerator<TValue>.Current => enumData.Dequeue();
-        bool System.Collections.IEnumerator.MoveNext() => enumData.Count > 0;
+        Queue<TValue> enumData;
+        public Enumerator(Node data) => enumData = new Queue<TValue>(iterator(data));
 
-        System.Collections.Generic.IEnumerable<TValue> iterator()
+        bool IEnumerator.MoveNext() => enumData.Count > 0;
+        TValue IEnumerator<TValue>.Current => enumData.Dequeue();
+
+        IEnumerable<TValue> iterator(Node data)
         {
             if (data == null) yield break;
             if (data.Left != null)
@@ -168,10 +164,12 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue> wh
                 foreach (TValue value in data.Right)
                     yield return value;
         }
-        object System.Collections.IEnumerator.Current => throw new System.NotImplementedException();
-        void System.Collections.IEnumerator.Reset() => throw new System.NotSupportedException();
-        void System.IDisposable.Dispose() { }
+        object IEnumerator.Current => throw new NotImplementedException();
+        void IEnumerator.Reset() => throw new NotSupportedException();
+        void IDisposable.Dispose() { }
     }
+    IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(root);
+    IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
 }
 
 
@@ -181,7 +179,6 @@ class Program
     {
         var avl = new AVL_Tree<int, string>();
 
-        // filling tree structure
         foreach (var p in new[] {
             new { key = 4, value = "Александр" }, new { key = 1, value = "Андрей" },
             new { key = 9, value = "Полина" },    new { key = 3, value = "Татьяна" },
@@ -190,8 +187,7 @@ class Program
             new { key = 6, value = "Николай" },   new { key = 8, value = "Дмитрий" }
         }) avl.Insert(p.key, p.value);
 
-        // tree enumeration
-        foreach (var value in avl) System.Console.WriteLine(value);
+        foreach (var value in avl) Console.WriteLine(value);
         /* Output results sorted by key:
             Андрей
             Илья
@@ -205,17 +201,15 @@ class Program
             Ольга
         */
 
-        // tree research
-        System.Console.WriteLine("\n" + avl.Find(5) + "\n");
+        Console.WriteLine("\n" + avl.Find(5) + "\n");
         /* Output results found by key:
             Катерина
         */
 
-        // removal
         avl.Remove(1);
         avl.Remove(2);
-        foreach (var value in avl) System.Console.WriteLine(value);
-        /* Output results after deletion by key:
+        foreach (var value in avl) Console.WriteLine(value);
+        /* Output results after removal by key:
             Татьяна
             Александр
             Катерина
