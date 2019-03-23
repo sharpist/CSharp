@@ -3,62 +3,45 @@
 /// C# implementation provided by Alexander Usov
 /// free copy with source link please
 /// </summary>
-class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
-    where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
+class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue> where TKey : System.IEquatable<TKey>, System.IComparable<TKey>
 {
-    sealed class node : System.Collections.Generic.IEnumerable<TValue>
+    sealed class Node : System.Collections.Generic.IEnumerable<TValue>
     {
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
-
-        public sbyte Height;
-        public node  Left, Right;
-
-        public node(TKey key, TValue value)
+        public sbyte  Height;
+        public Node   Left, Right;
+        public Node(TKey key, TValue value)
         {
-            Key   = key;
-            Value = value;
-
+            Key    = key;
+            Value  = value;
             Height = 1; Left = Right = null;
         }
-
-        System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
-        {
-            if (Left != null)
-                foreach (TValue value in Left)
-                    yield return value;
-
-            yield return Value;
-
-            if (Right != null)
-                foreach (TValue value in Right)
-                    yield return value;
-        }
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            => throw new System.NotImplementedException();
+        System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator() => new Enumerator(this);
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => throw new System.NotImplementedException();
     }
 
-    int height(node p) => p?.Height ?? 0;
-    int bfactor(node p) => height(p.Right) - height(p.Left);
-    void fixheight(node p)
+    int height(Node p) => p?.Height ?? 0;
+    int bfactor(Node p) => height(p.Right) - height(p.Left);
+    void fixheight(Node p)
     {
         int hl = height(p.Left),
             hr = height(p.Right);
         p.Height = (sbyte)((hl > hr ? hl : hr) + 1);
     }
 
-    node rotateleft(node q)  // left rotation around q
+    Node rotateleft(Node q)  // left rotation around q
     {
-        node p  = q.Right;
+        Node p  = q.Right;
         q.Right = p.Left;
         p.Left  = q;
         fixheight(q);
         fixheight(p);
         return p;
     }
-    node rotateright(node p) // right rotation around p
+    Node rotateright(Node p) // right rotation around p
     {
-        node q  = p.Left;
+        Node q  = p.Left;
         p.Left  = q.Right;
         q.Right = p;
         fixheight(p);
@@ -66,7 +49,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
         return q;
     }
 
-    node balance(node p)     // node balancing p
+    Node balance(Node p)     // node balancing p
     {
         fixheight(p);
         if (bfactor(p) == -2)
@@ -95,14 +78,14 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     ///                               /              /           \
     ///                    Катерина [5]    Дмитрий [8]           [10] Ольга
     /// </summary>
-    node root;
+    Node root;
 
     public void Insert(TKey key, TValue value)
     {
         root = insert(root);
-        node insert(node p)
+        Node insert(Node p)
         {
-            if (p == null) return new node(key, value);
+            if (p == null) return new Node(key, value);
             if (p.Key.CompareTo(key) > 0)
                 p.Left = insert(p.Left);
             else
@@ -114,7 +97,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     public void Remove(TKey key)
     {
         root = remove(root);
-        node remove(node p)
+        Node remove(Node p)
         {
             if (p == null) return default;
             if (p.Key.CompareTo(key) > 0)
@@ -123,11 +106,11 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
                 p.Right = remove(p.Right);
             else // p.Key == key
             {
-                node q = p.Left;
-                node r = p.Right;
+                Node q = p.Left;
+                Node r = p.Right;
                 p = null;
                 if (r == null) return q;
-                node min  = findmin(r);
+                Node min  = findmin(r);
                 min.Right = removemin(r);
                 min.Left  = q;
                 return balance(min);
@@ -135,8 +118,8 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
             return balance(p);
         }
     }
-    node findmin(node p) => (p.Left != null) ? findmin(p.Left) : p;
-    node removemin(node p)
+    Node findmin(Node p) => (p.Left != null) ? findmin(p.Left) : p;
+    Node removemin(Node p)
     {
         if (p.Left == null) return p.Right;
         p.Left = removemin(p.Left);
@@ -146,7 +129,7 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     public TValue Find(TKey key)
     {
         return (!IsEmpty) ? find(root) : default;
-        TValue find(node p)
+        TValue find(Node p)
         {
             if (p.Key.Equals(key)) return p.Value;
             if (p.Key.CompareTo(key) > 0)
@@ -157,11 +140,38 @@ class AVL_Tree<TKey, TValue> : System.Collections.Generic.IEnumerable<TValue>
     }
     public bool IsEmpty => root == null;
 
-    System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator()
-        => (root as System.Collections.Generic.IEnumerable<TValue>).GetEnumerator();
+    System.Collections.Generic.IEnumerator<TValue> System.Collections.Generic.IEnumerable<TValue>.GetEnumerator() => new Enumerator(root);
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => throw new System.NotImplementedException();
 
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        => throw new System.NotImplementedException();
+    sealed class Enumerator : System.Collections.Generic.IEnumerator<TValue>
+    {
+        Node data;
+        System.Collections.Generic.Queue<TValue> enumData;
+        public Enumerator(Node data)
+        {
+            this.data = data;
+            enumData  = new System.Collections.Generic.Queue<TValue>(iterator());
+        }
+        TValue System.Collections.Generic.IEnumerator<TValue>.Current => enumData.Dequeue();
+        bool System.Collections.IEnumerator.MoveNext() => enumData.Count > 0;
+
+        System.Collections.Generic.IEnumerable<TValue> iterator()
+        {
+            if (data == null) yield break;
+            if (data.Left != null)
+                foreach (TValue value in data.Left)
+                    yield return value;
+
+            yield return data.Value;
+
+            if (data.Right != null)
+                foreach (TValue value in data.Right)
+                    yield return value;
+        }
+        object System.Collections.IEnumerator.Current => throw new System.NotImplementedException();
+        void System.Collections.IEnumerator.Reset() => throw new System.NotSupportedException();
+        void System.IDisposable.Dispose() { }
+    }
 }
 
 
@@ -181,8 +191,7 @@ class Program
         }) avl.Insert(p.key, p.value);
 
         // tree enumeration
-        foreach (var value in avl)
-            System.Console.WriteLine(value);
+        foreach (var value in avl) System.Console.WriteLine(value);
         /* Output results sorted by key:
             Андрей
             Илья
@@ -205,8 +214,7 @@ class Program
         // removal
         avl.Remove(1);
         avl.Remove(2);
-        foreach (var value in avl)
-            System.Console.WriteLine(value);
+        foreach (var value in avl) System.Console.WriteLine(value);
         /* Output results after deletion by key:
             Татьяна
             Александр
