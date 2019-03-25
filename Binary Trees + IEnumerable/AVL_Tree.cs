@@ -146,11 +146,12 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
     sealed class Enumerator : IEnumerator<TValue>
     {
         Queue<TValue> enumData;
+        TValue current = default;
         public Enumerator(Node data) => enumData = new Queue<TValue>(iterator(data));
 
-        bool IEnumerator.MoveNext() => enumData.Count > 0;
-        TValue IEnumerator<TValue>.Current => (enumData.TryDequeue(out TValue value)) ?
-            value : throw new InvalidOperationException("Use MoveNext before calling Current");
+        bool IEnumerator.MoveNext() => enumData.TryDequeue(out current);
+        TValue IEnumerator<TValue>.Current => (current != default) ? current
+            : throw new InvalidOperationException("Use MoveNext before calling Current");
 
         IEnumerable<TValue> iterator(Node data)
         {
