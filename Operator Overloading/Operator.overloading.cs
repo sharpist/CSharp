@@ -119,14 +119,12 @@ namespace ComplexNumbers
                 return (this.Real == compare.Real) &&
                 (this.Imaginary == compare.Imaginary);
             }
-            else
-            {
-                return false;
-            }
+            else return false;
         }
         public override int GetHashCode()
         {
-            return base.GetHashCode();
+            // возвращает хеш-код зависящий от поля/полей объекта
+            return Convert.ToInt32(Math.Pow((Real + Imaginary) ^ 17, 2) % 1000);
         }
     }
 }
