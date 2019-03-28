@@ -124,7 +124,7 @@ namespace ComplexNumbers
         public override int GetHashCode()
         {
             // возвращает хеш-код зависящий от поля/полей объекта
-            return Convert.ToInt32(Math.Pow((Real + Imaginary) ^ 17, 2) % 1000);
+            return Convert.ToInt32(Math.Pow((Real + Imaginary) ^ 17457, 2) % 10000);
         }
     }
 }
