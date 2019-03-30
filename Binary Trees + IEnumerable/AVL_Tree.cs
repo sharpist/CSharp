@@ -12,14 +12,11 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
     {
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
-        public sbyte  Height;
-        public Node   Left, Right;
-        public Node(TKey key, TValue value)
-        {
-            Key    = key;
-            Value  = value;
-            Height = 1; Left = Right = null;
-        }
+        public byte Height;
+        public Node Left, Right;
+        public Node(TKey key, TValue value) =>
+            (Key, Value, Height, Left, Right) = (key, value, 1, null, null);
+
         IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => new Enumerator(this);
         IEnumerator IEnumerable.GetEnumerator() => throw new NotImplementedException();
     }
@@ -30,7 +27,7 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
     {
         int hl = height(p.Left),
             hr = height(p.Right);
-        p.Height = (sbyte)((hl > hr ? hl : hr) + 1);
+        p.Height = (byte)((hl > hr ? hl : hr) + 1);
     }
 
     Node rotateleft(Node q)  // left rotation around q
