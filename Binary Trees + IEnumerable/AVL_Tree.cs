@@ -12,7 +12,7 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
     {
         public TKey   Key   { get; } = default;
         public TValue Value { get; } = default;
-        public byte Height;
+        public Byte Height;
         public Node Left, Right;
         public Node(TKey key, TValue value) =>
             (Key, Value, Height, Left, Right) = (key, value, 1, null, null);
@@ -22,47 +22,46 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
     }
 
     int height(Node p) => p?.Height ?? 0;
-    int bfactor(Node p) => height(p.Right) - height(p.Left);
-    void fixheight(Node p)
+    int bFactor(Node p) => height(p.Right) - height(p.Left);
+    void fixHeight(Node p)
     {
-        int hl = height(p.Left),
-            hr = height(p.Right);
-        p.Height = (byte)((hl > hr ? hl : hr) + 1);
+        (int hl, int hr) = (height(p.Left), height(p.Right));
+        p.Height = Convert.ToByte(((hl > hr) ? hl : hr) + 1);
     }
 
-    Node rotateleft(Node q)  // left rotation around q
+    Node rotateLeft(Node q)  // left rotation around q
     {
         Node p  = q.Right;
         q.Right = p.Left;
         p.Left  = q;
-        fixheight(q);
-        fixheight(p);
+        fixHeight(q);
+        fixHeight(p);
         return p;
     }
-    Node rotateright(Node p) // right rotation around p
+    Node rotateRight(Node p) // right rotation around p
     {
         Node q  = p.Left;
         p.Left  = q.Right;
         q.Right = p;
-        fixheight(p);
-        fixheight(q);
+        fixHeight(p);
+        fixHeight(q);
         return q;
     }
 
     Node balance(Node p)     // node balancing p
     {
-        fixheight(p);
-        if (bfactor(p) == -2)
+        fixHeight(p);
+        if (bFactor(p) == -2)
         {
-            if (bfactor(p.Left) > 0)
-                p.Left = rotateleft(p.Left);
-            return rotateright(p);
+            if (bFactor(p.Left) > 0)
+                p.Left = rotateLeft(p.Left);
+            return rotateRight(p);
         }
-        if (bfactor(p) == 2)
+        if (bFactor(p) == 2)
         {
-            if (bfactor(p.Right) < 0)
-                p.Right = rotateright(p.Right);
-            return rotateleft(p);
+            if (bFactor(p.Right) < 0)
+                p.Right = rotateRight(p.Right);
+            return rotateLeft(p);
         }
         return p;            // balancing isn't needed
     }
@@ -106,23 +105,22 @@ class AVL_Tree<TKey, TValue> : IEnumerable<TValue> where TKey : IEquatable<TKey>
                 p.Right = remove(p.Right);
             else // p.Key == key
             {
-                Node q = p.Left;
-                Node r = p.Right;
+                (Node q, Node r) = (p.Left, p.Right);
                 p = null;
                 if (r == null) return q;
-                Node min  = findmin(r);
-                min.Right = removemin(r);
+                Node min  = findMin(r);
+                min.Right = removeMin(r);
                 min.Left  = q;
                 return balance(min);
             }
             return balance(p);
         }
     }
-    Node findmin(Node p) => (p.Left != null) ? findmin(p.Left) : p;
-    Node removemin(Node p)
+    Node findMin(Node p) => (p.Left != null) ? findMin(p.Left) : p;
+    Node removeMin(Node p)
     {
         if (p.Left == null) return p.Right;
-        p.Left = removemin(p.Left);
+        p.Left = removeMin(p.Left);
         return balance(p);
     }
 
@@ -199,12 +197,10 @@ class Program
             Полина
             Ольга
         */
-
         Console.WriteLine("\n" + avl.Find(5) + "\n");
         /* Output results found by key:
             Катерина
         */
-
         avl.Remove(1);
         avl.Remove(2);
         foreach (var value in avl) Console.WriteLine(value);
