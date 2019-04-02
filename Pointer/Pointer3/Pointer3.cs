@@ -24,11 +24,11 @@ class FileReader
             );
     [DllImport("kernel32", SetLastError = true)]
     static extern unsafe bool ReadFile(
-            IntPtr hFile,             // handle файла
+            IntPtr hFile,             // дескриптор файла
             void* pBuffer,            // буфер данных
             int NumberOfBytesToRead,  // количество байт для чтения
             int* pNumberOfBytesRead,  // количество прочитанных байт
-            int Overlapped            // вместо указателя на структуру overlapped используется int
+            int Overlapped            // асинхронный буфер
             );
     [DllImport("kernel32", SetLastError = true)]
     static extern unsafe bool CloseHandle(
@@ -82,21 +82,31 @@ class Program
 
         var buffer = new byte[128];
         var reader = new FileReader();
-
         if (reader.Open(args[0]))
         {
             // предполагается чтение файла в кодировке UTF-8
             var encoding = new UTF8Encoding();
             try
             {
+                // предполагается чтение файла в кодировке UTF-8
+                Console.OutputEncoding = Encoding.UTF8;
+                var decoder = Encoding.UTF8.GetDecoder();
+
+                var content = String.Empty;
                 int bytesRead;
                 do
                 {
                     bytesRead = reader.Read(buffer, 0, buffer.Length);
-                    var content = encoding.GetString(buffer, 0, bytesRead);
-                    Console.Write("{0}", content);
+                    // определить число символов в последовательности байтов
+                    var сharCount = decoder.GetCharCount(buffer, 0, bytesRead);
+                    var chars = new char[сharCount];
+                    // выполнить декодирование
+                    сharCount = decoder.GetChars(buffer, 0, bytesRead, chars, 0);
+                    content += new String(chars, 0, сharCount);
                 }
                 while (bytesRead > 0);
+
+                Console.WriteLine("{0}", content);
             }
             catch { }
             finally
