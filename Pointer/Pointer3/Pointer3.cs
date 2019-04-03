@@ -84,8 +84,6 @@ class Program
         var reader = new FileReader();
         if (reader.Open(args[0]))
         {
-            // предполагается чтение файла в кодировке UTF-8
-            var encoding = new UTF8Encoding();
             try
             {
                 // предполагается чтение файла в кодировке UTF-8
