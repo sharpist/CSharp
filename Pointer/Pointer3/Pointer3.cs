@@ -46,7 +46,7 @@ class FileReader
         return (handle != IntPtr.Zero) ? true : false;
     }
 
-    public static unsafe int Read(Span<byte> buffer, int index, int count)
+    public static unsafe int Read(ReadOnlySpan<byte> buffer, int index, int count)
     {
         int n = 0;
         fixed (byte* p = buffer)
@@ -94,7 +94,7 @@ class Program
                 int nBytes;
                 do
                 {
-                    Span<byte> buffer = stackalloc byte[128];
+                    ReadOnlySpan<byte> buffer = stackalloc byte[128];
                     nBytes = FileReader.Read(buffer, 0, buffer.Length);
 
                     // определить число символов в последовательности байтов
@@ -103,7 +103,7 @@ class Program
 
                     // хранить конечные байты блока данных
                     nChars = decoder.GetChars(buffer, chars, false);
-                    Console.Write(new String(chars));
+                    Console.Write(chars.ToString());
                 }
                 while (nBytes > 0);
             }
