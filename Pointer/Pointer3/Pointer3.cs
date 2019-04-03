@@ -3,14 +3,17 @@ using System.Runtime.InteropServices;
 using System.Text;
 /// <summary>
 /// *опция /unsafe
-/// утилита командной строки читает указанный в командной строке
-/// текстовый файл и отображает в консоли его содержимое
+/// FileReader – утилита командной строки, которая читает указанный в
+/// командной строке текстовый файл и отображает в консоли его содержимое.
+/// 
+/// Представляет практический пример использования указателей и методов
+/// с внешней реализацией для вызова неуправляемого кода.
 /// </summary>
 class FileReader
 {
     const uint GENERIC_READ = 0x80000000;
     const uint OPEN_EXISTING = 3;
-    IntPtr handle;
+    static IntPtr handle;
 
     [DllImport("kernel32", SetLastError = true)]
     static extern unsafe IntPtr CreateFile(
@@ -36,14 +39,14 @@ class FileReader
             );
 
 
-    public bool Open(string FileName)
+    public static bool Open(string FileName)
     {
         // открыть существующий файл для чтения
         handle = CreateFile(FileName, GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
         return (handle != IntPtr.Zero) ? true : false;
     }
 
-    public unsafe int Read(byte[] buffer, int index, int count)
+    public static unsafe int Read(Span<byte> buffer, int index, int count)
     {
         int n = 0;
         fixed (byte* p = buffer)
@@ -54,7 +57,7 @@ class FileReader
         return n;
     }
 
-    public bool Close() => CloseHandle(handle);
+    public static bool Close() => CloseHandle(handle);
 }
 
 class Program
@@ -80,36 +83,34 @@ class Program
                                       (i + 1 < args.Length) ? ", " : "\n\n");
 
 
-        var buffer = new byte[128];
-        var reader = new FileReader();
-        if (reader.Open(args[0]))
+        if (FileReader.Open(args[0]))
         {
             try
             {
                 // предполагается чтение файла в кодировке UTF-8
                 Console.OutputEncoding = Encoding.UTF8;
-                var decoder = Encoding.UTF8.GetDecoder();
+                Decoder decoder = Encoding.UTF8.GetDecoder();
 
-                var content = String.Empty;
-                int bytesRead;
+                int nBytes;
                 do
                 {
-                    bytesRead = reader.Read(buffer, 0, buffer.Length);
-                    // определить число символов в последовательности байтов
-                    var сharCount = decoder.GetCharCount(buffer, 0, bytesRead);
-                    var chars = new char[сharCount];
-                    // выполнить декодирование
-                    сharCount = decoder.GetChars(buffer, 0, bytesRead, chars, 0);
-                    content += new String(chars, 0, сharCount);
-                }
-                while (bytesRead > 0);
+                    Span<byte> buffer = stackalloc byte[128];
+                    nBytes = FileReader.Read(buffer, 0, buffer.Length);
 
-                Console.WriteLine("{0}", content);
+                    // определить число символов в последовательности байтов
+                    int nChars = decoder.GetCharCount(buffer, false);
+                    Span<char> chars = stackalloc char[nChars];
+
+                    // хранить конечные байты блока данных
+                    nChars = decoder.GetChars(buffer, chars, false);
+                    Console.Write(new String(chars));
+                }
+                while (nBytes > 0);
             }
             catch { }
             finally
             {
-                reader.Close();
+                FileReader.Close();
             }
             return 0;
         }
