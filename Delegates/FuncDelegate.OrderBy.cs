@@ -2,58 +2,47 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Slide
+class Program
 {
-    class Program
+    static void Main()
     {
-        public static void Main()
+        var data = new List<Person>
         {
-            // отношение ключа к делегату
-            var keys = new Dictionary<string, Func<Person, object>>()
-            {
-                { "Id",   x => x.Id },
-                { "Name", x => x.Name }
-            };
+            new Person(3, "Александр"), new Person(2, "Катерина"),
+            new Person(4, "Андрей"),    new Person(1, "Наталья"),
+            new Person(6, "Ольга"),     new Person(5, "Дмитрий")
+        };
 
-            // данные
-            var dataList = new List<Person>()
-            {
-                new Person() { Id = "3", Name = "Alexander"},
-                new Person() { Id = "2", Name = "Katerina"},
-                new Person() { Id = "4", Name = "Andrey"},
-                new Person() { Id = "1", Name = "Natalia"}
-            };
+        // отношение ключа к делегату
+        var keyset = new Dictionary<string, Func<Person, object>>
+        {
+            { "Id", x => x.Id }, { "Name", x => x.Name }
+        };
+        var key = "Id";                    // опорное значение упорядочивания
 
+        Func<Person, object> func;         // делегат
+        keyset.TryGetValue(key, out func); // инициализировать делегат по ключу
+        var result = Sort(data, func);     // упорядочить
 
-            // выбранный ключ "Id" - опорное значение для упорядочивания
-            string property = "Id";
-
-
-            Func<Person, object> func;               // объявление делегата
-            keys.TryGetValue(property, out func);    // инициализация делегата по ключу
-
-            var sortedResult = Sort(dataList, func); // теперь выбран верный делегат
-
-
-            sortedResult?.ForEach(x => Console.WriteLine($"Id = {x.Id}, Name = {x.Name}"));
-            /* упорядочено по "Id"
-
-               Id = 1, Name = Natalia
-               Id = 2, Name = Katerina
-               Id = 3, Name = Alexander
-               Id = 4, Name = Andrey
-            */
-        }
-
-
-        // функция упорядочивания
-        public static List<Person> Sort(List<Person> dataList, Func<Person, object> p)
-            => dataList.OrderBy(p).ToList();
+        result?.ForEach(x => Console.WriteLine($"Id: {x.Id}, Name: {x.Name}"));
+        /* Output: ordered by "Id"
+            Id: 1, Name: Наталья
+            Id: 2, Name: Катерина
+            Id: 3, Name: Александр
+            Id: 4, Name: Андрей
+            Id: 5, Name: Дмитрий
+            Id: 6, Name: Ольга
+        */
     }
+    // функция упорядочивания
+    static List<Person> Sort(List<Person> data, Func<Person, object> func)
+        => data.OrderBy(func).ToList();
+}
 
-    struct Person
-    {
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
+struct Person
+{
+    public Int32 Id { get; }
+    public String Name { get; }
+
+    public Person(int Id, string Name) => (this.Id, this.Name) = (Id, Name);
 }
