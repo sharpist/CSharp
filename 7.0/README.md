@@ -137,46 +137,45 @@ ___________________________________________________________________
 * в качестве автономного идентификатора, когда требуется явно
 идентифицировать значение присваивания как пустую переменную.
 ```c#
+using System.Linq.Expressions;
 using static System.Console;
 
-class Example
+class Program
 {
     public static void Main()
     {
-        // в вызове метода учитываются 3 возвращаемых значения,
-        // поэтому при деконструкции кортежа оставшееся значение
-        // обрабатывается как пустая переменная
-        var (species, _, family, population) = Function("Тигр");
+        /// <summary>
+        /// в вызове метода учитываются 3 возвращаемых значения,
+        /// поэтому при деконструкции кортежа оставшееся значение
+        /// обрабатывается как пустая переменная
+        /// </summary>
+        var (species, _, family, population) = animal("пантеры");
 
         WriteLine("{0}: семейство {1}, численность {2}",
             species, family, population);
+        // тигры: семейство кошачьи, численность 4000
     }
 
-    private static (string, string, string, int)
-        // метод возвращает кортеж из 4 элементов
-        Function(string species)
+    private static (string, string, string, int) animal(string value)
     {
-        if (species == "Тигр")
-        {
-            var genus  = "пантеры";
-            var family = "кошачьи";
-            var population = 4000;
+        Expression<del> exp = (x) =>
+        x.Item1 == value ||
+        x.Item2 == value ||
+        x.Item3 == value ? true : false;
 
-            return (species, genus, family, population);
-        }
-        if (species == "Косатка")
-        {
-            var genus  = "оркинус";
-            var family = "дельфиновые";
-            var population = 50000;
+        var animals = new[] {
+            ("тигры",   "пантеры", "кошачьи",     4000),
+            ("косатки", "оркинус", "дельфиновые", 50000)};
 
-            return (species, genus, family, population);
-        }
+        foreach (var animal in animals)
+            // метод возвращает кортеж из 4 элементов
+            if (exp.Compile()(animal))
+                return animal;
 
         return ("", "", "", 0);
     }
+    delegate bool del((string, string, string, int) x);
 }
-// Тигр: семейство кошачьи, численность 4000
 ```
 ___________________________________________________________________
 ##			"Регулярные выражения"
