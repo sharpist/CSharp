@@ -1,4 +1,6 @@
-﻿using static System.Console;
+﻿using System;
+using System.Linq.Expressions;
+using static System.Console;
 
 class Program
 {
@@ -22,8 +24,12 @@ class NumberStore
     {
         ref int returnVal = ref numbers[0];
         var ctr = numbers.Length - 1;
-        while ((ctr > 0) && numbers[ctr] >= target)
-        {
+
+        Expression<Func<int, bool>> l =
+            ctr => (ctr >= 0) && numbers[ctr] >= target;
+        var f = l.Compile();
+
+        while (f(ctr)) {
             returnVal = ref numbers[ctr];
             ctr--;
         }
