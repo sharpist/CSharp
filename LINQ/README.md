@@ -59,7 +59,7 @@ var query = sequence
     .Select(n => n.ToUpper()) // abc->ABC
     .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // АЛЁНА АНЯ ДИМА САША ТАНЯ ЮРА ЯНА
 ```
 _______________________________________________________________________________
@@ -79,7 +79,7 @@ var query =
      select n.ToUpper()) // abc->ABC
      .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // АЛЁНА АНЯ ДИМА САША ТАНЯ ЮРА ЯНА
 ```
 #### Выражение запроса должно начинаться с ```from``` и заканчиваться ```select``` либо ```group``` + ```by```. ####
@@ -100,7 +100,7 @@ var query =
      select n.ToUpper()) // abc->ABC
      .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // АНЯ ЮРА ЯНА
 ```
 Ключевое слово ```let``` объявляет новую переменную одновременно с переменной
@@ -142,7 +142,7 @@ var query =
      select upper)      // select
      .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // ВСЕМУ ВРЕМЯ ВРЕМЯ ВРЕМЯ
 ```
 _______________________________________________________________________________
@@ -160,7 +160,7 @@ var query =
      select n.ToString() + l)
      .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // 1a 1b 1c 2a 2b 2c 3a 3b 3c
 ```
 Векторное произведение фильтруется ```where```:
@@ -288,7 +288,7 @@ var query =
      select n.ToUpper()) // abc->ABC
      .ToList();
 
-query.ForEach(n => Console.Write(n + " "));
+Console.WriteLine(string.Join(" ", query));
 // АНЯ ЮРА ЯНА ДИМА САША ТАНЯ АЛЁНА ОЛЕСЯ
 ```
 Инверсия сортировки производится добавлением в ```orderby``` после критерия слова
