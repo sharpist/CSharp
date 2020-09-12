@@ -1,3 +1,4 @@
+
 ## Задачи и класс Task
 ____
 
@@ -150,10 +151,10 @@ public static void Main(string[] args)
         Console.WriteLine($"Id начальной задачи:\t{Task.CurrentId}");
     });
     // задача продолжения
-    var task2 = task1.ContinueWith(Display);
+    var task2 = task1.ContinueWith(display);
 
     task1.Start();
-    // ждем окончания второй задачи
+    // ждём окончания второй задачи
     task2.Wait();
 
     Console.WriteLine("Выполняется метод Main...");
@@ -166,7 +167,7 @@ public static void Main(string[] args)
     */
 }
 
-private static void Display(Task task)
+private static void display(Task task)
 {
     Console.WriteLine($"Id продолжающей задачи:\t{Task.CurrentId}");
     Console.WriteLine($"Id предыдущей задачи:\t{task.Id}");
@@ -174,20 +175,20 @@ private static void Display(Task task)
 }
 ```
 
-Также возможно передать результат работы предыдущей задачи:
+> В задачу продолжения можно передавать результат работы предыдущей задачи.
 
 ```csharp
 public static void Main(string[] args)
 {
     var task1 = new Task<double>(() => {
-    return Op<int, int, double>(
+    return op<int, int, double>(
         (a, b) => a * b, 3, 9);
     });
     // задача продолжения
-    var task2 = task1.ContinueWith(t => Display(t.Result));
+    var task2 = task1.ContinueWith(t => display(t.Result));
 
     task1.Start();
-    // ждем окончания второй задачи
+    // ждём окончания второй задачи
     task2.Wait();
 
     Console.WriteLine("Выполняется метод Main...");
@@ -198,9 +199,196 @@ public static void Main(string[] args)
     */
 }
 
-private static TResult Op<T1, T2, TResult>(
+private static TResult op<T1, T2, TResult>(
     Func<T1, T2, TResult> f, T1 arg1, T2 arg2) => f(arg1, arg2);
 
-private static void Display<T>(T res) =>
+private static void display<T>(T res) =>
     Console.WriteLine($"Результат выполнения начальной задачи: {res}");
 ```
+____
+
+## Класс Parallel
+
+**TPL** также включает в себя класс **```Parallel```**, который предназначен для упрощения параллельного
+выполнения кода.
+
+***1.*** Метод **```Invoke```** служит для параллельного выполнения задач и в качестве параметра
+принимает массив объектов **```Action```**, таким образом, в метод можно передавать набор методов,
+которые будут вызываться при его выполнении:
+
+```csharp
+public static void Main(string[] args)
+{
+    Parallel.Invoke(
+  /*1*/ display,
+  /*2*/ () => factorial(10),
+  /*3*/ () => {
+            Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+            Thread.Sleep(3000);
+            Console.WriteLine($"Задача {Task.CurrentId} выполнена");
+        });
+
+    Console.WriteLine("Выполняется метод Main...");
+
+    /* Output:
+        Задача 3 выполняется
+        Задача 1 выполняется
+        Задача 2 выполняется
+        Задача 3 выполнена
+        Задача 1 выполнена (факториал числа 10 равен: 3628800)
+        Задача 2 выполнена
+        Выполняется метод Main...
+    */
+}
+
+private static void display()
+{
+    Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+    Thread.Sleep(3000);
+    Console.WriteLine($"Задача {Task.CurrentId} выполнена");
+}
+
+private static void factorial(int x)
+{
+    Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+    Thread.Sleep(3000);
+
+    var n = (byte)x;
+    ulong factorial = 1;
+
+    while (n > 0) factorial *= n--;
+
+    Console.WriteLine($"Задача {Task.CurrentId} выполнена" +
+        $" (факториал числа {x} равен: {factorial})");
+}
+```
+
+***2.*** Метод **```For```** помогает выполнять итерации цикла параллельно. В качестве значений параметров
+методу необходимо передать начальный индекс элемента в цикле, конечный индекс и делегат
+**```Action<int>```**, указывающий на метод, который будет выполняться один раз за итерацию:
+
+> Итерируемый метод в качестве параметра должен принимать значение типа **```int```** – представляющее
+счётчик, который проходит в цикле от 1...10 включительно, таким образом, метод вызывается
+10 раз.
+
+```csharp
+public static void Main(string[] args)
+{
+    Parallel.For(1, 11, factorial);
+
+    /* Output:
+        Задача 5 выполняется...
+        Задача 1 выполняется...
+        Задача 2 выполняется...
+        Задача 4 выполняется...
+        Задача 3 выполняется...
+        Задача 6 выполняется...
+        Задача 7 выполняется...
+        Задача 8 выполняется...
+        Факториал числа 9 равен: 362880
+        Факториал числа 7 равен: 5040
+        Факториал числа 5 равен: 120
+        Факториал числа 3 равен: 6
+        Факториал числа 1 равен: 1
+        Задача 1 выполняется...
+        Задача 10 выполняется...
+        Факториал числа 2 равен: 2
+        Факториал числа 4 равен: 24
+        Факториал числа 6 равен: 720
+        Факториал числа 8 равен: 40320
+        Факториал числа 10 равен: 3628800
+    */
+}
+
+private static void factorial(int x)
+{
+    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
+    Thread.Sleep(3000);
+
+    var n = (byte)x;
+    ulong factorial = 1;
+
+    while (n > 0) factorial *= n--;
+
+    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+}
+```
+
+***3.*** Метод **```ForEach```** осуществляет параллельное выполнение перебора коллекции, реализующей
+интерфейс **```IEnumerable```**. В качестве значений параметров методу нужно передавать перебираемую
+коллекцию и делегат, выполняющийся один раз за итерацию для каждого перебираемого элемента
+коллекции:
+
+> Метод возвращает структуру **```ParallelLoopResult```**, которая содержит информацию о выполнении
+цикла.
+
+```csharp
+public static void Main(string[] args)
+{
+    var result = Parallel.ForEach<int>(
+        new List<int>() { 7, 10, 3 },
+        factorial);
+
+    /* Output:
+        Задача 2 выполняется...
+        Задача 1 выполняется...
+        Задача 3 выполняется...
+        Факториал числа 10 равен: 3628800
+        Факториал числа 7 равен: 5040
+        Факториал числа 3 равен: 6
+    */
+}
+
+private static void factorial(int x)
+{
+    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
+    Thread.Sleep(3000);
+
+    var n = (byte)x;
+    ulong factorial = 1;
+
+    while (n > 0) factorial *= n--;
+
+    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+}
+```
+
+***4.*** Методы **```For```** и **```ForEach```** разрешают преждевременный выход из цикла с помощью вспомогательного
+метода **```Break```**.
+Для этого в итерируемый метод передают дополнительный параметр – объект **```ParallelLoopState```**,
+метод **```Break```** которого, вызывают при достижении определённого условия, таким образом система
+осуществит выход и прекратит выполнение метода **```For```** при первом удобном случае.
+
+```csharp
+public static void Main(string[] args)
+{
+    var result = Parallel.For(1, 11, factorial);
+    if (!result.IsCompleted)
+        Console.WriteLine("Выполнение цикла завершено на итерации: {0}",
+            result.LowestBreakIteration);
+
+    /* Output:
+        Задача 1 выполняется...
+        Факториал числа 1 равен: 1
+        Задача 1 выполняется...
+        Факториал числа 2 равен: 2
+        Задача 2 выполняется...
+        Факториал числа 3 равен: 6
+        Выполнение цикла завершено на итерации: 3
+    */
+}
+
+private static void factorial(int x, ParallelLoopState pls)
+{
+    var n = (byte)x;
+    ulong factorial = 1;
+
+    while (n > 0) {
+        if (n == 3) pls.Break();
+        factorial *= n--;
+    }
+    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
+    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+}
+```
+
