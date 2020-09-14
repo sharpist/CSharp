@@ -109,33 +109,30 @@ public static void Main(string[] args)
 
 ***4.*** **Задачи могут** не только выполняться как процедуры, но и **возвращать определённые результаты**:
 
-* Чтобы задать возвращаемый из задачи тип, необходимо типизировать **```Task<int>```** – в
-данном случае задача будет возвращать значение **```int```**.
+* *Чтобы задать возвращаемый из задачи тип, необходимо типизировать **```Task<int>```** – в
+данном случае задача будет возвращать значение **```int```**.*
 
-* В качестве задачи должен выполняться метод, возвращающий данный тип.
+* *В качестве задачи должен выполняться метод, возвращающий данный тип.*
 
-* Ответ будет храниться в свойстве **```Result```**.
+* *Ответ будет храниться в свойстве **```Result```**.*
 
-* ==При обращении к свойству **```Result```** программа текущий поток останавливает== и ждёт,
-когда будет получен результат из выполняемой задачи.
+* *==При обращении к свойству **```Result```** программа текущий поток останавливает== и ждёт,
+когда будет получен результат из выполняемой задачи.*
 
 ```csharp
 public static void Main(string[] args)
 {
-    byte n = 10;
-    var task = Task<ulong>.Factory.StartNew(() => {
-        ulong factorial = 1;
-
-        while (n > 0) factorial *= n--;
-
-        return factorial;
-    });
+    var task = Task<(byte, ulong)>.Factory.StartNew(() => factorial(10));
     // ожидать получение результата
-    Console.WriteLine($"Факториал числа {n} равен: {task.Result}");
+    Console.WriteLine("Факториал числа {0} равен {1}",
+        task.Result.Item1, task.Result.Item2);
 
     /* Output:
-        Факториал числа 10 равен: 3628800
+        Факториал числа 10 равен 3628800
     */
+
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
 
@@ -221,7 +218,14 @@ public static void Main(string[] args)
 {
     Parallel.Invoke(
   /*1*/ display,
-  /*2*/ () => factorial(10),
+  /*2*/ () => {
+            Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+            Thread.Sleep(3000);
+
+            var result = factorial(10);
+            Console.WriteLine($"Задача {Task.CurrentId} выполнена"
+                + $" – Факториал числа {result.Item1} равен {result.Item2}");
+        },
   /*3*/ () => {
             Console.WriteLine($"Задача {Task.CurrentId} выполняется");
             Thread.Sleep(3000);
@@ -232,34 +236,23 @@ public static void Main(string[] args)
 
     /* Output:
         Задача 3 выполняется
-        Задача 1 выполняется
         Задача 2 выполняется
-        Задача 3 выполнена
-        Задача 1 выполнена (факториал числа 10 равен: 3628800)
+        Задача 1 выполняется
         Задача 2 выполнена
+        Задача 3 выполнена
+        Задача 1 выполнена - Факториал числа 10 равен 3628800
         Выполняется метод Main...
     */
-}
 
-private static void display()
-{
-    Console.WriteLine($"Задача {Task.CurrentId} выполняется");
-    Thread.Sleep(3000);
-    Console.WriteLine($"Задача {Task.CurrentId} выполнена");
-}
+    void display()
+    {
+        Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+        Thread.Sleep(3000);
+        Console.WriteLine($"Задача {Task.CurrentId} выполнена");
+    }
 
-private static void factorial(int x)
-{
-    Console.WriteLine($"Задача {Task.CurrentId} выполняется");
-    Thread.Sleep(3000);
-
-    var n = (byte)x;
-    ulong factorial = 1;
-
-    while (n > 0) factorial *= n--;
-
-    Console.WriteLine($"Задача {Task.CurrentId} выполнена" +
-        $" (факториал числа {x} равен: {factorial})");
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
 
@@ -274,43 +267,39 @@ private static void factorial(int x)
 ```csharp
 public static void Main(string[] args)
 {
-    Parallel.For(1, 11, factorial);
+    Parallel.For(1, 11, i => {
+        Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+        Thread.Sleep(3000);
+
+        var result = factorial((byte)i);
+        Console.WriteLine($"Факториал числа {result.Item1} равен {result.Item2}");
+    });
 
     /* Output:
-        Задача 5 выполняется...
-        Задача 1 выполняется...
-        Задача 2 выполняется...
-        Задача 4 выполняется...
-        Задача 3 выполняется...
-        Задача 6 выполняется...
-        Задача 7 выполняется...
-        Задача 8 выполняется...
-        Факториал числа 9 равен: 362880
-        Факториал числа 7 равен: 5040
-        Факториал числа 5 равен: 120
-        Факториал числа 3 равен: 6
-        Факториал числа 1 равен: 1
-        Задача 1 выполняется...
-        Задача 10 выполняется...
-        Факториал числа 2 равен: 2
-        Факториал числа 4 равен: 24
-        Факториал числа 6 равен: 720
-        Факториал числа 8 равен: 40320
-        Факториал числа 10 равен: 3628800
+        Задача 5 выполняется
+        Задача 1 выполняется
+        Задача 2 выполняется
+        Задача 3 выполняется
+        Задача 4 выполняется
+        Задача 6 выполняется
+        Задача 7 выполняется
+        Задача 8 выполняется
+        Факториал числа 9 равен 362880
+        Факториал числа 7 равен 5040
+        Факториал числа 5 равен 120
+        Факториал числа 3 равен 6
+        Факториал числа 1 равен 1
+        Задача 1 выполняется
+        Задача 12 выполняется
+        Факториал числа 2 равен 2
+        Факториал числа 4 равен 24
+        Факториал числа 6 равен 720
+        Факториал числа 8 равен 40320
+        Факториал числа 10 равен 3628800
     */
-}
 
-private static void factorial(int x)
-{
-    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
-    Thread.Sleep(3000);
-
-    var n = (byte)x;
-    ulong factorial = 1;
-
-    while (n > 0) factorial *= n--;
-
-    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
 
@@ -325,70 +314,209 @@ private static void factorial(int x)
 ```csharp
 public static void Main(string[] args)
 {
-    var result = Parallel.ForEach<int>(
-        new List<int>() { 7, 10, 3 },
-        factorial);
+    Parallel.ForEach(new List<int>() { 7, 10, 3 }, i => {
+        Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+        Thread.Sleep(3000);
+
+        var result = factorial((byte)i);
+        Console.WriteLine($"Факториал числа {result.Item1} равен {result.Item2}");
+    });
 
     /* Output:
-        Задача 2 выполняется...
-        Задача 1 выполняется...
-        Задача 3 выполняется...
-        Факториал числа 10 равен: 3628800
-        Факториал числа 7 равен: 5040
-        Факториал числа 3 равен: 6
+        Задача 2 выполняется
+        Задача 1 выполняется
+        Задача 3 выполняется
+        Факториал числа 10 равен 3628800
+        Факториал числа 7 равен 5040
+        Факториал числа 3 равен 6
     */
-}
 
-private static void factorial(int x)
-{
-    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
-    Thread.Sleep(3000);
-
-    var n = (byte)x;
-    ulong factorial = 1;
-
-    while (n > 0) factorial *= n--;
-
-    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
 
 ***4.*** Методы **```For```** и **```ForEach```** разрешают преждевременный выход из цикла с помощью вспомогательного
 метода **```Break```**.
+
 Для этого в итерируемый метод передают дополнительный параметр – объект **```ParallelLoopState```**,
 метод **```Break```** которого, вызывают при достижении определённого условия, таким образом система
-осуществит выход и прекратит выполнение метода **```For```** при первом удобном случае.
+осуществит выход и прекратит выполнение метода **```For```** при первом удобном случае:
 
 ```csharp
 public static void Main(string[] args)
 {
-    var result = Parallel.For(1, 11, factorial);
+    var result = Parallel.For(1, 11, (i, state) => {
+        Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+
+        if (state.ShouldExitCurrentIteration)
+            if (state.LowestBreakIteration < i)
+                return;
+        if (i == 3) state.Break();
+
+        var result = factorial((byte)i);
+        Console.WriteLine($"Факториал числа {result.Item1} равен {result.Item2}");
+    });
+
     if (!result.IsCompleted)
         Console.WriteLine("Выполнение цикла завершено на итерации: {0}",
             result.LowestBreakIteration);
 
     /* Output:
-        Задача 1 выполняется...
-        Факториал числа 1 равен: 1
-        Задача 1 выполняется...
-        Факториал числа 2 равен: 2
-        Задача 2 выполняется...
-        Факториал числа 3 равен: 6
+        Задача 1 выполняется
+        Задача 2 выполняется
+        Задача 3 выполняется
+        Задача 4 выполняется
+        Задача 5 выполняется
+        Факториал числа 1 равен 1
+        Факториал числа 3 равен 6
+        Задача 1 выполняется
+        Факториал числа 2 равен 2
         Выполнение цикла завершено на итерации: 3
     */
-}
 
-private static void factorial(int x, ParallelLoopState pls)
-{
-    var n = (byte)x;
-    ulong factorial = 1;
-
-    while (n > 0) {
-        if (n == 3) pls.Break();
-        factorial *= n--;
-    }
-    Console.WriteLine($"Задача {Task.CurrentId} выполняется...");
-    Console.WriteLine($"Факториал числа {x} равен: {factorial}");
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
 
+> Может находить применение, когда цикл выполняет неупорядоченный поиск и необходимо выйти,
+как только найден искомый элемент. Например, если нужно узнать, присутствует ли объект в
+коллекции.
+
+____
+
+## Отмена задач и параллельных операций
+
+Так как параллельное выполнение задач может занимать достаточно много времени, иногда
+возникает необходимость остановить задачу. В *.NET* предусмотрен класс **```CancellationToken```**,
+который позволяет отменять по требованию выполняемые задачи.
+
+***Чтобы отменить процесс необходимо:***
+
+* *Создать объект **```CancellationTokenSource```**.*
+
+```csharp
+var cts = new CancellationTokenSource();
+```
+
+* *Затем из него получить токен отмены.*
+
+```csharp
+var token = cts.Token;
+```
+
+* *Вызвать метод **```Cancel```** объекта **```CancellationTokenSource```**.*
+
+```csharp
+cts.Cancel();
+```
+
+* *В целевой операции отследить состояние токена в условной конструкции.*
+
+```csharp
+if (token.IsCancellationRequested) return;
+```
+
+```csharp
+public static void Main(string[] args)
+{
+    var cts = new CancellationTokenSource();
+    var token = cts.Token;
+
+    var task = Task.Run(() => {
+        try {
+            factorial(10, ref token);
+        }
+        catch (OperationCanceledException) {
+            Console.WriteLine("Операция прервана");
+        }
+        finally {
+            cts.Dispose();
+        }
+    }, token);
+
+    Console.WriteLine("Введите Y для отмены операции");
+    if (Console.ReadLine() == "Y")
+        cts.Cancel();
+    Console.Read();
+
+    /* Output:
+        Введите Y для отмены операции
+        Факториал числа 1 равен 1
+        Факториал числа 2 равен 2
+        Факториал числа 3 равен 6
+        Факториал числа 4 равен 24
+        Y
+        Операция прервана
+    */
+
+    (byte, ulong) factorial(byte v, ref CancellationToken token,
+        byte n = 1, ulong f = 1)
+    {
+        Thread.Sleep(2000);
+        if (token.IsCancellationRequested)
+            token.ThrowIfCancellationRequested();
+
+        Console.WriteLine($"Факториал числа {n} равен {f}");
+        return v == n++ ? (v, f) : factorial(v, ref token, n, n * f);
+    }
+}
+```
+
+Для отмены выполнения параллельных операций, запущенных с помощью методов **```For```** и **```ForEach```**,
+используются перегруженные версии, которые принимают в качестве параметра объект
+**```ParallelOptions```**:
+
+```csharp
+public static void Main(string[] args)
+{
+    var cts = new CancellationTokenSource();
+    var token = cts.Token;
+
+    new Thread(new ThreadStart(() => {
+        Console.WriteLine("Операция будет отменена через 1 с.");
+        Thread.Sleep(1000);
+        cts.Cancel();
+    })).Start();
+
+    try {
+        Parallel.For(1, 11,
+            new ParallelOptions { CancellationToken = token },
+            i => {
+                Console.WriteLine($"Задача {Task.CurrentId} выполняется");
+                Thread.Sleep(3000);
+
+                var result = factorial((byte)i);
+                Console.WriteLine($"Факториал числа {result.Item1} равен {result.Item2}");
+            });
+    }
+    catch (OperationCanceledException) {
+        Console.WriteLine("Операция прервана");
+    }
+    finally {
+        cts.Dispose();
+    }
+
+    /* Output:
+        Операция будет отменена через 1 с.
+        Задача 1 выполняется
+        Задача 2 выполняется
+        Задача 3 выполняется
+        Задача 4 выполняется
+        Задача 5 выполняется
+        Задача 6 выполняется
+        Факториал числа 1 равен 1
+        Факториал числа 3 равен 6
+        Факториал числа 5 равен 120
+        Факториал числа 7 равен 5040
+        Факториал числа 9 равен 362880
+        Факториал числа 2 равен 2
+        Операция прервана
+    */
+
+    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+        v == n++ ? (v, f) : factorial(v, n, n * f);
+}
+```
+____
