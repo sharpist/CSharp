@@ -132,7 +132,7 @@ public static void Main(string[] args)
     */
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 
@@ -252,7 +252,7 @@ public static void Main(string[] args)
     }
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 
@@ -299,7 +299,7 @@ public static void Main(string[] args)
     */
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 
@@ -332,7 +332,7 @@ public static void Main(string[] args)
     */
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 
@@ -376,7 +376,7 @@ public static void Main(string[] args)
     */
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 
@@ -459,7 +459,7 @@ public static void Main(string[] args)
             token.ThrowIfCancellationRequested();
 
         Console.WriteLine($"Факториал числа {n} равен {f}");
-        return v == n++ ? (v, f) : factorial(v, ref token, n, n * f);
+        return v != n++ ? factorial(v, ref token, n, n * f) : (v, f);
     }
 }
 ```
@@ -514,7 +514,7 @@ public static void Main(string[] args)
     */
 
     (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
-        v == n++ ? (v, f) : factorial(v, n, n * f);
+        v != n++ ? factorial(v, n, n * f) : (v, f);
 }
 ```
 ____
