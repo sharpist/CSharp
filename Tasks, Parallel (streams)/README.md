@@ -131,7 +131,7 @@ public static void Main(string[] args)
         Факториал числа 10 равен 3628800
     */
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
@@ -251,7 +251,7 @@ public static void Main(string[] args)
         Console.WriteLine($"Задача {Task.CurrentId} выполнена");
     }
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
@@ -298,7 +298,7 @@ public static void Main(string[] args)
         Факториал числа 10 равен 3628800
     */
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
@@ -331,7 +331,7 @@ public static void Main(string[] args)
         Факториал числа 3 равен 6
     */
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
@@ -375,7 +375,7 @@ public static void Main(string[] args)
         Выполнение цикла завершено на итерации: 3
     */
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
@@ -451,7 +451,7 @@ public static void Main(string[] args)
         Операция прервана
     */
 
-    (byte, ulong) factorial(byte v, ref CancellationToken token,
+    (byte, ulong) factorial(in byte v, ref CancellationToken token,
         byte n = 1, ulong f = 1)
     {
         Thread.Sleep(2000);
@@ -500,22 +500,20 @@ public static void Main(string[] args)
 
     /* Output:
         Операция будет отменена через 1 с.
-        Задача 1 выполняется
-        Задача 2 выполняется
         Задача 3 выполняется
+        Задача 2 выполняется
+        Задача 1 выполняется
         Задача 4 выполняется
         Задача 5 выполняется
-        Задача 6 выполняется
         Факториал числа 1 равен 1
         Факториал числа 3 равен 6
         Факториал числа 5 равен 120
-        Факториал числа 7 равен 5040
         Факториал числа 9 равен 362880
-        Факториал числа 2 равен 2
+        Факториал числа 7 равен 5040
         Операция прервана
     */
 
-    (byte, ulong) factorial(byte v, byte n = 1, ulong f = 1) =>
+    (byte, ulong) factorial(in byte v, byte n = 1, ulong f = 1) =>
         v == n++ ? (v, f) : factorial(v, n, n * f);
 }
 ```
