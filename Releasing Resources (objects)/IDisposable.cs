@@ -1,29 +1,29 @@
-﻿// ШАБЛОН ДЛЯ БАЗОВОГО КЛАССА
+﻿using Microsoft.Win32.SafeHandles;
+using System;
+using System.Runtime.InteropServices;
 
-public class UnmanagedClass : System.IDisposable
+// ШАБЛОН ДЛЯ БАЗОВОГО КЛАССА
+public class BaseUnmanagedClass : IDisposable
 {
-    // неуправляемый буфер памяти
-    private System.IntPtr buffer;
-    // управляемый ресурс
-    private System.Runtime.InteropServices.SafeHandle resource;
+    private IntPtr     buffer;   // неуправляемый буфер памяти
+    private SafeHandle resource; // управляемый ресурс
 
-    public UnmanagedClass()
+    public BaseUnmanagedClass()
     {
-        this.buffer = System.Runtime.InteropServices.Marshal.AllocHGlobal(1024);
-        //this.resource = ...
+        this.buffer   = Marshal.AllocHGlobal(1024);
+        this.resource = new SafeFileHandle(IntPtr.Zero, true);
     }
 
+    ~BaseUnmanagedClass() =>     // если объект не уничтожен до завершения программы
+        this.Dispose(false);     // высвобождает неуправляемый ресурс
 
-    private bool disposed = false;
-
-    ~UnmanagedClass()             // если объект не уничтожен до завершения программы
-    { this.Dispose(false); }      // высвобождает неуправляемый ресурс
-
-    public virtual void Dispose() // высвобождает все ресурсы
+    public void Dispose()        // высвобождает все ресурсы
     {
         this.Dispose(true);
-        System.GC.SuppressFinalize(this);
+        GC.SuppressFinalize(this);
     }
+
+    private bool disposed = false;
 
     protected virtual void Dispose(bool disposing)
     {
@@ -32,15 +32,51 @@ public class UnmanagedClass : System.IDisposable
             this.disposed = true;
 
             /* высвобождение неуправляемого ресурса */
-
-            System.Runtime.InteropServices.Marshal.FreeHGlobal(buffer);
-            buffer = System.IntPtr.Zero;
+            Marshal.FreeHGlobal(buffer);
+            buffer = IntPtr.Zero;
 
             /* высвобождение управляемого ресурса */
             if (disposing)
             {
-                if (resource is not null) resource.Dispose();
+                resource?.Dispose();
             }
+        }
+    }
+}
+
+// ШАБЛОН ДЛЯ ПРОИЗВОДНОГО КЛАССА
+public class DerivedUnmanagedClass : BaseUnmanagedClass
+{
+    private IntPtr     buffer;   // неуправляемый буфер памяти
+    private SafeHandle resource; // управляемый ресурс
+
+    public DerivedUnmanagedClass()
+    {
+        this.buffer   = Marshal.AllocHGlobal(1024);
+        this.resource = new SafeFileHandle(IntPtr.Zero, true);
+    }
+
+    ~DerivedUnmanagedClass() =>  // если объект не уничтожен до завершения программы
+        this.Dispose(false);     // высвобождает неуправляемый ресурс
+
+    private bool disposed = false;
+
+    protected override void Dispose(bool disposing)
+    {
+        lock (this) {
+            if (this.disposed) return;
+            this.disposed = true;
+
+            /* высвобождение неуправляемого ресурса */
+            Marshal.FreeHGlobal(buffer);
+            buffer = IntPtr.Zero;
+
+            /* высвобождение управляемого ресурса */
+            if (disposing)
+            {
+                resource?.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }
